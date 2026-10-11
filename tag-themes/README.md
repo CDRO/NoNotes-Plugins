@@ -21,4 +21,27 @@ Oben in `tag-themes.js` steht die Liste `REGELN`: pro Eintrag `tag`, Farben für
 `warn`, `radius`, `shadow`. Mitgeliefert sind `wichtig` (rötlich), `privat` (Sepia) und `idee` (grünlich).
 Änderungen wirken nach dem Neuladen.
 
+## Linien der Mindmap stylen
+
+Die Liste `LINKS` stylt die Verbindungslinien (Elternnotiz → Unternotiz) nach dem Tag-Paar. Beispiel: Tag `brick` zu
+`wood` ergibt einen grauen Link, der zu Braun wird, rechtwinklig mit runden Ecken geführt:
+
+```js
+{ from: 'brick', to: 'wood',
+  color: { light: ['#9aa0a6', '#8b5a2b'], dark: ['#7d848c', '#c58a50'] },
+  shape: 'elbow', radius: 10, width: 3 }
+```
+
+| Feld | Bedeutung |
+| --- | --- |
+| `from`, `to` | Tag der Elternnotiz / der Unternotiz; `'*'` passt auf jede Notiz. Die erste passende Regel gewinnt |
+| `color` | Farbverlauf Eltern → Kind: eine Farbe, eine Liste (auch mehr als zwei) oder `{ light, dark }` |
+| `shape` | `'curve'` (Bézier, Standard), `'elbow'` (rechtwinklig) oder `'straight'` (direkt) |
+| `radius` | Eckenradius bei `'elbow'` (0 = scharfe Ecken) |
+| `width`, `dash`, `opacity` | Stärke, Strichart (z. B. `'6 4'`), Deckkraft |
+
+Die Linien-Stile gelten nur auf dem Bildschirm, nicht in Export und Druck. Sie brauchen NoNotes mit dem Ereignis
+`mindmap:rendered` und den Linien-Attributen `data-from`/`data-to` (siehe Branch-Änderung im NoNotes-Repo); in einer
+älteren Version bleiben die Linien unverändert, die Tag-Designs funktionieren weiter.
+
 Benötigt NoNotes mit Erweiterungs-Schnittstelle `api: 1`. Wie jede Erweiterung läuft sie mit allen Rechten der Seite.

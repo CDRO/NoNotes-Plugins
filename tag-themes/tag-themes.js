@@ -4,7 +4,8 @@
 
    Gibt es mehrere passende Tags, gewinnt die Regel, die in REGELN weiter oben steht.
    Die Hauptfarbe (Menü «Hauptfarbe») bleibt unberührt und gilt immer zusätzlich.
-   Änderungen an REGELN wirken nach dem Neuladen der Seite. */
+   Zusätzlich lassen sich die Verbindungslinien der Mindmap (Elternnotiz → Unternotiz) nach dem Tag-Paar stylen,
+   siehe LINKS unten. Änderungen an REGELN und LINKS wirken nach dem Neuladen der Seite. */
 
 /* ---- Konfiguration ---------------------------------------------------------------------------------------------
    tag    Name des Tags (ohne #, Gross-/Kleinschreibung egal)
@@ -28,14 +29,39 @@ const REGELN = [
     dark:  { bg: '#121c15', panel: '#18251c', text: '#d3ecd9', muted: '#8fb59a', border: '#25382b', hover: '#1e2e23' },
   },
 ];
+
+/* ---- Linien der Mindmap -----------------------------------------------------------------------------------------
+   Eine Linie führt von der Elternnotiz (from) zur Unternotiz (to). Passt das Tag-Paar, wird die Linie gestylt;
+   die erste passende Regel gewinnt. Alle Felder ausser from und to sind optional.
+   from, to  Tag der Elternnotiz bzw. der Unternotiz; '*' passt auf jede Notiz (auch ohne Tag)
+   color     Farbverlauf vom Elternende zum Kindende: eine Farbe, eine Liste ['grau', 'braun'] (auch mehr als zwei)
+             oder { light: [...], dark: [...] } für helle und dunkle Systemeinstellung
+   shape     'curve' (Bézier, Standard der App), 'elbow' (rechtwinklig, mit Radius) oder 'straight' (direkt)
+   radius    Eckenradius bei 'elbow' in Pixeln (0 = scharfe Ecken, Standard 10)
+   width     Linienstärke in Pixeln (Standard der App: 2)
+   dash      Strichart wie bei SVG stroke-dasharray, z. B. '6 4' (gestrichelt) oder '1 5' (gepunktet)
+   opacity   Deckkraft 0 bis 1 (Standard 1)
+   Beispiel: grauer Link, der zu Braun wird, quadratisch geführt – Tag «brick» zu «wood».
+   Wirkt nur auf dem Bildschirm, nicht in Export und Druck. Benötigt das Ereignis «mindmap:rendered».          */
+const LINKS = [
+  {
+    from: 'brick', to: 'wood',
+    color: { light: ['#9aa0a6', '#8b5a2b'], dark: ['#7d848c', '#c58a50'] },
+    shape: 'elbow', radius: 10, width: 3,
+  },
+  {
+    from: 'wichtig', to: '*',
+    color: '#d64545', shape: 'straight', width: 2.5, dash: '6 4',
+  },
+];
 /* ------------------------------------------------------------------------------------------------------------- */
 
 NoNotesPlugins.register({
   id: 'tag-designs',
   name: 'Tag-Designs',
-  version: '1.0.0',
+  version: '1.1.0',
   api: 1,
-  description: 'Setzt pro Notiz ein Design anhand ihrer Tags (Zuordnung oben in der Datei).',
+  description: 'Setzt pro Notiz ein Design anhand ihrer Tags und stylt Mindmap-Linien nach Tag-Paaren (Zuordnung oben in der Datei).',
 
   activate(ctx) {
     const P = window.NoNotesPlugins;
@@ -109,5 +135,147 @@ NoNotesPlugins.register({
     // Beim Aktivieren ist eventuell schon eine Notiz offen
     const open = ctx.editor.noteId();
     if (open != null) update(open);
+
+    activateLinks(ctx);
   },
 });
+
+/** Linien der Mindmap nach LINKS stylen. */
+function activateLinks(ctx) {
+  const P = window.NoNotesPlugins;
+  if (!LINKS.length) return;
+  if (!P.EVENTS.includes('mindmap:rendered')) {
+    console.warn('Tag-Designs: Linien-Stile brauchen eine NoNotes-Version mit dem Ereignis mindmap:rendered'); // i18n-ignore
+    return;
+  }
+  const SHAPES = ['curve', 'elbow', 'straight'];
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const STYLE_ID = 'tagLinkStyle';
+  const DEFS_ID = 'tagLinkDefs';
+  const safe = v => typeof v === 'string' && v.trim() && !/[;{}<>"'\\]/.test(v);
+  const tagOf = v => String(v || '').replace(/^#/, '').trim().toLowerCase();
+
+  const colorList = c => (Array.isArray(c) ? c : [c]).filter(safe).map(x => x.trim());
+
+  // Regeln prüfen; ungültige Felder werden gemeldet und weggelassen
+  const rules = [];
+  for (const r of LINKS) {
+    const from = tagOf(r && r.from), to = tagOf(r && r.to);
+    if (!from || !to) { console.warn('Tag-Designs: Linien-Regel ohne from/to übersprungen'); continue; } // i18n-ignore
+    const rule = { from, to, shape: 'curve', radius: 10, width: null, dash: '', opacity: null, light: [], dark: [] };
+    if (r.shape != null) { if (SHAPES.includes(r.shape)) rule.shape = r.shape; else console.warn(`Tag-Designs: ${from}→${to}: unbekannte shape «${r.shape}»`); } // i18n-ignore
+    if (Number.isFinite(r.radius) && r.radius >= 0) rule.radius = r.radius;
+    if (Number.isFinite(r.width) && r.width > 0 && r.width <= 30) rule.width = r.width;
+    if (typeof r.dash === 'string' && /^[\d\s,.]+$/.test(r.dash)) rule.dash = r.dash.trim();
+    if (Number.isFinite(r.opacity) && r.opacity >= 0 && r.opacity <= 1) rule.opacity = r.opacity;
+    const c = r.color;
+    if (c && typeof c === 'object' && !Array.isArray(c)) {
+      rule.light = colorList(c.light);
+      rule.dark = colorList(c.dark);
+      if (!rule.light.length) rule.light = rule.dark;
+      if (!rule.dark.length) rule.dark = rule.light;
+    } else {
+      rule.light = rule.dark = colorList(c);
+    }
+    rules.push(rule);
+  }
+  if (!rules.length) return;
+
+  const dark = window.matchMedia('(prefers-color-scheme: dark)');
+  let token = 0;
+  let tagsById = new Map();   // Kennung → Menge der kleingeschriebenen Tags (Stand der letzten Zeichnung)
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    // Beim Suchen werden nicht passende Linien abgeblendet; das gilt auch für gestylte Linien
+    style.textContent = 'svg.has-matches .mm-edge.tl-edge { stroke-opacity: .25 !important; }\n';
+    document.head.appendChild(style);
+  }
+
+  const matches = (rule, ptags, ctags) =>
+    (rule.from === '*' || ptags.has(rule.from)) && (rule.to === '*' || ctags.has(rule.to));
+
+  function pathData(shape, radius, x1, y1, x2, y2) {
+    const mx = (x1 + x2) / 2;
+    if (shape === 'straight') return `M ${x1} ${y1} L ${x2} ${y2}`;
+    if (shape === 'elbow') {
+      const dy = y2 - y1, dx = x2 - x1;
+      const r = Math.min(radius, Math.abs(dy) / 2, Math.abs(dx) / 2);
+      if (!(r > 0)) {
+        if (dy === 0) return `M ${x1} ${y1} L ${x2} ${y2}`;
+        return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
+      }
+      const sx = Math.sign(dx), sy = Math.sign(dy);
+      return `M ${x1} ${y1} L ${mx - sx * r} ${y1} Q ${mx} ${y1} ${mx} ${y1 + sy * r} L ${mx} ${y2 - sy * r} Q ${mx} ${y2} ${mx + sx * r} ${y2} L ${x2} ${y2}`;
+    }
+    return `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`; // wie die App
+  }
+
+  function apply() {
+    const edges = [...document.querySelectorAll('path.mm-edge[data-from]')];
+    if (!edges.length) return;
+    ensureStyle();
+    const svg = edges[0].ownerSVGElement;
+    let defs = document.getElementById(DEFS_ID);
+    if (defs) defs.remove();
+    defs = document.createElementNS(SVGNS, 'defs');
+    defs.id = DEFS_ID;
+    svg.insertBefore(defs, svg.firstChild);
+    const isDark = dark.matches;
+    let n = 0;
+    for (const e of edges) {
+      const ptags = tagsById.get(e.dataset.from) || new Set();
+      const ctags = tagsById.get(e.dataset.to) || new Set();
+      const rule = rules.find(r => matches(r, ptags, ctags));
+      if (!rule) continue;
+      const x1 = parseFloat(e.dataset.x1), y1 = parseFloat(e.dataset.y1), x2 = parseFloat(e.dataset.x2), y2 = parseFloat(e.dataset.y2);
+      if (![x1, y1, x2, y2].every(Number.isFinite)) continue;
+      e.setAttribute('d', pathData(rule.shape, rule.radius, x1, y1, x2, y2));
+      e.classList.add('tl-edge');
+      const colors = isDark ? rule.dark : rule.light;
+      if (colors.length === 1) {
+        e.style.setProperty('stroke', colors[0]);
+      } else if (colors.length > 1) {
+        // Verlauf entlang der Linie: in Seitenkoordinaten, damit auch waagerechte Linien einen Verlauf bekommen
+        const g = document.createElementNS(SVGNS, 'linearGradient');
+        const gid = `tagLinkGrad${n++}`;
+        g.setAttribute('id', gid);
+        g.setAttribute('gradientUnits', 'userSpaceOnUse');
+        g.setAttribute('x1', x1); g.setAttribute('y1', y1); g.setAttribute('x2', x2); g.setAttribute('y2', y2);
+        colors.forEach((c, i) => {
+          const stop = document.createElementNS(SVGNS, 'stop');
+          stop.setAttribute('offset', String(i / (colors.length - 1)));
+          stop.setAttribute('stop-color', c);
+          g.appendChild(stop);
+        });
+        defs.appendChild(g);
+        e.style.setProperty('stroke', `url(#${gid})`);
+      }
+      e.style.setProperty('stroke-opacity', String(rule.opacity == null ? 1 : rule.opacity));
+      if (rule.width != null) e.style.setProperty('stroke-width', String(rule.width));
+      if (rule.dash) e.style.setProperty('stroke-dasharray', rule.dash);
+      e.setAttribute('stroke-linecap', 'round');
+    }
+  }
+
+  async function onRendered() {
+    const mine = ++token;
+    const edges = [...document.querySelectorAll('path.mm-edge[data-from]')];
+    const ids = new Set(edges.flatMap(e => [e.dataset.from, e.dataset.to]).filter(id => id !== 'root'));
+    const loaded = new Map();
+    await Promise.all([...ids].map(async id => {
+      loaded.set(id, new Set((await ctx.backend.getTags(Number(id))).map(x => String(x).toLowerCase())));
+    }));
+    if (mine !== token) return;
+    tagsById = loaded;
+    apply();
+  }
+
+  ctx.on('mindmap:rendered', onRendered);
+  ctx.on('database:replaced', () => { token++; });
+  // Wechselt die Systemeinstellung hell/dunkel, die Verläufe neu zeichnen (Zuordnung bleibt)
+  if (dark.addEventListener) dark.addEventListener('change', onRendered);
+  onRendered(); // die Mindmap ist beim Aktivieren eventuell schon gezeichnet
+}
