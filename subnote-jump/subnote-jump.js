@@ -1,8 +1,8 @@
 /* NoNotes-Erweiterung «Sprung zu Unternotizen»: springt per Tastenkürzel von einer Notiz zu einer ihrer Unternotizen.
 
    Beispiel: Eine Notiz endet mit «Wohin soll es gehen? Vorne, Hinten, Oben, Unten» und hat vier Unternotizen mit diesen
-   Titeln. Im Vorschaumodus öffnet Strg+Leertaste ein Fenster mit der nummerierten Liste dieser Unternotizen. Zahl
-   eingeben, Enter drücken: die Notiz öffnet sich.
+   Titeln. Im Editor öffnet Strg+Leertaste – in den Darstellungen Bearbeiten, Geteilt und Vorschau – ein Fenster mit der
+   nummerierten Liste dieser Unternotizen. Zahl eingeben, Enter drücken: die Notiz öffnet sich.
 
    Welche Unternotizen erscheinen?
    - Die Unternotizen, deren Titel im Text der Notiz vorkommt (auch als [[Titel]]), in der Reihenfolge ihres Auftretens
@@ -14,15 +14,15 @@
 
 /* ---- Konfiguration ------------------------------------------------------------------------------------------- */
 const TASTE = { ctrl: true, shift: false, alt: false, code: 'Space' };  // Strg+Leertaste (code: KeyboardEvent.code)
-const MODI = ['preview'];   // Darstellungen, in denen das Kürzel gilt: 'preview' (Vorschau), 'split' (Geteilt), 'edit' (Bearbeiten)
+const MODI = ['edit', 'split', 'preview'];   // Darstellungen, in denen das Kürzel gilt: 'edit' (Bearbeiten), 'split' (Geteilt), 'preview' (Vorschau)
 /* --------------------------------------------------------------------------------------------------------------- */
 
 NoNotesPlugins.register({
   id: 'sprung-unternotiz',
   name: 'Sprung zu Unternotizen',
-  version: '1.0.0',
+  version: '1.1.0',
   api: 1,
-  description: 'Strg+Leertaste in der Vorschau öffnet eine nummerierte Liste der Unternotizen; Zahl und Enter springen hin.',
+  description: 'Strg+Leertaste im Editor (Bearbeiten, Geteilt, Vorschau) öffnet eine nummerierte Liste der Unternotizen; Zahl und Enter springen hin.',
 
   activate(ctx) {
     const de = ctx.language() === 'de';
