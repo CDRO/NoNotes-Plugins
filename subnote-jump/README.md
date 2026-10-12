@@ -4,8 +4,9 @@ Erweiterung für [NoNotes](https://github.com/cdro/nonotes): springt per Tastenk
 Unternotizen.
 
 **Beispiel:** Eine Notiz endet mit «Wohin soll es gehen? Vorne, Hinten, Oben, Unten» und hat vier Unternotizen mit diesen
-Titeln. In der Vorschau öffnet **Strg+Leertaste** ein Fenster mit der nummerierten Liste. Zahl eingeben, **Enter**: die
-Unternotiz öffnet sich. Ein Klick auf einen Eintrag funktioniert auch, **Esc** bricht ab.
+Titeln. Im Editor öffnet **Strg+Leertaste** ein Fenster mit der nummerierten Liste, in allen drei Darstellungen
+(Bearbeiten, Geteilt, Vorschau). Zahl eingeben, **Enter**: die Unternotiz öffnet sich. Ein Klick auf einen Eintrag
+funktioniert auch, **Esc** bricht ab.
 
 ## Welche Unternotizen erscheinen?
 
@@ -23,7 +24,8 @@ Unternotiz öffnet sich. Ein Klick auf einen Eintrag funktioniert auch, **Esc** 
 ## Anpassen
 
 Oben in der Datei: `TASTE` (Standard Strg+Leertaste, `code` ist ein `KeyboardEvent.code`) und `MODI` (Darstellungen, in
-denen das Kürzel gilt; Standard nur `'preview'`, möglich sind auch `'split'` und `'edit'`).
+denen das Kürzel gilt; Standard alle drei: `'edit'`, `'split'`, `'preview'`; wer es nur in der Vorschau will, lässt
+`'preview'` allein stehen).
 
 Hinweis: Unter manchen Systemen belegt das Betriebssystem Strg+Leertaste (z. B. Eingabemethode umschalten); dann in
 `TASTE` ein anderes Kürzel eintragen.
