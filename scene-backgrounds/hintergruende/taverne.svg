@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2415"/><stop offset="1" stop-color="#5a3820"/></linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#ffb347" stop-opacity=".55"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2e1a"/><stop offset="1" stop-color="#2a180c"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#wall)"/>
+  <g stroke="#2a180c" stroke-width="3" opacity=".6">
+    <path d="M0 150H1600M0 300H1600M0 450H1600"/>
+    <path d="M200 0V150M600 150V300M1000 0V150M1400 150V300M400 300V450M1200 300V450"/>
+  </g>
+  <rect y="640" width="1600" height="260" fill="url(#floor)"/>
+  <g fill="#2a180c"><rect x="0" y="70" width="1600" height="26"/><rect x="120" y="0" width="30" height="640"/><rect x="1450" y="0" width="30" height="640"/></g>
+  <g>
+    <rect x="260" y="200" width="200" height="260" rx="8" fill="#1b2a3a"/>
+    <rect x="260" y="200" width="200" height="260" rx="8" fill="none" stroke="#2a180c" stroke-width="12"/>
+    <path d="M360 200V460M260 330H460" stroke="#2a180c" stroke-width="8"/>
+    <circle cx="330" cy="270" r="22" fill="#f4e7b0" opacity=".85"/>
+  </g>
+  <g>
+    <rect x="1060" y="360" width="400" height="280" fill="#241308"/>
+    <path d="M1060 640V460Q1260 300 1460 460V640Z" fill="#150b04"/>
+    <path d="M1160 640q40-120 100-60q60-80 100 60Z" fill="#ff8a1f"/>
+    <path d="M1200 640q20-80 60-40q40-50 60 40Z" fill="#ffd166"/>
+  </g>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+  <g>
+    <rect x="520" y="560" width="520" height="30" rx="6" fill="#6b4425"/>
+    <rect x="560" y="590" width="26" height="130" fill="#4a2e1a"/><rect x="974" y="590" width="26" height="130" fill="#4a2e1a"/>
+    <g fill="#c9a24a"><rect x="640" y="510" width="34" height="50" rx="4"/><rect x="760" y="520" width="30" height="40" rx="4"/><rect x="870" y="505" width="36" height="55" rx="4"/></g>
+  </g>
+  <g fill="#ffd27a"><circle cx="500" cy="130" r="7"/><circle cx="800" cy="140" r="7"/><circle cx="1100" cy="130" r="7"/></g>
+</svg>

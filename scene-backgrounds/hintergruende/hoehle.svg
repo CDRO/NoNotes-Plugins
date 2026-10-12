@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="g" cx=".5" cy=".55" r=".75"><stop offset="0" stop-color="#2d3550"/><stop offset="1" stop-color="#0b0e18"/></radialGradient>
+    <radialGradient id="c" cx=".5" cy=".6" r=".3"><stop offset="0" stop-color="#7fd6ff" stop-opacity=".45"/><stop offset="1" stop-color="#7fd6ff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#g)"/>
+  <rect width="1600" height="900" fill="url(#c)"/>
+  <g fill="#070910">
+    <path d="M0 0H1600V90L1500 170L1420 100L1330 220L1240 120L1150 200L1060 90L960 190L880 80L780 210L690 110L590 220L500 100L410 190L320 90L220 200L130 110L0 200Z"/>
+    <path d="M0 900V720L120 790L230 700L360 800L470 740L600 830L720 760L860 840L990 750L1110 820L1240 740L1370 810L1480 730L1600 790V900Z"/>
+  </g>
+  <g fill="#9fe3ff" opacity=".85">
+    <path d="M720 760l30-110l30 110zM790 770l24-80l24 80zM860 760l34-130l34 130z" opacity=".7"/>
+    <path d="M300 200l-12 80l24 0zM1180 190l-10 70l22 0z"/>
+  </g>
+</svg>
