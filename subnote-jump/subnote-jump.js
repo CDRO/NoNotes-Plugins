@@ -22,6 +22,32 @@ NoNotesPlugins.register({
   name: 'Sprung zu Unternotizen',
   version: '1.0.0',
   api: 1,
+  help: {
+    de: `Springt per Tastenkürzel von einer Notiz zu einer ihrer **Unternotizen**.
+
+In der **Vorschau** öffnet \`Strg\`+\`Leertaste\` ein Fenster mit einer nummerierten Liste. Nummer eingeben, \`Enter\` drücken: die Unternotiz öffnet sich. Ein Klick auf einen Eintrag geht auch, \`Esc\` bricht ab.
+
+#### Welche Unternotizen erscheinen?
+- Die Unternotizen, deren Titel im Text der Notiz vorkommt (auch als \`[[Titel]]\`), in der Reihenfolge ihres Auftretens. Ein Titel zählt nur als ganzes Wort.
+- Nennt der Text keine Unternotiz, erscheinen alle in der Reihenfolge der Mindmap.
+- Archivierte Unternotizen fehlen.
+
+Beispiel: Endet eine Notiz mit «Wohin soll es gehen? Vorne, Hinten, Oben, Unten» und hat Unternotizen mit diesen Titeln, führt die Liste genau diese auf.
+
+Kürzel und Darstellungen lassen sich oben in \`subnote-jump.js\` ändern (\`TASTE\`, \`MODI\`).`,
+    en: `Jumps from a note to one of its **subnotes** with a keyboard shortcut.
+
+In **preview**, \`Ctrl\`+\`Space\` opens a window with a numbered list. Type a number and press \`Enter\`: the subnote opens. Clicking an entry works too, \`Esc\` cancels.
+
+#### Which subnotes are listed?
+- The subnotes whose title appears in the note's text (also as \`[[Title]]\`), in the order they appear. A title only counts as a whole word.
+- If the text names no subnote, all of them are listed in mind map order.
+- Archived subnotes are left out.
+
+Example: if a note ends with "Where to? Front, Back, Up, Down" and has subnotes with these titles, the list shows exactly those.
+
+The shortcut and the views can be changed at the top of \`subnote-jump.js\` (\`TASTE\`, \`MODI\`).`,
+  },
   description: 'Strg+Leertaste in der Vorschau öffnet eine nummerierte Liste der Unternotizen; Zahl und Enter springen hin.',
 
   activate(ctx) {

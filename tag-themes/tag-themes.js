@@ -61,6 +61,26 @@ NoNotesPlugins.register({
   name: 'Tag-Designs',
   version: '1.1.0',
   api: 1,
+  help: {
+    de: `Setzt pro Notiz ein **Design** anhand ihrer Tags und stylt die **Linien der Mindmap**.
+
+#### Design pro Notiz
+Öffnest du eine Notiz mit einem Tag aus der Liste \`REGELN\` (oben in \`tag-themes.js\`), wechselt die ganze Oberfläche auf das Design dieser Regel. Beim Schliessen gilt wieder das Design aus dem Menü *Datenbank*. Bei mehreren passenden Tags gewinnt die Regel weiter oben in der Liste. Tag-Änderungen im Editor wirken sofort; die Hauptfarbe bleibt unberührt.
+
+#### Linien der Mindmap
+Die Liste \`LINKS\` stylt die Verbindung von der Elternnotiz zur Unternotiz nach dem Tag-Paar (\`from\` → \`to\`, \`'*'\` = jede Notiz): Farbverlauf (\`color\`, auch getrennt für hell und dunkel), Form (\`curve\`, \`elbow\`, \`straight\`), Eckenradius, Stärke, Strichart und Deckkraft. Nur auf dem Bildschirm, nicht in Export und Druck.
+
+Änderungen an den Listen wirken nach dem Neuladen der Seite.`,
+    en: `Sets a **theme** per note based on its tags and styles the **mind map lines**.
+
+#### Theme per note
+When you open a note that has a tag listed in \`REGELN\` (at the top of \`tag-themes.js\`), the whole interface switches to that rule's theme. Closing the note restores the theme chosen in the *Database* menu. With several matching tags, the rule higher up in the list wins. Tag changes in the editor take effect immediately; the accent colour is left alone.
+
+#### Mind map lines
+The \`LINKS\` list styles the connection from a parent note to a child note by their tag pair (\`from\` → \`to\`, \`'*'\` = any note): colour gradient (\`color\`, separately for light and dark), shape (\`curve\`, \`elbow\`, \`straight\`), corner radius, width, dash pattern and opacity. On screen only, not in export or print.
+
+Changes to the lists take effect after reloading the page.`,
+  },
   description: 'Setzt pro Notiz ein Design anhand ihrer Tags und stylt Mindmap-Linien nach Tag-Paaren (Zuordnung oben in der Datei).',
 
   activate(ctx) {

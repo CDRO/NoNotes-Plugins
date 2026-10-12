@@ -28,6 +28,24 @@ NoNotesPlugins.register({
   name: 'Szenen-Hintergründe',
   version: '1.0.0',
   api: 1,
+  help: {
+    de: `Setzt hinter Mindmap und Editor ein **Hintergrundbild**, das mit der gewählten Notiz wechselt.
+
+- Es gilt ein **Standard-Bild** (z. B. eine Taverne).
+- Wählst du eine Notiz aus oder öffnest sie (Bearbeiten, Geteilt, Vorschau), prüft die Erweiterung zuerst ihre Tags, dann die der Elternnotizen nach oben. Das erste Tag aus \`HINTERGRUENDE\` bestimmt das Bild. **Unternotizen erben es**, solange kein eigenes Tag etwas anderes setzt.
+- Bei mehreren passenden Tags derselben Notiz gewinnt der Eintrag weiter oben in der Liste. \`bild: null\` schaltet den Hintergrund ab.
+
+#### Anpassen
+Oben in \`scene-backgrounds.js\`: \`STANDARD\`, \`HINTERGRUENDE\` (Tag → Bild), \`VERBLASSEN\` (Schleier für die Lesbarkeit), \`EDITOR_KARTE\` (Karte hinter dem Text) und \`UEBERBLENDEN_MS\`. Eigene Bilder (SVG, PNG, JPG, WebP) kommen in den Ordner \`hintergruende/\`.`,
+    en: `Puts a **background image** behind the mind map and the editor that changes with the selected note.
+
+- A **default image** applies (e.g. a tavern).
+- When you select or open a note (edit, split, preview), the extension checks its tags first, then those of its parents upwards. The first tag found in \`HINTERGRUENDE\` decides the image. **Subnotes inherit it** unless a tag of their own sets something else.
+- With several matching tags on the same note, the entry higher up in the list wins. \`bild: null\` turns the background off.
+
+#### Customising
+At the top of \`scene-backgrounds.js\`: \`STANDARD\`, \`HINTERGRUENDE\` (tag → image), \`VERBLASSEN\` (veil for legibility), \`EDITOR_KARTE\` (card behind the text) and \`UEBERBLENDEN_MS\`. Put your own images (SVG, PNG, JPG, WebP) in the \`hintergruende/\` folder.`,
+  },
   description: 'Hintergrundbild für Mindmap und Editor, je nach Tag der gewählten Notiz (erbt an Unternotizen).',
 
   activate(ctx) {
