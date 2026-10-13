@@ -15,9 +15,28 @@
 // null als Bild heisst: kein Hintergrund (das normale Design der App).
 const STANDARD = 'hintergruende/taverne.svg';
 const HINTERGRUENDE = [
-  { tag: 'wald',   bild: 'hintergruende/wald.svg' },
-  { tag: 'hoehle', bild: 'hintergruende/hoehle.svg' },
-  // { tag: 'neutral', bild: null },
+  // Fantasy und Natur
+  { tag: 'wald',        bild: 'hintergruende/wald.svg' },
+  { tag: 'hoehle',      bild: 'hintergruende/hoehle.svg' },
+  { tag: 'burg',        bild: 'hintergruende/burg.svg' },
+  { tag: 'altstadt',    bild: 'hintergruende/altstadt.svg' },
+  { tag: 'bibliothek',  bild: 'hintergruende/bibliothek.svg' },
+  { tag: 'berg',        bild: 'hintergruende/berge.svg' },
+  { tag: 'strand',      bild: 'hintergruende/strand.svg' },
+  { tag: 'unterwasser', bild: 'hintergruende/unterwasser.svg' },
+  { tag: 'garten',      bild: 'hintergruende/gewaechshaus.svg' },
+  // Arbeit und Alltag
+  { tag: 'buero',       bild: 'hintergruende/buero.svg' },
+  { tag: 'meeting',     bild: 'hintergruende/meetingraum.svg' },
+  { tag: 'cafe',        bild: 'hintergruende/cafe.svg' },
+  { tag: 'labor',       bild: 'hintergruende/labor.svg' },
+  // Stadt und Zukunft
+  { tag: 'stadt',       bild: 'hintergruende/stadtzentrum.svg' },
+  { tag: 'zukunft',     bild: 'hintergruende/zukunftsstadt.svg' },
+  { tag: 'cyberpunk',   bild: 'hintergruende/cyberpunk.svg' },
+  { tag: 'raumschiff',  bild: 'hintergruende/raumschiff.svg' },
+  { tag: 'weltall',     bild: 'hintergruende/weltall.svg' },
+  // { tag: 'neutral', bild: null },   // kein Hintergrund (das normale Design der App)
 ];
 const VERBLASSEN = 0.30;       // 0 bis 0.9: wie stark die Farbe des Designs über das Bild gelegt wird (Lesbarkeit)
 const EDITOR_KARTE = 0.80;     // 0 bis 1: Deckkraft der Karte hinter Titel und Text im Editor (1 = Bild nicht sichtbar)
@@ -30,7 +49,7 @@ const SZENEN_ORDNER = (document.currentScript && document.currentScript.src) ? d
 NoNotesPlugins.register({
   id: 'szenen-hintergruende',
   name: 'Szenen-Hintergründe',
-  version: '1.0.0',
+  version: '1.1.0',
   api: 1,
   help: {
     de: `Setzt hinter Mindmap und Editor ein **Hintergrundbild**, das mit der gewählten Notiz wechselt.
@@ -39,6 +58,28 @@ NoNotesPlugins.register({
 - Wählst du eine Notiz aus oder öffnest sie (Bearbeiten, Geteilt, Vorschau), prüft die Erweiterung zuerst ihre Tags, dann die der Elternnotizen nach oben. Das erste Tag aus \`HINTERGRUENDE\` bestimmt das Bild. **Unternotizen erben es**, solange kein eigenes Tag etwas anderes setzt.
 - Bei mehreren passenden Tags derselben Notiz gewinnt der Eintrag weiter oben in der Liste. \`bild: null\` schaltet den Hintergrund ab.
 
+#### Mitgelieferte Szenen
+Ohne passendes Tag gilt die **Taverne**.
+
+- \`wald\`: Wald
+- \`hoehle\`: Höhle mit Kristallen
+- \`burg\`: Burg / Thronsaal
+- \`altstadt\`: Altstadt
+- \`bibliothek\`: Bibliothek / Arbeitszimmer
+- \`berg\`: Berggipfel / Alpen
+- \`strand\`: Strand bei Sonnenuntergang
+- \`unterwasser\`: Unterwasserwelt
+- \`garten\`: Gewächshaus / Garten
+- \`buero\`: Büro
+- \`meeting\`: Corporate Meeting Room
+- \`cafe\`: Café / Küche
+- \`labor\`: Labor / Werkstatt
+- \`stadt\`: Modernes Stadtzentrum
+- \`zukunft\`: Futuristisches Stadtzentrum
+- \`cyberpunk\`: Cyberpunk-Gasse
+- \`raumschiff\`: Raumschiff-Brücke
+- \`weltall\`: Weltall
+
 #### Anpassen
 Oben in \`scene-backgrounds.js\`: \`STANDARD\`, \`HINTERGRUENDE\` (Tag → Bild), \`VERBLASSEN\` (Schleier für die Lesbarkeit), \`EDITOR_KARTE\` (Karte hinter dem Text) und \`UEBERBLENDEN_MS\`. Eigene Bilder (SVG, PNG, JPG, WebP) kommen in den Ordner \`hintergruende/\`.`,
     en: `Puts a **background image** behind the mind map and the editor that changes with the selected note.
@@ -46,6 +87,28 @@ Oben in \`scene-backgrounds.js\`: \`STANDARD\`, \`HINTERGRUENDE\` (Tag → Bild)
 - A **default image** applies (e.g. a tavern).
 - When you select or open a note (edit, split, preview), the extension checks its tags first, then those of its parents upwards. The first tag found in \`HINTERGRUENDE\` decides the image. **Subnotes inherit it** unless a tag of their own sets something else.
 - With several matching tags on the same note, the entry higher up in the list wins. \`bild: null\` turns the background off.
+
+#### Included scenes
+Without a matching tag the **tavern** applies.
+
+- \`wald\`: Forest
+- \`hoehle\`: Crystal cave
+- \`burg\`: Castle / throne room
+- \`altstadt\`: Old town
+- \`bibliothek\`: Library / study
+- \`berg\`: Mountain peaks / Alps
+- \`strand\`: Beach at sunset
+- \`unterwasser\`: Underwater world
+- \`garten\`: Greenhouse / garden
+- \`buero\`: Office
+- \`meeting\`: Corporate meeting room
+- \`cafe\`: Café / kitchen
+- \`labor\`: Lab / workshop
+- \`stadt\`: Modern city centre
+- \`zukunft\`: Futuristic city centre
+- \`cyberpunk\`: Cyberpunk alley
+- \`raumschiff\`: Starship bridge
+- \`weltall\`: Outer space
 
 #### Customising
 At the top of \`scene-backgrounds.js\`: \`STANDARD\`, \`HINTERGRUENDE\` (tag → image), \`VERBLASSEN\` (veil for legibility), \`EDITOR_KARTE\` (card behind the text) and \`UEBERBLENDEN_MS\`. Put your own images (SVG, PNG, JPG, WebP) in the \`hintergruende/\` folder.`,

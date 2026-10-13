@@ -18,8 +18,36 @@ Erweiterung für [NoNotes](https://github.com/cdro/nonotes): setzt hinter der Mi
    (Liegen Skript und `hintergruende/` direkt in `plugins/`, genügt `'scene-backgrounds.js'`.)
 3. Seite neu laden. Unter *Datenbank → Erweiterungen…* sollte «Szenen-Hintergründe» aktiv sein.
 
-Mitgeliefert sind drei einfache Beispielbilder (SVG): `taverne` (Standard), `wald` (Tag `wald`) und `hoehle`
-(Tag `hoehle`). Teste: Notiz mit Tag `wald` anlegen, eine Unternotiz darunter, beide auswählen.
+Mitgeliefert sind 19 Szenen (SVG). Ohne passendes Tag gilt die **Taverne** (Standard); mit einem dieser Tags wechselt
+das Bild:
+
+| Tag | Szene |
+| --- | --- |
+| `wald` | Wald |
+| `hoehle` | Höhle mit Kristallen |
+| `burg` | Burg / Thronsaal |
+| `altstadt` | Altstadt |
+| `bibliothek` | Bibliothek / Arbeitszimmer |
+| `berg` | Berggipfel / Alpen |
+| `strand` | Strand bei Sonnenuntergang |
+| `unterwasser` | Unterwasserwelt |
+| `garten` | Gewächshaus / Garten |
+| `buero` | Büro |
+| `meeting` | Corporate Meeting Room |
+| `cafe` | Café / Küche |
+| `labor` | Labor / Werkstatt |
+| `stadt` | Modernes Stadtzentrum |
+| `zukunft` | Futuristisches Stadtzentrum |
+| `cyberpunk` | Cyberpunk-Gasse |
+| `raumschiff` | Raumschiff-Brücke |
+| `weltall` | Weltall |
+
+Teste: Notiz mit Tag `wald` anlegen, eine Unternotiz darunter, beide auswählen. Unternotizen erben das Bild.
+
+## Neu in 1.1.0
+
+- 16 neue Szenen (siehe Tabelle), Taverne mit Stuhl, Bar und neuem Feuer, Höhle überarbeitet.
+- Bildpfade gelten relativ zur Skriptdatei (behebt 404 bei Plugins in Unterordnern).
 
 ## Anpassen
 

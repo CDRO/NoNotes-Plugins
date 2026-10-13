@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="alt-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d2f58"/><stop offset=".55" stop-color="#7a5f86"/><stop offset="1" stop-color="#e2a07a"/></linearGradient>
+    <linearGradient id="alt-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a456f"/><stop offset="1" stop-color="#6d5878"/></linearGradient>
+    <linearGradient id="alt-stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b6477"/><stop offset="1" stop-color="#4b4560"/></linearGradient>
+    <linearGradient id="alt-plaster" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b79a7e"/><stop offset="1" stop-color="#8c7064"/></linearGradient>
+    <linearGradient id="alt-roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a3f4a"/><stop offset="1" stop-color="#4a2d3c"/></linearGradient>
+    <linearGradient id="alt-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a7480"/><stop offset="1" stop-color="#3d3448"/></linearGradient>
+    <radialGradient id="alt-glow"><stop offset="0" stop-color="#ffd38a" stop-opacity=".75"/><stop offset="1" stop-color="#ffd38a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="alt-vig" cx=".5" cy=".5" r=".75"><stop offset=".6" stop-color="#1a1530" stop-opacity="0"/><stop offset="1" stop-color="#1a1530" stop-opacity=".5"/></radialGradient>
+    <filter id="alt-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="12"/></filter>
+  </defs>
+
+  <!-- Himmel mit Dämmerlicht -->
+  <rect width="1600" height="900" fill="url(#alt-sky)"/>
+  <ellipse cx="800" cy="520" rx="700" ry="160" fill="#ffc48a" opacity=".35" filter="url(#alt-blur)"/>
+  <g fill="#ffe9c8" opacity=".7"><circle cx="300" cy="90" r="2"/><circle cx="560" cy="60" r="1.6"/><circle cx="1000" cy="80" r="2"/><circle cx="1380" cy="50" r="1.6"/></g>
+
+  <!-- Ferne Dächer und Kirchturm -->
+  <path d="M0 470L90 400L180 470V560H0Z M600 480L700 420L800 480V560H600Z M1330 470L1420 410L1510 470V560H1330Z" fill="url(#alt-far)"/>
+  <g>
+    <rect x="1010" y="230" width="110" height="330" fill="url(#alt-far)"/>
+    <path d="M1000 240L1065 90L1130 240Z" fill="#5a3f60"/>
+    <path d="M1064 90V60M1050 74H1078" stroke="#5a3f60" stroke-width="4"/>
+    <path d="M1040 330V290Q1065 270 1090 290V330Z" fill="#2c2748"/>
+    <circle cx="1065" cy="395" r="16" fill="#e9c9a0" opacity=".8"/>
+    <path d="M1065 395V384M1065 395L1074 399" stroke="#4a456f" stroke-width="2.5"/>
+    <rect x="900" y="400" width="110" height="160" fill="#5a4a72"/>
+    <path d="M890 400L955 340L1020 400Z" fill="#5a3f60"/>
+  </g>
+
+  <!-- Torbogen im Mittelgrund -->
+  <g>
+    <rect x="560" y="330" width="500" height="470" fill="url(#alt-stone)"/>
+    <path d="M660 800V560Q660 440 810 440Q960 440 960 560V800Z" fill="#c9906f" opacity=".85"/>
+    <path d="M660 800V560Q660 440 810 440Q960 440 960 560V800Z" fill="none" stroke="#8a8397" stroke-width="22"/>
+    <path d="M660 800V560Q660 440 810 440Q960 440 960 560V800Z" fill="none" stroke="#3c3650" stroke-width="3" opacity=".6"/>
+    <path d="M790 418L810 400L830 418V440H790Z" fill="#9a93a8"/>
+    <g stroke="#3c3650" stroke-width="2" opacity=".35" fill="none"><path d="M560 400H1060M560 470H640M980 470H1060M560 540H640M980 540H1060M560 610H640M980 610H1060M560 680H640M980 680H1060"/></g>
+    <path d="M540 330H1080L1060 300H560Z" fill="#5a5470"/>
+    <rect x="720" y="660" width="180" height="140" fill="#e6b890" opacity=".35" filter="url(#alt-blur)"/>
+  </g>
+
+  <!-- Linkes Fachwerkhaus -->
+  <g>
+    <path d="M-20 790V250L200 140L420 250V790Z" fill="url(#alt-plaster)"/>
+    <path d="M-40 270L200 120L440 270L440 235L200 80L-40 235Z" fill="url(#alt-roof)"/>
+    <g stroke="#3a2a3a" stroke-width="12" fill="none" stroke-linecap="square">
+      <path d="M-20 400H420M-20 580H420M-20 790H420M60 250V790M200 190V790M340 250V790"/>
+      <path d="M60 400L200 250M200 400L340 250M60 580L200 400M340 580L200 400" stroke-width="9"/>
+    </g>
+    <g fill="#2a2440"><rect x="90" y="440" width="70" height="100"/><rect x="240" y="440" width="70" height="100"/><rect x="120" y="260" width="60" height="80"/><rect x="230" y="260" width="60" height="80"/></g>
+    <g fill="#f3c27a" opacity=".85"><rect x="96" y="446" width="58" height="88"/><rect x="246" y="446" width="58" height="88"/></g>
+    <g stroke="#3a2a3a" stroke-width="5"><path d="M125 440V540M90 490H160M275 440V540M240 490H310"/></g>
+    <rect x="-20" y="750" width="440" height="50" fill="#4b4560"/>
+  </g>
+
+  <!-- Rechtes Steinhaus -->
+  <g>
+    <path d="M1180 800V300H1620V800Z" fill="url(#alt-stone)"/>
+    <path d="M1150 310L1400 190L1650 310V270L1400 130L1150 270Z" fill="url(#alt-roof)"/>
+    <g stroke="#2f2a42" stroke-width="2" opacity=".4" fill="none"><path d="M1180 360H1620M1180 430H1620M1180 500H1620M1180 570H1620M1180 640H1620M1180 710H1620"/></g>
+    <g fill="#2a2440"><path d="M1260 400V360Q1285 340 1310 360V400Z"/><rect x="1260" y="395" width="50" height="75"/><rect x="1430" y="395" width="50" height="75" /><rect x="1260" y="560" width="50" height="75"/><rect x="1430" y="560" width="50" height="75"/></g>
+    <g fill="#f3c27a" opacity=".8"><rect x="1265" y="400" width="40" height="65"/><rect x="1435" y="565" width="40" height="65"/></g>
+    <path d="M1500 800V640Q1500 600 1540 600Q1580 600 1580 640V800Z" fill="#3a2a3a"/>
+    <path d="M1170 800V690H1190V800Z" fill="#4b4560"/>
+  </g>
+
+  <!-- Kopfsteinpflaster -->
+  <path d="M0 790Q400 770 800 780Q1200 770 1600 790V900H0Z" fill="url(#alt-ground)"/>
+  <g fill="none" stroke="#2d2540" stroke-width="2" opacity=".4">
+    <path d="M0 830Q400 815 800 820Q1200 815 1600 830M0 870Q400 855 800 860Q1200 855 1600 870"/>
+    <path d="M200 790L100 900M500 785L420 900M800 780V900M1100 785L1180 900M1400 790L1520 900"/>
+  </g>
+  <g fill="#a99aa4" opacity=".18"><ellipse cx="300" cy="815" rx="26" ry="7"/><ellipse cx="620" cy="845" rx="30" ry="8"/><ellipse cx="1000" cy="820" rx="26" ry="7"/><ellipse cx="1300" cy="855" rx="32" ry="8"/><ellipse cx="780" cy="880" rx="34" ry="8"/></g>
+  <ellipse cx="800" cy="830" rx="320" ry="30" fill="#ffc48a" opacity=".2" filter="url(#alt-blur)"/>
+
+  <!-- Laternen -->
+  <g>
+    <path d="M470 790V470M470 480Q500 470 520 480" stroke="#2a2438" stroke-width="7" fill="none"/>
+    <circle cx="520" cy="505" r="90" fill="url(#alt-glow)"/>
+    <path d="M508 485H532L536 525H504Z" fill="#ffd9a0"/><path d="M504 485L520 470L536 485Z" fill="#2a2438"/>
+    <path d="M1130 790V500M1130 510Q1100 500 1080 510" stroke="#2a2438" stroke-width="7" fill="none"/>
+    <circle cx="1080" cy="535" r="90" fill="url(#alt-glow)"/>
+    <path d="M1068 515H1092L1096 555H1064Z" fill="#ffd9a0"/><path d="M1064 515L1080 500L1096 515Z" fill="#2a2438"/>
+  </g>
+
+  <!-- Weiche Abendstimmung -->
+  <rect width="1600" height="900" fill="url(#alt-vig)"/>
+</svg>

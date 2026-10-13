@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="unw-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3e9bb0"/><stop offset=".5" stop-color="#1f6d8c"/><stop offset="1" stop-color="#0f3d5e"/></linearGradient>
+    <linearGradient id="unw-ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8f6f0" stop-opacity=".35"/><stop offset="1" stop-color="#d8f6f0" stop-opacity="0"/></linearGradient>
+    <linearGradient id="unw-sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9a97c"/><stop offset="1" stop-color="#7d7255"/></linearGradient>
+    <linearGradient id="unw-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b5a78" stop-opacity="0"/><stop offset="1" stop-color="#17506b" stop-opacity=".9"/></linearGradient>
+    <radialGradient id="unw-surf" cx=".5" cy="0" r=".7"><stop offset="0" stop-color="#bff0e6" stop-opacity=".5"/><stop offset="1" stop-color="#bff0e6" stop-opacity="0"/></radialGradient>
+    <filter id="unw-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="unw-blur2"><feGaussianBlur stdDeviation="3"/></filter>
+    <path id="unw-fishS" d="M0 0Q14 -8 28 0Q14 8 0 0ZM26 0L38 -7V7Z"/>
+    <path id="unw-fishL" d="M0 0Q22 -13 44 0Q22 13 0 0ZM42 0L60 -11V11Z"/>
+  </defs>
+
+  <!-- Wasser -->
+  <rect width="1600" height="900" fill="url(#unw-water)"/>
+  <rect width="1600" height="500" fill="url(#unw-surf)"/>
+
+  <!-- Lichtstrahlen -->
+  <g filter="url(#unw-blur)" fill="url(#unw-ray)">
+    <path d="M200 0H330L120 760H-60Z"/>
+    <path d="M560 0H660L560 800H380Z"/>
+    <path d="M900 0H1030L980 800H760Z"/>
+    <path d="M1250 0H1340L1420 780H1190Z"/>
+    <path d="M1500 0H1600V700H1450Z"/>
+  </g>
+
+  <!-- ferne Felsen -->
+  <g fill="#17506b" opacity=".8">
+    <path d="M0 700C100 600 180 560 280 640C380 520 480 560 560 700Z"/>
+    <path d="M1000 710C1080 600 1180 540 1280 620C1360 560 1480 600 1600 680V720H1000Z"/>
+  </g>
+  <rect y="500" width="1600" height="300" fill="url(#unw-far)"/>
+
+  <!-- ferner Fischschwarm -->
+  <g fill="#8fd0d6" opacity=".35">
+        <use href="#unw-fishS" x="1120" y="250"/><use href="#unw-fishS" x="1160" y="272"/><use href="#unw-fishS" x="1100" y="290"/><use href="#unw-fishS" x="1210" y="240"/><use href="#unw-fishS" x="1190" y="305"/><use href="#unw-fishS" x="1250" y="275"/>
+    <use href="#unw-fishS" x="1060" y="320"/><use href="#unw-fishS" x="1140" y="335"/>
+  </g>
+
+  <!-- Sandboden -->
+  <path d="M0 780C200 740 400 790 640 770C880 750 1100 800 1340 765C1480 745 1560 770 1600 760V900H0Z" fill="url(#unw-sand)"/>
+  <path d="M0 840C260 815 520 850 800 835C1100 818 1360 850 1600 830V900H0Z" fill="#6b6249" opacity=".5"/>
+  <g fill="#cdbe90" opacity=".5"><ellipse cx="300" cy="800" rx="60" ry="5"/><ellipse cx="1000" cy="810" rx="80" ry="5"/><ellipse cx="1400" cy="790" rx="50" ry="4"/></g>
+
+  <!-- Algen links -->
+  <g fill="#2f8a64" opacity=".95">
+    <path d="M60 800C30 720 90 660 50 580C100 650 80 720 100 800Z"/>
+    <path d="M110 800C90 730 150 690 130 610C170 680 140 730 150 800Z"/>
+    <path d="M20 800C10 750 40 720 20 670C60 720 50 760 55 800Z" fill="#256f52"/>
+  </g>
+
+  <!-- Korallen links -->
+  <g>
+    <path d="M200 790V700M200 740L170 700M200 725L235 680M170 700V670M235 680V650" stroke="#d9715f" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M300 795C300 740 360 740 360 795Z" fill="#c26a8c"/>
+    <path d="M320 795C320 760 380 760 380 795Z" fill="#a8557a"/>
+    <path d="M400 795C400 700 380 650 410 610C440 650 430 700 450 795Z" fill="#e0a05a"/>
+  </g>
+
+  <!-- Korallen rechts -->
+  <g>
+    <path d="M1180 790V700M1180 745L1150 705M1180 730L1215 690M1150 705V675" stroke="#c7607f" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M1290 795C1290 735 1370 735 1370 795Z" fill="#e0916a"/>
+    <path d="M1330 795C1330 755 1400 755 1400 795Z" fill="#cf7a58"/>
+    <path d="M1440 800C1420 720 1470 680 1450 600C1500 680 1480 740 1500 800Z" fill="#2f8a64"/>
+    <path d="M1500 800C1490 740 1540 700 1520 640C1570 700 1550 750 1560 800Z" fill="#3aa073"/>
+    <path d="M1560 800C1550 760 1590 740 1580 700C1610 740 1600 770 1600 800Z" fill="#256f52"/>
+  </g>
+
+  <!-- Fischschwarm vorne (aussermittig, ruhig) -->
+  <g fill="#f0c36a" opacity=".85">
+        <use href="#unw-fishL" x="140" y="300"/><use href="#unw-fishL" x="210" y="340"/><use href="#unw-fishL" x="100" y="380"/><use href="#unw-fishL" x="260" y="290"/>
+  </g>
+  <g fill="#e87f6a" opacity=".8">
+    <use href="#unw-fishL" x="1330" y="470" transform="translate(2660 0) scale(-1 1)"/>
+    <use href="#unw-fishL" x="1270" y="520" transform="translate(2540 0) scale(-1 1)"/>
+    <use href="#unw-fishL" x="1390" y="540" transform="translate(2780 0) scale(-1 1)"/>
+  </g>
+
+  <!-- Blasen -->
+  <g fill="none" stroke="#d8f6f0" stroke-width="2" opacity=".5">
+    <circle cx="430" cy="560" r="8"/><circle cx="445" cy="500" r="5"/><circle cx="425" cy="440" r="11"/><circle cx="450" cy="360" r="6"/>
+    <circle cx="1210" cy="620" r="7"/><circle cx="1195" cy="560" r="10"/><circle cx="1220" cy="490" r="5"/>
+    <circle cx="80" cy="500" r="6"/><circle cx="1520" cy="400" r="8"/>
+  </g>
+
+  <!-- Oberflaechenschimmer -->
+  <path d="M0 0H1600V30C1400 50 1200 20 1000 40C800 55 600 20 400 40C200 55 100 30 0 40Z" fill="#d8f6f0" opacity=".25" filter="url(#unw-blur2)"/>
+</svg>
