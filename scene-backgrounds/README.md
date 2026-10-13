@@ -13,8 +13,9 @@ Erweiterung für [NoNotes](https://github.com/cdro/nonotes): setzt hinter der Mi
 
 ## Installieren
 
-1. `scene-backgrounds.js` **und den Ordner `hintergruende/`** in den Ordner `plugins/` der App kopieren.
-2. In `plugins/plugins.js` eintragen: `NoNotesPlugins.list(['scene-backgrounds.js']);`
+1. Den ganzen Ordner `scene-backgrounds/` (mit `scene-backgrounds.js` und `hintergruende/`) in den Ordner `plugins/` der App kopieren.
+2. In `plugins/plugins.js` eintragen: `NoNotesPlugins.list(['scene-backgrounds/scene-backgrounds.js']);`
+   (Liegen Skript und `hintergruende/` direkt in `plugins/`, genügt `'scene-backgrounds.js'`.)
 3. Seite neu laden. Unter *Datenbank → Erweiterungen…* sollte «Szenen-Hintergründe» aktiv sein.
 
 Mitgeliefert sind drei einfache Beispielbilder (SVG): `taverne` (Standard), `wald` (Tag `wald`) und `hoehle`
@@ -32,7 +33,7 @@ Oben in der Datei:
 | `EDITOR_KARTE` | 0 bis 1: Deckkraft der Karte hinter Titel und Text im Editor (1 = Bild dort nicht sichtbar) |
 | `UEBERBLENDEN_MS` | Dauer des Überblendens |
 
-Bilder: Pfad relativ zum Ordner `plugins/` oder eine volle Adresse (`https://…`, `data:…`); SVG, PNG, JPG oder WebP.
+Bilder: Pfad relativ zur Skriptdatei `scene-backgrounds.js` (egal, in welchem Unterordner sie liegt) oder eine volle Adresse (`https://…`, `data:…`); SVG, PNG, JPG oder WebP.
 Eigene Bilder einfach in `hintergruende/` ablegen und eintragen. Änderungen wirken nach dem Neuladen.
 
 Benötigt NoNotes mit den Ereignissen `mindmap:select` und `mindmap:rendered` (api 1, neu in diesem Stand). In einer

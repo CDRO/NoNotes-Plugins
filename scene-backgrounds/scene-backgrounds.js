@@ -10,7 +10,8 @@
    Änderungen an der Konfiguration wirken nach dem Neuladen der Seite. */
 
 /* ---- Konfiguration ------------------------------------------------------------------------------------------- */
-// Bilder: Pfad relativ zum Ordner plugins/, oder eine volle Adresse (https://…, data:…). SVG, PNG, JPG, WebP.
+// Bilder: Pfad relativ zu dieser Skriptdatei (egal, in welchem Unterordner von plugins/ sie liegt), oder eine volle
+// Adresse (https://…, data:…). SVG, PNG, JPG, WebP.
 // null als Bild heisst: kein Hintergrund (das normale Design der App).
 const STANDARD = 'hintergruende/taverne.svg';
 const HINTERGRUENDE = [
@@ -22,6 +23,9 @@ const VERBLASSEN = 0.30;       // 0 bis 0.9: wie stark die Farbe des Designs üb
 const EDITOR_KARTE = 0.80;     // 0 bis 1: Deckkraft der Karte hinter Titel und Text im Editor (1 = Bild nicht sichtbar)
 const UEBERBLENDEN_MS = 500;   // Dauer des Überblendens beim Wechsel
 /* --------------------------------------------------------------------------------------------------------------- */
+
+// Ordner dieser Skriptdatei, solange das Skript läuft (später ist document.currentScript leer); Bildpfade gelten dazu relativ
+const SZENEN_ORDNER = (document.currentScript && document.currentScript.src) ? document.currentScript.src.replace(/[^/]*$/, '') : '';
 
 NoNotesPlugins.register({
   id: 'szenen-hintergruende',
@@ -56,7 +60,7 @@ At the top of \`scene-backgrounds.js\`: \`STANDARD\`, \`HINTERGRUENDE\` (tag →
     const ms = clamp(UEBERBLENDEN_MS, 0, 5000, 500);
 
     // Bild-Pfad → CSS-Wert url("…"); ungültige Pfade werden abgelehnt
-    const base = (P.base && P.base()) || window.location.href;
+    const base = SZENEN_ORDNER || (P.base && P.base()) || window.location.href;
     function cssUrl(path) {
       if (path == null) return null;
       if (typeof path !== 'string' || !path.trim() || /["\\\n\r<>]/.test(path)) return undefined;
