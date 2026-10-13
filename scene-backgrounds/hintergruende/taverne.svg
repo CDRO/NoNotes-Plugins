@@ -1,33 +1,105 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
   <defs>
     <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2415"/><stop offset="1" stop-color="#5a3820"/></linearGradient>
-    <radialGradient id="glow" cx=".5" cy=".55" r=".6"><stop offset="0" stop-color="#ffb347" stop-opacity=".55"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glow" cx=".78" cy=".6" r=".55"><stop offset="0" stop-color="#ffa43a" stop-opacity=".6"/><stop offset="1" stop-color="#ffa43a" stop-opacity="0"/></radialGradient>
     <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2e1a"/><stop offset="1" stop-color="#2a180c"/></linearGradient>
+    <linearGradient id="flameOuter" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#d63a0a"/><stop offset=".6" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffb347"/></linearGradient>
+    <linearGradient id="flameMid" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff8a1f"/><stop offset="1" stop-color="#ffd166"/></linearGradient>
+    <linearGradient id="flameCore" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffd166"/><stop offset="1" stop-color="#fff6c8"/></linearGradient>
+    <linearGradient id="barTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a30"/><stop offset="1" stop-color="#6b4425"/></linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="soft3"><feGaussianBlur stdDeviation="3"/></filter>
   </defs>
+
+  <!-- Wand und Fachwerk -->
   <rect width="1600" height="900" fill="url(#wall)"/>
   <g stroke="#2a180c" stroke-width="3" opacity=".6">
     <path d="M0 150H1600M0 300H1600M0 450H1600"/>
     <path d="M200 0V150M600 150V300M1000 0V150M1400 150V300M400 300V450M1200 300V450"/>
   </g>
   <rect y="640" width="1600" height="260" fill="url(#floor)"/>
+  <g stroke="#1f1108" stroke-width="2" opacity=".5"><path d="M0 700H1600M0 770H1600M0 840H1600"/></g>
   <g fill="#2a180c"><rect x="0" y="70" width="1600" height="26"/><rect x="120" y="0" width="30" height="640"/><rect x="1450" y="0" width="30" height="640"/></g>
+
+  <!-- Fenster -->
   <g>
     <rect x="260" y="200" width="200" height="260" rx="8" fill="#1b2a3a"/>
     <rect x="260" y="200" width="200" height="260" rx="8" fill="none" stroke="#2a180c" stroke-width="12"/>
     <path d="M360 200V460M260 330H460" stroke="#2a180c" stroke-width="8"/>
     <circle cx="330" cy="270" r="22" fill="#f4e7b0" opacity=".85"/>
   </g>
+
+  <!-- Kamin: Steinrahmen, Bogen, Feuerstelle -->
   <g>
-    <rect x="1060" y="360" width="400" height="280" fill="#241308"/>
-    <path d="M1060 640V460Q1260 300 1460 460V640Z" fill="#150b04"/>
-    <path d="M1160 640q40-120 100-60q60-80 100 60Z" fill="#ff8a1f"/>
-    <path d="M1200 640q20-80 60-40q40-50 60 40Z" fill="#ffd166"/>
+    <rect x="1030" y="330" width="450" height="320" fill="#5b4a3c"/>
+    <rect x="1010" y="312" width="490" height="30" rx="4" fill="#3a2d22"/>
+    <g stroke="#3a2d22" stroke-width="3" opacity=".7" fill="none">
+      <path d="M1030 400H1480M1030 470H1480M1030 540H1480M1030 610H1480"/>
+      <path d="M1090 330V400M1190 400V470M1290 330V400M1390 400V470M1140 470V540M1240 470V540M1340 470V540M1090 540V610M1190 540V610M1290 540V610M1390 540V610"/>
+    </g>
+    <path d="M1090 650V470Q1090 380 1255 380Q1420 380 1420 470V650Z" fill="#150b04"/>
+    <path d="M1090 650V470Q1090 380 1255 380Q1420 380 1420 470V650Z" fill="none" stroke="#2f241a" stroke-width="10"/>
+    <rect x="1070" y="640" width="370" height="22" rx="4" fill="#3a2d22"/>
+  </g>
+  <!-- Feuer -->
+  <g>
+    <ellipse cx="1255" cy="630" rx="150" ry="30" fill="#ff7a1a" opacity=".35" filter="url(#soft3)"/>
+    <path d="M1160 640C1160 560 1200 520 1215 470C1230 510 1245 505 1255 440C1275 500 1300 520 1305 560C1320 540 1325 520 1330 500C1350 540 1350 600 1350 640Z" fill="url(#flameOuter)"/>
+    <path d="M1195 640C1195 590 1225 560 1240 520C1255 550 1262 540 1270 500C1288 540 1310 570 1312 640Z" fill="url(#flameMid)"/>
+    <path d="M1225 640C1225 610 1245 595 1255 570C1268 595 1285 610 1285 640Z" fill="url(#flameCore)"/>
+    <g fill="#5a3418" stroke="#2a180c" stroke-width="3">
+      <rect x="1165" y="618" width="180" height="26" rx="13" transform="rotate(-6 1255 631)"/>
+      <rect x="1165" y="618" width="180" height="26" rx="13" transform="rotate(6 1255 631)"/>
+    </g>
+    <g fill="#2a180c"><ellipse cx="1180" cy="632" rx="9" ry="12"/><ellipse cx="1330" cy="632" rx="9" ry="12"/></g>
+    <g fill="#ffd166"><circle cx="1215" cy="450" r="3"/><circle cx="1290" cy="420" r="2.5"/><circle cx="1330" cy="480" r="3"/><circle cx="1180" cy="500" r="2"/><circle cx="1262" cy="395" r="2"/></g>
   </g>
   <rect width="1600" height="900" fill="url(#glow)"/>
+  <rect x="1010" y="330" width="490" height="12" fill="#ffa43a" opacity=".12"/>
+
+  <!-- Bar links: Regal, Tresen, Hocker -->
+  <g>
+    <rect x="30" y="230" width="230" height="10" fill="#2a180c"/>
+    <rect x="30" y="330" width="230" height="10" fill="#2a180c"/>
+    <g>
+      <g fill="#3f6b3a"><rect x="50" y="170" width="26" height="60" rx="8"/><rect x="82" y="182" width="22" height="48" rx="8"/></g>
+      <g fill="#7a3b1f"><rect x="116" y="176" width="28" height="54" rx="9"/><rect x="152" y="186" width="24" height="44" rx="8"/></g>
+      <g fill="#c9a24a"><rect x="188" y="178" width="26" height="52" rx="8"/><rect x="222" y="190" width="22" height="40" rx="7"/></g>
+      <g fill="#8a2f2f"><rect x="52" y="272" width="26" height="58" rx="8"/><rect x="88" y="284" width="22" height="46" rx="8"/></g>
+      <g fill="#c9a24a"><rect x="124" y="282" width="40" height="48" rx="6"/><rect x="176" y="276" width="34" height="54" rx="6"/></g>
+      <g fill="#3f6b3a"><rect x="222" y="284" width="24" height="46" rx="8"/></g>
+    </g>
+    <rect x="0" y="560" width="330" height="26" rx="6" fill="url(#barTop)"/>
+    <rect x="0" y="586" width="320" height="214" fill="#4a2e1a"/>
+    <g stroke="#2a180c" stroke-width="3" opacity=".7"><path d="M80 586V800M160 586V800M240 586V800M0 690H320"/></g>
+    <g fill="#c9a24a"><rect x="40" y="520" width="34" height="40" rx="4"/><rect x="210" y="526" width="30" height="34" rx="4"/></g>
+    <g><rect x="120" y="500" width="34" height="60" rx="10" fill="#3f6b3a"/><rect x="132" y="486" width="10" height="16" fill="#3f6b3a"/></g>
+    <!-- Hocker -->
+    <g fill="#4a2e1a" stroke="#2a180c" stroke-width="2">
+      <ellipse cx="190" cy="740" rx="46" ry="12" fill="#6b4425"/>
+      <rect x="150" y="740" width="8" height="120"/><rect x="222" y="740" width="8" height="120"/><rect x="182" y="746" width="8" height="112"/>
+    </g>
+  </g>
+
+  <!-- Tisch mit Krügen -->
   <g>
     <rect x="520" y="560" width="520" height="30" rx="6" fill="#6b4425"/>
     <rect x="560" y="590" width="26" height="130" fill="#4a2e1a"/><rect x="974" y="590" width="26" height="130" fill="#4a2e1a"/>
     <g fill="#c9a24a"><rect x="640" y="510" width="34" height="50" rx="4"/><rect x="760" y="520" width="30" height="40" rx="4"/><rect x="870" y="505" width="36" height="55" rx="4"/></g>
   </g>
+
+  <!-- Stuhl (Seitenansicht) am Tisch -->
+  <g stroke="#2a180c" stroke-width="2" fill="#5a3820">
+    <rect x="410" y="590" width="14" height="150" rx="3"/>
+    <rect x="410" y="500" width="14" height="100" rx="3"/>
+    <path d="M404 505H430V560H404Z" fill="#6b4425"/>
+    <rect x="404" y="636" width="120" height="20" rx="5" fill="#6b4425"/>
+    <rect x="504" y="656" width="14" height="86" rx="3"/>
+    <rect x="440" y="656" width="12" height="76" rx="3" fill="#4a2e1a"/>
+    <path d="M424 520H410M424 540H410" stroke-width="3"/>
+  </g>
+
+  <!-- Laternen -->
   <g fill="#ffd27a"><circle cx="500" cy="130" r="7"/><circle cx="800" cy="140" r="7"/><circle cx="1100" cy="130" r="7"/></g>
+  <g fill="#ffd27a" opacity=".35" filter="url(#soft)"><circle cx="500" cy="130" r="28"/><circle cx="800" cy="140" r="28"/><circle cx="1100" cy="130" r="28"/></g>
 </svg>
