@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="bur-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2a3a"/><stop offset="1" stop-color="#4a4352"/></linearGradient>
+    <linearGradient id="bur-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4452"/><stop offset="1" stop-color="#22202c"/></linearGradient>
+    <linearGradient id="bur-col" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a3646"/><stop offset=".45" stop-color="#6a6070"/><stop offset="1" stop-color="#2f2c3b"/></linearGradient>
+    <linearGradient id="bur-carpet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a2232"/><stop offset="1" stop-color="#8a2d3c"/></linearGradient>
+    <linearGradient id="bur-win" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7f9bc8"/><stop offset="1" stop-color="#c3cfe0"/></linearGradient>
+    <linearGradient id="bur-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfdcf5" stop-opacity=".28"/><stop offset="1" stop-color="#cfdcf5" stop-opacity="0"/></linearGradient>
+    <radialGradient id="bur-fire"><stop offset="0" stop-color="#ffb04a" stop-opacity=".7"/><stop offset="1" stop-color="#ff8a2a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="bur-vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#0c0a14" stop-opacity="0"/><stop offset="1" stop-color="#0c0a14" stop-opacity=".6"/></radialGradient>
+    <filter id="bur-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+
+  <!-- Rückwand und Boden -->
+  <rect width="1600" height="900" fill="url(#bur-wall)"/>
+  <g stroke="#1e1c2a" stroke-width="2" opacity=".35"><path d="M0 120H1600M0 220H1600M0 320H1600M0 420H1600M0 520H1600"/></g>
+  <rect y="600" width="1600" height="300" fill="url(#bur-floor)"/>
+
+  <!-- Hohe Fenster -->
+  <g>
+    <path d="M380 560V250Q380 160 440 160Q500 160 500 250V560Z" fill="url(#bur-win)"/>
+    <path d="M1100 560V250Q1100 160 1160 160Q1220 160 1220 250V560Z" fill="url(#bur-win)"/>
+    <path d="M440 160V560M380 330H500M1160 160V560M1100 330H1220" stroke="#2c2a3a" stroke-width="7"/>
+    <path d="M380 560V250Q380 160 440 160Q500 160 500 250V560Z M1100 560V250Q1100 160 1160 160Q1220 160 1220 250V560Z" fill="none" stroke="#5a5266" stroke-width="12"/>
+    <path d="M380 560H500L640 880H300Z" fill="url(#bur-beam)" filter="url(#bur-blur)"/>
+    <path d="M1100 560H1220L1320 880H960Z" fill="url(#bur-beam)" filter="url(#bur-blur)"/>
+  </g>
+
+  <!-- Thronpodest und Thron -->
+  <g>
+    <path d="M610 600H990V640H610Z" fill="#5a5264"/>
+    <path d="M640 640H960V680H640Z" fill="#4a4454"/>
+    <path d="M730 380Q730 300 800 280Q870 300 870 380V590H730Z" fill="#7a5a30"/>
+    <path d="M745 390Q745 320 800 300Q855 320 855 390V590H745Z" fill="#8a2d3c"/>
+    <rect x="725" y="500" width="150" height="100" rx="6" fill="#a07a3c"/>
+    <rect x="745" y="520" width="110" height="80" fill="#6a2232"/>
+    <rect x="715" y="480" width="26" height="120" rx="6" fill="#a07a3c"/><rect x="859" y="480" width="26" height="120" rx="6" fill="#a07a3c"/>
+    <path d="M800 270L812 290H788Z" fill="#c9a24e"/>
+  </g>
+
+  <!-- Roter Teppich -->
+  <path d="M740 680H860L1080 900H520Z" fill="url(#bur-carpet)"/>
+  <path d="M742 680L530 900M858 680L1070 900" stroke="#c9a24e" stroke-width="5" opacity=".6" fill="none"/>
+
+  <!-- Säulen -->
+  <g>
+    <g id="bur-pillar">
+      <rect x="150" y="60" width="130" height="30" fill="#4a4452"/>
+      <rect x="165" y="90" width="100" height="720" fill="url(#bur-col)"/>
+      <rect x="140" y="810" width="150" height="40" fill="#4a4452"/>
+    </g>
+    <rect x="1320" y="60" width="130" height="30" fill="#4a4452"/><rect x="1335" y="90" width="100" height="720" fill="url(#bur-col)"/><rect x="1310" y="810" width="150" height="40" fill="#4a4452"/>
+    <rect x="575" y="200" width="60" height="16" fill="#4a4452"/><rect x="580" y="216" width="50" height="390" fill="url(#bur-col)"/>
+    <rect x="965" y="200" width="60" height="16" fill="#4a4452"/><rect x="970" y="216" width="50" height="390" fill="url(#bur-col)"/>
+  </g>
+
+  <!-- Banner -->
+  <g>
+    <path d="M530 130H680V380L605 330L530 380Z" fill="#8a2d3c"/>
+    <path d="M920 130H1070V380L995 330L920 380Z" fill="#8a2d3c"/>
+    <path d="M605 170L635 220L605 270L575 220Z" fill="#c9a24e" opacity=".8"/>
+    <path d="M995 170L1025 220L995 270L965 220Z" fill="#c9a24e" opacity=".8"/>
+    <rect x="520" y="124" width="170" height="10" fill="#6a5a3a"/><rect x="910" y="124" width="170" height="10" fill="#6a5a3a"/>
+  </g>
+
+  <!-- Fackeln mit Feuer -->
+  <g>
+    <circle cx="330" cy="440" r="110" fill="url(#bur-fire)"/>
+    <rect x="325" y="450" width="10" height="50" fill="#3a2e26"/><path d="M315 450H345L340 435H320Z" fill="#4a3a2c"/>
+    <path d="M330 345Q355 385 345 420Q335 435 330 435Q315 435 313 415Q312 385 330 345Z" fill="#f0883a"/>
+    <path d="M330 385Q343 405 338 424Q330 432 324 424Q320 405 330 385Z" fill="#ffd27a"/>
+    <circle cx="1270" cy="440" r="110" fill="url(#bur-fire)"/>
+    <rect x="1265" y="450" width="10" height="50" fill="#3a2e26"/><path d="M1255 450H1285L1280 435H1260Z" fill="#4a3a2c"/>
+    <path d="M1270 345Q1295 385 1285 420Q1275 435 1270 435Q1255 435 1253 415Q1252 385 1270 345Z" fill="#f0883a"/>
+    <path d="M1270 385Q1283 405 1278 424Q1270 432 1264 424Q1260 405 1270 385Z" fill="#ffd27a"/>
+  </g>
+
+  <!-- Boden-Schimmer und Vignette -->
+  <ellipse cx="800" cy="700" rx="360" ry="40" fill="#e8b878" opacity=".12" filter="url(#bur-blur)"/>
+  <rect width="1600" height="900" fill="url(#bur-vig)"/>
+</svg>

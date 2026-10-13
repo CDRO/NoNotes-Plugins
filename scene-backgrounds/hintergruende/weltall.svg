@@ -8,6 +8,8 @@
     <radialGradient id="wlt-glow" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#8a7fe0" stop-opacity=".25"/><stop offset="1" stop-color="#8a7fe0" stop-opacity="0"/></radialGradient>
     <radialGradient id="wlt-galaxy" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f1e6ff" stop-opacity=".85"/><stop offset=".25" stop-color="#b9a4ff" stop-opacity=".4"/><stop offset="1" stop-color="#7f6ad8" stop-opacity="0"/></radialGradient>
     <radialGradient id="wlt-moon" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#9aa0b8"/><stop offset="1" stop-color="#2b2e48"/></radialGradient>
+    <radialGradient id="wlt-shade" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#080a22" stop-opacity=".5"/><stop offset="1" stop-color="#080a22" stop-opacity="0"/></radialGradient>
+    <clipPath id="wlt-ringclip"><rect x="700" y="860" width="1300" height="300"/></clipPath>
     <clipPath id="wlt-clip"><circle cx="1330" cy="860" r="330"/></clipPath>
     <filter id="wlt-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="30"/></filter>
     <filter id="wlt-blur2" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
@@ -65,20 +67,25 @@
 
   <!-- Planet mit Ring am unteren rechten Rand -->
   <circle cx="1330" cy="860" r="400" fill="url(#wlt-glow)"/>
-  <!-- Ring hinten -->
-  <ellipse cx="1330" cy="860" rx="560" ry="110" fill="none" stroke="#9a8fe0" stroke-opacity=".35" stroke-width="46" transform="rotate(-14 1330 860)"/>
+  <!-- Ring hinten (obere Hälfte) -->
+  <g transform="rotate(-14 1330 860)">
+    <ellipse cx="1330" cy="860" rx="540" ry="90" fill="none" stroke="#9a8fe0" stroke-opacity=".3" stroke-width="40"/>
+  </g>
   <g clip-path="url(#wlt-clip)">
     <circle cx="1330" cy="860" r="330" fill="url(#wlt-planet)"/>
     <!-- Wolkenbänder -->
     <g fill="none" stroke="#9a90e0" stroke-opacity=".18" stroke-width="22">
-      <path d="M980 640Q1330 590 1700 650"/><path d="M960 720Q1330 670 1700 730"/><path d="M960 810Q1330 760 1700 820"/>
+      <path d="M980 640Q1330 590 1700 650"/><path d="M960 720Q1330 670 1700 730"/>
     </g>
-    <!-- Schatten unten rechts -->
-    <circle cx="1450" cy="1000" r="330" fill="#080a22" opacity=".45"/>
+    <!-- weicher Schatten -->
+    <circle cx="1560" cy="1000" r="420" fill="url(#wlt-shade)"/>
   </g>
-  <!-- Ring vorne -->
-  <path d="M780 905A560 110 -14 0 0 1880 815" fill="none" stroke="#b8aef0" stroke-opacity=".35" stroke-width="34" clip-path="url(#wlt-ringclip)"/>
-  <clipPath id="wlt-ringclip"><rect x="700" y="760" width="900" height="140"/></clipPath>
+  <!-- Ring vorne (untere Hälfte) -->
+  <g transform="rotate(-14 1330 860)">
+    <g clip-path="url(#wlt-ringclip)">
+      <ellipse cx="1330" cy="860" rx="540" ry="90" fill="none" stroke="#b8aef0" stroke-opacity=".35" stroke-width="40"/>
+    </g>
+  </g>
 
   <!-- Kleiner Mond oben links -->
   <circle cx="190" cy="180" r="34" fill="url(#wlt-moon)" opacity=".85"/>

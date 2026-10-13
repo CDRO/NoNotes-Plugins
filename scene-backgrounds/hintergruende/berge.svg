@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="brg-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5a92"/><stop offset=".5" stop-color="#9a9cc4"/><stop offset="1" stop-color="#f4c9ae"/></linearGradient>
+    <radialGradient id="brg-sun" cx=".25" cy=".6" r=".6"><stop offset="0" stop-color="#ffd9a8" stop-opacity=".5"/><stop offset="1" stop-color="#ffe6b8" stop-opacity="0"/></radialGradient>
+    <linearGradient id="brg-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9bfdc"/><stop offset="1" stop-color="#d6c6cf"/></linearGradient>
+    <linearGradient id="brg-mid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a92bd"/><stop offset="1" stop-color="#bba9bd"/></linearGradient>
+    <linearGradient id="brg-near" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f6a9a"/><stop offset="1" stop-color="#8d86ab"/></linearGradient>
+    <linearGradient id="brg-fog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbe9e0" stop-opacity=".95"/><stop offset="1" stop-color="#d9c3d0" stop-opacity=".95"/></linearGradient>
+    <linearGradient id="brg-fogfade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3dcd6" stop-opacity="0"/><stop offset=".3" stop-color="#f1d9d4"/><stop offset="1" stop-color="#c7b2c6"/></linearGradient>
+    <linearGradient id="brg-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f3d5c"/><stop offset="1" stop-color="#1b2540"/></linearGradient>
+    <filter id="brg-blur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="brg-blur2" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+
+  <!-- Himmel und Morgenlicht -->
+  <rect width="1600" height="900" fill="url(#brg-sky)"/>
+  <rect width="1600" height="900" fill="url(#brg-sun)"/>
+  <g fill="#fff0e0" opacity=".35" filter="url(#brg-blur2)">
+    <ellipse cx="1180" cy="180" rx="260" ry="12"/><ellipse cx="1000" cy="230" rx="180" ry="9"/><ellipse cx="330" cy="150" rx="220" ry="10"/>
+  </g>
+
+  <!-- Ferne Gipfel -->
+  <path d="M0 520L120 430L190 470L330 340L420 420L520 380L680 270L780 380L880 330L1010 430L1120 360L1260 300L1380 420L1480 380L1600 440V620H0Z" fill="url(#brg-far)"/>
+  <!-- Schneekappen fern -->
+  <g fill="#fff6f0" opacity=".85">
+    <path d="M330 340L290 392L316 384L338 404L360 380L384 394Z"/><path d="M680 270L636 336L664 326L690 350L716 322L744 340Z"/><path d="M1260 300L1222 352L1248 344L1270 366L1294 340L1316 352Z"/>
+  </g>
+
+  <!-- Mittlere Gipfel mit Licht- und Schattenseite -->
+  <path d="M0 600L150 470L260 540L420 380L560 500L700 430L830 540L980 400L1140 520L1290 440L1440 520L1600 470V700H0Z" fill="url(#brg-mid)"/>
+  <path d="M420 380L470 470L430 510L400 470L360 520L420 380ZM980 400L1030 480L1000 520L970 480L930 540L980 400Z" fill="#fff6f0" opacity=".8"/>
+  <path d="M420 380L560 500L470 520L440 470Z M980 400L1140 520L1050 540L1010 470Z" fill="#6a7099" opacity=".35"/>
+
+  <!-- Grosser Hauptgipfel -->
+  <path d="M900 700L1060 460L1130 500L1280 230L1340 300L1390 270L1560 520L1600 560V700Z" fill="url(#brg-near)"/>
+  <path d="M1280 230L1340 300L1390 270L1430 330L1400 350L1360 330L1320 380L1290 350L1250 390L1230 330Z" fill="#fff6f0" opacity=".9"/>
+  <path d="M1280 230L1250 390L1300 460L1360 400L1340 300Z" fill="#454f84" opacity=".35"/>
+
+  <!-- Wolkenmeer im Tal -->
+  <g filter="url(#brg-blur)">
+    <ellipse cx="300" cy="650" rx="460" ry="70" fill="url(#brg-fog)"/>
+    <ellipse cx="900" cy="690" rx="560" ry="80" fill="url(#brg-fog)"/>
+    <ellipse cx="1400" cy="700" rx="360" ry="70" fill="url(#brg-fog)"/>
+  </g>
+  <g fill="#fff6ee" opacity=".7" filter="url(#brg-blur2)">
+    <ellipse cx="200" cy="620" rx="150" ry="16"/><ellipse cx="620" cy="650" rx="190" ry="18"/><ellipse cx="1100" cy="640" rx="170" ry="16"/><ellipse cx="1460" cy="650" rx="130" ry="14"/>
+  </g>
+  <rect y="660" width="1600" height="240" fill="url(#brg-fogfade)"/>
+
+  <!-- Vordergrund-Hügel -->
+  <path d="M0 780Q200 700 420 760Q520 790 640 820Q460 900 0 900Z" fill="url(#brg-hill)"/>
+  <path d="M1600 740Q1420 690 1220 760Q1100 800 980 840L1050 900H1600Z" fill="url(#brg-hill)"/>
+
+  <!-- Nadelbäume links -->
+  <g fill="#1a2640">
+    <path d="M110 560L70 650H96L56 730H90L40 820H180L130 730H164L124 650H150Z"/>
+    <path d="M250 640L220 710H242L208 780H236L190 860H310L264 780H292L258 710H280Z"/>
+    <path d="M360 700L338 750H354L330 800H348L318 850H410L380 800H398L374 750H390Z"/>
+    <rect x="106" y="820" width="10" height="40"/><rect x="244" y="860" width="10" height="40"/>
+  </g>
+  <!-- Nadelbäume rechts -->
+  <g fill="#1a2640">
+    <path d="M1470 540L1430 640H1458L1414 730H1448L1396 830H1544L1492 730H1526L1482 640H1510Z"/>
+    <path d="M1360 690L1334 750H1352L1322 810H1346L1306 870H1414L1374 810H1398L1368 750H1386Z"/>
+    <path d="M1250 760L1232 800H1244L1224 840H1238L1214 880H1286L1262 840H1276L1256 800H1268Z"/>
+    <rect x="1464" y="830" width="12" height="50"/>
+  </g>
+</svg>

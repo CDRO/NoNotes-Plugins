@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="zus-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd0e6"/><stop offset=".6" stop-color="#d6eef2"/><stop offset="1" stop-color="#f1f7f4"/></linearGradient>
+    <linearGradient id="zus-tower" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d9eef2"/><stop offset=".5" stop-color="#f6fbfb"/><stop offset="1" stop-color="#a9cfd8"/></linearGradient>
+    <linearGradient id="zus-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3e2" stop-opacity=".9"/><stop offset="1" stop-color="#4fa3bd" stop-opacity=".85"/></linearGradient>
+    <linearGradient id="zus-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3e1ea"/><stop offset="1" stop-color="#e4f1f1"/></linearGradient>
+    <linearGradient id="zus-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe3e4"/><stop offset="1" stop-color="#8fb4bc"/></linearGradient>
+    <radialGradient id="zus-glow"><stop offset="0" stop-color="#bff6ff" stop-opacity=".8"/><stop offset="1" stop-color="#bff6ff" stop-opacity="0"/></radialGradient>
+    <filter id="zus-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+  </defs>
+
+  <!-- Himmel -->
+  <rect width="1600" height="900" fill="url(#zus-sky)"/>
+  <circle cx="1250" cy="170" r="150" fill="url(#zus-glow)"/>
+  <g fill="#fff" opacity=".55" filter="url(#zus-blur)"><ellipse cx="350" cy="140" rx="200" ry="22"/><ellipse cx="900" cy="90" rx="240" ry="18"/></g>
+
+  <!-- ferne Tuerme -->
+  <g fill="url(#zus-far)" opacity=".85">
+    <path d="M80 640Q90 420 120 340Q150 420 160 640Z"/>
+    <path d="M200 640Q205 470 235 410Q265 470 270 640Z"/>
+    <path d="M1340 640Q1345 450 1380 380Q1415 450 1420 640Z"/>
+    <path d="M1450 640Q1460 400 1500 320Q1540 400 1550 640Z"/>
+  </g>
+
+  <!-- Hochbahn-Traeger (hinten) -->
+  <path d="M0 470Q400 430 800 460T1600 420" fill="none" stroke="#e9f6f8" stroke-width="14"/>
+  <path d="M0 470Q400 430 800 460T1600 420" fill="none" stroke="#6cc3d6" stroke-width="3" opacity=".7"/>
+
+  <!-- Turm links: schlank, organisch -->
+  <g>
+    <path d="M300 700C310 520 270 400 330 250C350 190 380 150 410 80C440 150 470 190 490 250C550 400 510 520 520 700Z" fill="url(#zus-tower)"/>
+    <path d="M360 700C365 520 345 420 380 280C395 230 405 200 410 150C420 200 430 230 445 280C470 420 455 520 460 700Z" fill="url(#zus-glass)" opacity=".7"/>
+    <g fill="none" stroke="#fff" stroke-width="3" opacity=".7"><path d="M320 330Q410 360 500 330"/><path d="M312 450Q410 480 508 450"/><path d="M310 570Q410 600 510 570"/></g>
+    <path d="M410 80V20" stroke="#e9f6f8" stroke-width="5"/><circle cx="410" cy="20" r="6" fill="#bff6ff"/>
+  </g>
+
+  <!-- Turm rechts: gedrehter Doppelturm -->
+  <g>
+    <path d="M1090 700C1085 560 1120 470 1110 340C1105 270 1130 220 1150 170C1170 220 1195 270 1190 340C1180 470 1215 560 1210 700Z" fill="url(#zus-tower)"/>
+    <path d="M1180 700C1175 580 1215 500 1205 400C1200 340 1225 300 1245 250C1265 300 1290 340 1285 400C1275 500 1310 580 1305 700Z" fill="#e9f6f8"/>
+    <path d="M1190 700C1190 590 1225 510 1218 410C1215 350 1235 315 1245 285C1255 315 1275 350 1272 410C1265 510 1295 590 1295 700Z" fill="url(#zus-glass)" opacity=".6"/>
+    <path d="M1130 700C1130 560 1150 460 1150 340C1150 280 1150 230 1150 190C1150 230 1150 280 1160 340C1170 460 1170 560 1170 700Z" fill="url(#zus-glass)" opacity=".7"/>
+  </g>
+
+  <!-- Mittlere Kuppelhalle -->
+  <g>
+    <path d="M620 700Q620 540 800 540Q980 540 980 700Z" fill="#eef8f9"/>
+    <path d="M650 700Q650 570 800 570Q950 570 950 700Z" fill="url(#zus-glass)"/>
+    <g stroke="#fff" stroke-width="3" opacity=".6" fill="none"><path d="M800 570V700M725 580V700M875 580V700"/></g>
+    <path d="M700 580Q760 560 820 575" fill="none" stroke="#fff" stroke-width="6" opacity=".4"/>
+  </g>
+
+  <!-- Bruecke zwischen den Tuermen -->
+  <g>
+    <path d="M490 330Q800 270 1110 340" fill="none" stroke="#f4fbfb" stroke-width="16" stroke-linecap="round"/>
+    <path d="M490 342Q800 282 1110 352" fill="none" stroke="#7fd0e0" stroke-width="3" opacity=".8"/>
+    <g stroke="#cfe9ee" stroke-width="3" opacity=".8"><path d="M600 308V330M700 292V316M800 288V312M900 292V318M1000 308V335"/></g>
+  </g>
+
+  <!-- Schwebebahn mit Kapseln -->
+  <g>
+    <path d="M0 550Q300 520 560 545T1100 520T1600 500" fill="none" stroke="#fff" stroke-width="10" opacity=".9"/>
+    <g>
+      <rect x="640" y="526" width="130" height="30" rx="15" fill="#f6fbfb"/><rect x="654" y="533" width="100" height="14" rx="7" fill="#7fd0e0"/>
+      <rect x="780" y="528" width="130" height="30" rx="15" fill="#f6fbfb"/><rect x="794" y="535" width="100" height="14" rx="7" fill="#7fd0e0"/>
+      <circle cx="640" cy="541" r="38" fill="url(#zus-glow)" opacity=".5"/>
+    </g>
+    <g opacity=".85">
+      <rect x="1330" y="472" width="100" height="24" rx="12" fill="#f6fbfb"/><rect x="1342" y="478" width="76" height="11" rx="5" fill="#7fd0e0"/>
+    </g>
+  </g>
+
+  <!-- Boden: heller Plaza, Wasserflaeche, Gruenstreifen -->
+  <rect y="700" width="1600" height="200" fill="url(#zus-ground)"/>
+  <path d="M0 740Q400 720 800 735T1600 725V780H0Z" fill="#a6dbe6" opacity=".6"/>
+  <path d="M0 800Q500 780 1000 795T1600 785V900H0Z" fill="#a7cdb8" opacity=".55"/>
+  <g stroke="#fff" stroke-width="3" opacity=".35"><path d="M200 700L80 900M600 700L520 900M1000 700L1060 900M1400 700L1520 900"/></g>
+
+  <!-- Bepflanzung: weiche Baeume -->
+  <g>
+    <rect x="156" y="680" width="6" height="40" fill="#8aa8a0"/><ellipse cx="159" cy="665" rx="38" ry="40" fill="#8cc9a8"/><ellipse cx="148" cy="655" rx="16" ry="18" fill="#b5e2c4" opacity=".7"/>
+    <rect x="1496" y="680" width="6" height="40" fill="#8aa8a0"/><ellipse cx="1499" cy="665" rx="38" ry="40" fill="#8cc9a8"/><ellipse cx="1488" cy="655" rx="16" ry="18" fill="#b5e2c4" opacity=".7"/>
+    <rect x="566" y="690" width="5" height="30" fill="#8aa8a0"/><ellipse cx="568" cy="680" rx="26" ry="28" fill="#9ad3b2"/>
+  </g>
+
+  <!-- Lichtsaeulen -->
+  <g>
+    <g fill="url(#zus-glow)"><circle cx="720" cy="740" r="40"/><circle cx="900" cy="745" r="40"/><circle cx="1010" cy="760" r="40"/></g>
+    <g stroke="#f4fbfb" stroke-width="4"><path d="M720 745V700M900 750V705M1010 765V720"/></g>
+    <g fill="#e6fcff"><circle cx="720" cy="698" r="6"/><circle cx="900" cy="703" r="6"/><circle cx="1010" cy="718" r="6"/></g>
+  </g>
+</svg>

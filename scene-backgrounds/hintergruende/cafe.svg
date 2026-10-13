@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="caf-wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a4a35"/><stop offset="1" stop-color="#8a6446"/></linearGradient>
+    <linearGradient id="caf-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3a24"/><stop offset="1" stop-color="#32200f"/></linearGradient>
+    <linearGradient id="caf-wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6a3c"/><stop offset="1" stop-color="#6c4526"/></linearGradient>
+    <linearGradient id="caf-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fb4c4"/><stop offset="1" stop-color="#d9d2b0"/></linearGradient>
+    <radialGradient id="caf-lamp" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffc66a" stop-opacity=".6"/><stop offset="1" stop-color="#ffc66a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="caf-vig" cx=".5" cy=".5" r=".75"><stop offset=".6" stop-color="#1d1006" stop-opacity="0"/><stop offset="1" stop-color="#1d1006" stop-opacity=".45"/></radialGradient>
+    <filter id="caf-blur"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="caf-blur2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+
+  <!-- Wand, Wandpaneel und Boden -->
+  <rect width="1600" height="900" fill="url(#caf-wall)"/>
+  <rect y="480" width="1600" height="170" fill="#4d3322" opacity=".55"/>
+  <g stroke="#3a2415" stroke-width="2" opacity=".35"><path d="M0 480H1600M120 480V650M280 480V650M440 480V650M600 480V650M760 480V650M920 480V650M1080 480V650M1240 480V650M1400 480V650M1560 480V650"/></g>
+  <rect y="650" width="1600" height="250" fill="url(#caf-floor)"/>
+  <g stroke="#26160a" stroke-width="2" opacity=".4"><path d="M0 720H1600M0 800H1600M0 880H1600"/></g>
+
+  <!-- Fenster mit Strasse (links) -->
+  <g>
+    <rect x="140" y="130" width="440" height="400" fill="url(#caf-sky)"/>
+    <!-- Haeuser gegenueber -->
+    <g opacity=".9">
+      <rect x="150" y="300" width="110" height="230" fill="#9a7f78"/>
+      <rect x="260" y="250" width="130" height="280" fill="#b59a86"/>
+      <rect x="390" y="330" width="100" height="200" fill="#8c8a8a"/>
+      <rect x="490" y="280" width="90" height="250" fill="#a88e78"/>
+      <g fill="#e8d9a0" opacity=".6"><rect x="170" y="330" width="26" height="34"/><rect x="215" y="330" width="26" height="34"/><rect x="285" y="285" width="26" height="34"/><rect x="335" y="285" width="26" height="34"/><rect x="285" y="360" width="26" height="34"/><rect x="415" y="365" width="26" height="34"/><rect x="510" y="320" width="26" height="34"/></g>
+    </g>
+    <!-- Strasse -->
+    <rect x="140" y="480" width="440" height="50" fill="#6b6a6a"/>
+    <path d="M160 506H260M310 506H410M460 506H560" stroke="#d9d2b0" stroke-width="4" opacity=".6"/>
+    <!-- Baum und Passant (nur Formen) -->
+    <rect x="428" y="400" width="8" height="80" fill="#5a4030"/>
+    <circle cx="432" cy="385" r="38" fill="#5f8a55" opacity=".85"/>
+    <g fill="#4a5a6a"><circle cx="320" cy="438" r="9"/><path d="M308 484Q308 450 320 450Q332 450 332 484Z"/></g>
+    <!-- Rahmen und Sprossen -->
+    <rect x="140" y="130" width="440" height="400" fill="none" stroke="#3a2415" stroke-width="16"/>
+    <path d="M360 130V530M140 330H580" stroke="#3a2415" stroke-width="9"/>
+    <rect x="124" y="530" width="472" height="18" rx="3" fill="#4a2f1c"/>
+    <path d="M140 130H580L520 530H200Z" fill="#fff2c8" opacity=".08"/>
+  </g>
+
+  <!-- Regal rechts oben mit Geschirr -->
+  <g>
+    <rect x="1000" y="190" width="420" height="12" fill="#3a2415"/>
+    <rect x="1000" y="320" width="420" height="12" fill="#3a2415"/>
+    <g fill="#e6dcc8"><rect x="1030" y="160" width="26" height="30" rx="5"/><rect x="1068" y="160" width="26" height="30" rx="5"/><rect x="1106" y="160" width="26" height="30" rx="5"/></g>
+    <g fill="#c26a4a"><rect x="1190" y="140" width="40" height="50" rx="8"/><rect x="1240" y="152" width="34" height="38" rx="8"/></g>
+    <g fill="#5d8a7a"><rect x="1330" y="150" width="50" height="40" rx="8"/></g>
+    <g fill="#d9b66a"><rect x="1030" y="272" width="34" height="48" rx="6"/><rect x="1074" y="282" width="30" height="38" rx="6"/></g>
+    <g fill="#e6dcc8"><ellipse cx="1180" cy="314" rx="40" ry="6"/><ellipse cx="1180" cy="306" rx="36" ry="6"/><ellipse cx="1180" cy="298" rx="32" ry="6"/></g>
+    <g fill="#8a5a3a"><rect x="1260" y="268" width="26" height="52" rx="4"/><rect x="1292" y="260" width="24" height="60" rx="4"/><rect x="1322" y="272" width="28" height="48" rx="4"/></g>
+    <path d="M1380 320V290Q1380 276 1395 276Q1410 276 1410 290V320Z" fill="#6b8a4a"/>
+  </g>
+
+  <!-- Tafel (nur abstrakte Striche) -->
+  <g>
+    <rect x="660" y="140" width="280" height="200" rx="6" fill="#2b3a35" stroke="#5a3a1f" stroke-width="12"/>
+    <g stroke="#d9d4c0" stroke-width="4" stroke-linecap="round" opacity=".55" fill="none">
+      <path d="M700 190Q740 175 790 190T880 185"/>
+      <path d="M700 230H800M820 230H900"/>
+      <path d="M700 262H780M800 262H870"/>
+      <path d="M700 294H760M780 294H900"/>
+    </g>
+    <circle cx="890" cy="300" r="12" fill="none" stroke="#e0a05a" stroke-width="3" opacity=".6"/>
+  </g>
+
+  <!-- Hängepflanzen -->
+  <g transform="translate(-540 0)">
+    <path d="M610 0V120M630 0V120" stroke="#3a2415" stroke-width="3"/>
+    <path d="M590 120H650L640 160H600Z" fill="#a8703f"/>
+    <g fill="#4f8a4a"><path d="M600 150C560 180 570 260 585 330C600 250 610 200 610 150Z"/><path d="M630 150C660 190 650 250 640 300C625 240 622 200 620 150Z"/><path d="M620 150C610 220 600 260 605 380C625 300 640 220 630 150Z" fill="#3f7a3f"/></g>
+    <path d="M1470 0V100M1490 0V100" stroke="#3a2415" stroke-width="3"/>
+    <path d="M1450 100H1510L1500 140H1460Z" fill="#c07a4a"/>
+    <g fill="#5b9a52"><path d="M1460 130C1430 170 1440 230 1450 290C1465 220 1470 170 1470 130Z"/><path d="M1500 130C1530 170 1525 240 1515 320C1500 240 1495 170 1490 130Z"/></g>
+  </g>
+
+  <!-- Hängelampen -->
+  <g>
+    <path d="M820 0V60M1260 0V50" stroke="#2a180c" stroke-width="3"/>
+    <path d="M785 60Q820 20 855 60Z" fill="#c9893a"/><path d="M1225 50Q1260 10 1295 50Z" fill="#c9893a"/>
+    <ellipse cx="820" cy="110" rx="170" ry="130" fill="url(#caf-lamp)"/><ellipse cx="1260" cy="100" rx="170" ry="130" fill="url(#caf-lamp)"/>
+  </g>
+
+  <!-- Tresen -->
+  <g>
+    <rect x="620" y="560" width="980" height="340" fill="#5a3a22"/>
+    <g stroke="#3a2415" stroke-width="3" opacity=".6"><path d="M700 580V900M860 580V900M1020 580V900M1180 580V900M1340 580V900M1500 580V900"/></g>
+    <rect x="600" y="540" width="1000" height="36" rx="6" fill="url(#caf-wood)"/>
+    <rect x="600" y="540" width="1000" height="8" fill="#c28a50" opacity=".5"/>
+  </g>
+
+  <!-- Espressomaschine -->
+  <g>
+    <rect x="1130" y="430" width="260" height="110" rx="10" fill="#8c8f93"/>
+    <rect x="1130" y="430" width="260" height="22" rx="10" fill="#b3b6ba"/>
+    <rect x="1150" y="470" width="220" height="50" rx="6" fill="#6a6d72"/>
+    <g fill="#33363a"><rect x="1190" y="490" width="14" height="40"/><rect x="1300" y="490" width="14" height="40"/></g>
+    <circle cx="1170" cy="462" r="7" fill="#d96a4a"/><circle cx="1350" cy="462" r="7" fill="#6aa86a"/>
+    <rect x="1180" y="400" width="160" height="30" rx="6" fill="#7c7f84"/>
+    <g fill="#e6dcc8"><rect x="1215" y="518" width="26" height="22" rx="4"/><rect x="1330" y="518" width="26" height="22" rx="4"/></g>
+  </g>
+
+  <!-- Tassen, Kuchenglocke, Kaffeemuehle auf dem Tresen -->
+  <g>
+    <g fill="#e6dcc8"><rect x="700" y="508" width="32" height="32" rx="6"/><rect x="745" y="508" width="32" height="32" rx="6"/><rect x="790" y="508" width="32" height="32" rx="6"/></g>
+    <g fill="none" stroke="#e6dcc8" stroke-width="4"><path d="M732 516Q744 520 732 532M777 516Q789 520 777 532"/></g>
+    <path d="M900 540C900 480 1030 480 1030 540Z" fill="#cfe3e0" opacity=".45"/>
+    <ellipse cx="965" cy="540" rx="70" ry="6" fill="#e6dcc8"/>
+    <g fill="#d9a35a"><ellipse cx="945" cy="528" rx="22" ry="12"/><ellipse cx="985" cy="530" rx="18" ry="10" fill="#c26a4a"/></g>
+    <rect x="1440" y="480" width="60" height="60" rx="8" fill="#a8703f"/>
+    <rect x="1450" y="470" width="40" height="12" rx="4" fill="#6c4526"/>
+  </g>
+
+  <!-- Hocker -->
+  <g fill="#3a2415">
+    <rect x="720" y="650" width="90" height="16" rx="8"/><path d="M740 666L725 850M790 666L805 850M765 666V840" stroke="#3a2415" stroke-width="8" fill="none"/>
+    <rect x="1000" y="650" width="90" height="16" rx="8"/><path d="M1020 666L1005 850M1070 666L1085 850M1045 666V840" stroke="#3a2415" stroke-width="8" fill="none"/>
+  </g>
+
+  <!-- warmes Licht und Vignette -->
+  <ellipse cx="800" cy="350" rx="500" ry="300" fill="#ffb455" opacity=".12" filter="url(#caf-blur2)"/>
+  <rect width="1600" height="900" fill="url(#caf-vig)"/>
+</svg>
