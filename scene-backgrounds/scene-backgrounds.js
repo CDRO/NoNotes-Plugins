@@ -13,7 +13,7 @@
 // Bilder: Pfad relativ zu dieser Skriptdatei (egal, in welchem Unterordner von plugins/ sie liegt), oder eine volle
 // Adresse (https://…, data:…). SVG, PNG, JPG, WebP.
 // null als Bild heisst: kein Hintergrund (das normale Design der App).
-const STANDARD = 'hintergruende/taverne.svg';
+const STANDARD = null;
 const HINTERGRUENDE = [
   // Fantasy und Natur
   { tag: 'wald',        bild: 'hintergruende/wald.svg' },
@@ -25,6 +25,7 @@ const HINTERGRUENDE = [
   { tag: 'strand',      bild: 'hintergruende/strand.svg' },
   { tag: 'unterwasser', bild: 'hintergruende/unterwasser.svg' },
   { tag: 'garten',      bild: 'hintergruende/gewaechshaus.svg' },
+  { tag: 'taverne',      bild: 'hintergruende/taverne.svg' },
   // Arbeit und Alltag
   { tag: 'buero',       bild: 'hintergruende/buero.svg' },
   { tag: 'meeting',     bild: 'hintergruende/meetingraum.svg' },
@@ -36,7 +37,7 @@ const HINTERGRUENDE = [
   { tag: 'cyberpunk',   bild: 'hintergruende/cyberpunk.svg' },
   { tag: 'raumschiff',  bild: 'hintergruende/raumschiff.svg' },
   { tag: 'weltall',     bild: 'hintergruende/weltall.svg' },
-  // { tag: 'neutral', bild: null },   // kein Hintergrund (das normale Design der App)
+  { tag: 'neutral', bild: null },   // kein Hintergrund (das normale Design der App)
 ];
 const VERBLASSEN = 0.30;       // 0 bis 0.9: wie stark die Farbe des Designs über das Bild gelegt wird (Lesbarkeit)
 const EDITOR_KARTE = 0.80;     // 0 bis 1: Deckkraft der Karte hinter Titel und Text im Editor (1 = Bild nicht sichtbar)
