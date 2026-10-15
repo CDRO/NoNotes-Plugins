@@ -1,16 +1,77 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <radialGradient id="g" cx=".5" cy=".55" r=".75"><stop offset="0" stop-color="#2d3550"/><stop offset="1" stop-color="#0b0e18"/></radialGradient>
-    <radialGradient id="c" cx=".5" cy=".6" r=".3"><stop offset="0" stop-color="#7fd6ff" stop-opacity=".45"/><stop offset="1" stop-color="#7fd6ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="bg" cx=".5" cy=".55" r=".8"><stop offset="0" stop-color="#2b3a5a"/><stop offset=".6" stop-color="#141a2c"/><stop offset="1" stop-color="#07090f"/></radialGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d2640"/><stop offset="1" stop-color="#10162a"/></linearGradient>
+    <linearGradient id="mid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#141b30"/><stop offset="1" stop-color="#0b1020"/></linearGradient>
+    <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c0f1a"/><stop offset="1" stop-color="#05070c"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e5a7a"/><stop offset="1" stop-color="#0a1f33"/></linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe9ff" stop-opacity=".42"/><stop offset=".85" stop-color="#bfe9ff" stop-opacity=".08"/><stop offset="1" stop-color="#bfe9ff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="cry" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#3aa9d8"/><stop offset="1" stop-color="#b8f0ff"/></linearGradient>
+    <linearGradient id="cryP" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7a4fd0"/><stop offset="1" stop-color="#d9b8ff"/></linearGradient>
+    <radialGradient id="halo"><stop offset="0" stop-color="#7fd6ff" stop-opacity=".6"/><stop offset="1" stop-color="#7fd6ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="haloP"><stop offset="0" stop-color="#b58cff" stop-opacity=".55"/><stop offset="1" stop-color="#b58cff" stop-opacity="0"/></radialGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="blur2" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="6"/></filter>
   </defs>
-  <rect width="1600" height="900" fill="url(#g)"/>
-  <rect width="1600" height="900" fill="url(#c)"/>
-  <g fill="#070910">
-    <path d="M0 0H1600V90L1500 170L1420 100L1330 220L1240 120L1150 200L1060 90L960 190L880 80L780 210L690 110L590 220L500 100L410 190L320 90L220 200L130 110L0 200Z"/>
-    <path d="M0 900V720L120 790L230 700L360 800L470 740L600 830L720 760L860 840L990 750L1110 820L1240 740L1370 810L1480 730L1600 790V900Z"/>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+
+  <!-- ferne Wände mit Bogen -->
+  <path d="M0 220Q160 140 300 260Q440 120 600 250Q760 150 900 240Q1060 120 1200 250Q1360 160 1600 230V820H0Z" fill="url(#far)"/>
+  <path d="M520 820V470Q520 340 660 340Q800 340 800 470V820Z" fill="#070a14"/>
+  <path d="M1000 820V500Q1000 400 1110 400Q1220 400 1220 500V820Z" fill="#070a14"/>
+
+  <!-- Mittelgrund: Felsrippen -->
+  <path d="M0 330Q120 280 220 360Q300 430 380 400Q430 560 330 700L300 820H0Z" fill="url(#mid)"/>
+  <path d="M1600 300Q1480 270 1390 350Q1310 420 1240 420Q1180 540 1290 700L1320 820H1600Z" fill="url(#mid)"/>
+
+  <!-- Decke mit Stalaktiten -->
+  <path d="M0 0H1600V110L1560 90L1530 190L1498 100L1440 130L1410 250L1372 120L1300 150L1270 70L1210 160L1180 290L1140 150L1070 100L1000 190L960 330L920 170L860 90H740L690 180L650 350L610 170L560 100L500 160L470 230L430 140L360 110L320 200L280 300L240 150L170 120L120 180L90 90L0 130Z" fill="url(#rock)"/>
+  <g fill="#0a0d16">
+    <path d="M820 110L800 230L790 320L778 230L760 110Z"/>
+    <path d="M1100 140L1085 260L1075 360L1062 260L1046 140Z"/>
+    <path d="M340 130L322 240L312 340L300 240L286 130Z"/>
   </g>
-  <g fill="#9fe3ff" opacity=".85">
-    <path d="M720 760l30-110l30 110zM790 770l24-80l24 80zM860 760l34-130l34 130z" opacity=".7"/>
-    <path d="M300 200l-12 80l24 0zM1180 190l-10 70l22 0z"/>
+
+  <!-- Deckenöffnung und Lichtstrahl -->
+  <ellipse cx="750" cy="30" rx="100" ry="36" fill="#dff4ff" opacity=".7" filter="url(#blur2)"/>
+  <path d="M660 40H850L1040 700H500Z" fill="url(#beam)" filter="url(#blur)"/>
+  <ellipse cx="770" cy="720" rx="230" ry="34" fill="#bfe9ff" opacity=".28" filter="url(#blur)"/>
+
+  <!-- Wasserbecken mit Spiegelung -->
+  <path d="M260 700Q500 650 800 660Q1100 650 1340 700L1400 800H200Z" fill="url(#water)"/>
+  <g stroke="#9fe3ff" stroke-width="2" fill="none" opacity=".35"><path d="M420 720Q500 712 580 720M720 740Q800 732 880 740M1020 722Q1100 714 1180 722"/></g>
+
+  <!-- Kristalle links -->
+  <g>
+    <ellipse cx="260" cy="700" rx="170" ry="120" fill="url(#halo)"/>
+    <path d="M220 760L246 640L268 760Z" fill="url(#cry)"/>
+    <path d="M262 770L300 590L336 770Z" fill="url(#cry)"/>
+    <path d="M326 770L350 670L376 770Z" fill="url(#cry)" opacity=".85"/>
+    <path d="M300 590L318 660L336 770L300 770Z" fill="#fff" opacity=".18"/>
   </g>
+  <!-- Kristalle rechts (violett) -->
+  <g>
+    <ellipse cx="1330" cy="710" rx="190" ry="130" fill="url(#haloP)"/>
+    <path d="M1260 780L1290 650L1318 780Z" fill="url(#cryP)"/>
+    <path d="M1312 790L1352 600L1392 790Z" fill="url(#cryP)"/>
+    <path d="M1384 790L1412 690L1440 790Z" fill="url(#cryP)" opacity=".85"/>
+    <path d="M1352 600L1372 680L1392 790L1352 790Z" fill="#fff" opacity=".16"/>
+  </g>
+
+  <!-- Boden und Stalagmiten -->
+  <path d="M0 800Q120 760 260 790L200 800L360 900H0Z" fill="url(#rock)"/>
+  <path d="M1600 790Q1500 750 1400 790L1440 800L1260 900H1600Z" fill="url(#rock)"/>
+  <path d="M0 900V820Q200 790 420 840Q700 880 1000 850Q1300 820 1600 860V900Z" fill="#05070c"/>
+  <g fill="#0a0d16">
+    <path d="M560 860L580 760L600 860Z"/><path d="M610 862L622 800L636 862Z"/>
+    <path d="M1060 860L1082 770L1106 860Z"/><path d="M1020 862L1032 810L1046 862Z"/>
+  </g>
+
+  <!-- Staub im Lichtstrahl, Glühpunkte -->
+  <g fill="#e6f7ff" opacity=".6"><circle cx="720" cy="220" r="2"/><circle cx="800" cy="330" r="2.5"/><circle cx="760" cy="440" r="2"/><circle cx="860" cy="520" r="2"/><circle cx="700" cy="560" r="2.5"/></g>
+  <g fill="#9fe3ff" opacity=".8"><circle cx="300" cy="560" r="2.5"/><circle cx="220" cy="620" r="2"/><circle cx="380" cy="610" r="2"/></g>
+  <g fill="#d9b8ff" opacity=".8"><circle cx="1350" cy="570" r="2.5"/><circle cx="1430" cy="620" r="2"/><circle cx="1280" cy="610" r="2"/></g>
+
+  <!-- Nebel -->
+  <ellipse cx="800" cy="690" rx="700" ry="40" fill="#8fb4d8" opacity=".12" filter="url(#blur)"/>
 </svg>

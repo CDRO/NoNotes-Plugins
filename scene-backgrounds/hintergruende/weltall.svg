@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="wlt-sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#070a1c"/><stop offset=".55" stop-color="#0d0f2a"/><stop offset="1" stop-color="#150f30"/></linearGradient>
+    <radialGradient id="wlt-neb1" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#6a3fb5" stop-opacity=".55"/><stop offset="1" stop-color="#6a3fb5" stop-opacity="0"/></radialGradient>
+    <radialGradient id="wlt-neb2" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#2f56b8" stop-opacity=".5"/><stop offset="1" stop-color="#2f56b8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="wlt-neb3" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#a04a9a" stop-opacity=".3"/><stop offset="1" stop-color="#a04a9a" stop-opacity="0"/></radialGradient>
+    <radialGradient id="wlt-planet" cx=".3" cy=".3" r=".85"><stop offset="0" stop-color="#7f78c8"/><stop offset=".5" stop-color="#4a458f"/><stop offset="1" stop-color="#14123a"/></radialGradient>
+    <radialGradient id="wlt-glow" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#8a7fe0" stop-opacity=".25"/><stop offset="1" stop-color="#8a7fe0" stop-opacity="0"/></radialGradient>
+    <radialGradient id="wlt-galaxy" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f1e6ff" stop-opacity=".85"/><stop offset=".25" stop-color="#b9a4ff" stop-opacity=".4"/><stop offset="1" stop-color="#7f6ad8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="wlt-moon" cx=".35" cy=".35" r=".8"><stop offset="0" stop-color="#9aa0b8"/><stop offset="1" stop-color="#2b2e48"/></radialGradient>
+    <radialGradient id="wlt-shade" cx=".5" cy=".5" r=".5"><stop offset=".6" stop-color="#080a22" stop-opacity=".5"/><stop offset="1" stop-color="#080a22" stop-opacity="0"/></radialGradient>
+    <clipPath id="wlt-ringclip"><rect x="700" y="860" width="1300" height="300"/></clipPath>
+    <clipPath id="wlt-clip"><circle cx="1330" cy="860" r="330"/></clipPath>
+    <filter id="wlt-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="30"/></filter>
+    <filter id="wlt-blur2" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+
+  <!-- Himmelsgrund -->
+  <rect width="1600" height="900" fill="url(#wlt-sky)"/>
+
+  <!-- Nebel -->
+  <g filter="url(#wlt-blur)">
+    <ellipse cx="380" cy="300" rx="520" ry="230" fill="url(#wlt-neb1)" transform="rotate(-18 380 300)"/>
+    <ellipse cx="1050" cy="200" rx="500" ry="170" fill="url(#wlt-neb2)" transform="rotate(12 1050 200)"/>
+    <ellipse cx="700" cy="640" rx="560" ry="200" fill="url(#wlt-neb3)" transform="rotate(-8 700 640)"/>
+    <ellipse cx="200" cy="760" rx="380" ry="170" fill="url(#wlt-neb2)" opacity=".7"/>
+  </g>
+
+  <!-- Ferne Galaxie -->
+  <g transform="rotate(-28 1180 250)">
+    <ellipse cx="1180" cy="250" rx="130" ry="36" fill="url(#wlt-galaxy)" opacity=".7"/>
+    <ellipse cx="1180" cy="250" rx="46" ry="14" fill="#fff6e0" opacity=".5" filter="url(#wlt-blur2)"/>
+  </g>
+
+  <!-- Sterne, klein -->
+  <g fill="#dfe6ff" opacity=".7">
+    <circle cx="40" cy="60" r="1.2"/><circle cx="95" cy="190" r="1"/><circle cx="150" cy="95" r="1.4"/><circle cx="210" cy="420" r="1"/>
+    <circle cx="260" cy="40" r="1.1"/><circle cx="300" cy="170" r="1.3"/><circle cx="340" cy="520" r="1"/><circle cx="390" cy="80" r="1"/>
+    <circle cx="430" cy="610" r="1.2"/><circle cx="470" cy="140" r="1"/><circle cx="520" cy="30" r="1.3"/><circle cx="560" cy="470" r="1"/>
+    <circle cx="610" cy="120" r="1.1"/><circle cx="650" cy="740" r="1.2"/><circle cx="690" cy="60" r="1"/><circle cx="730" cy="360" r="1.2"/>
+    <circle cx="780" cy="200" r="1"/><circle cx="820" cy="820" r="1.1"/><circle cx="860" cy="90" r="1.3"/><circle cx="900" cy="560" r="1"/>
+    <circle cx="950" cy="140" r="1.1"/><circle cx="990" cy="40" r="1"/><circle cx="1030" cy="420" r="1.2"/><circle cx="1080" cy="110" r="1"/>
+    <circle cx="1120" cy="610" r="1.2"/><circle cx="1180" cy="60" r="1.1"/><circle cx="1230" cy="380" r="1"/><circle cx="1270" cy="150" r="1.3"/>
+    <circle cx="1320" cy="40" r="1"/><circle cx="1370" cy="260" r="1.2"/><circle cx="1420" cy="120" r="1"/><circle cx="1460" cy="440" r="1.1"/>
+    <circle cx="1510" cy="70" r="1.3"/><circle cx="1560" cy="210" r="1"/><circle cx="1580" cy="520" r="1.2"/><circle cx="60" cy="640" r="1.1"/>
+    <circle cx="120" cy="820" r="1"/><circle cx="180" cy="560" r="1.2"/><circle cx="240" cy="700" r="1"/><circle cx="310" cy="860" r="1.3"/>
+    <circle cx="380" cy="740" r="1"/><circle cx="500" cy="850" r="1.1"/><circle cx="580" cy="640" r="1"/><circle cx="700" cy="880" r="1.2"/>
+    <circle cx="760" cy="560" r="1"/><circle cx="880" cy="700" r="1.2"/><circle cx="960" cy="860" r="1"/><circle cx="1040" cy="760" r="1.1"/>
+    <circle cx="1100" cy="880" r="1"/><circle cx="1160" cy="470" r="1.2"/><circle cx="1500" cy="350" r="1"/><circle cx="1540" cy="640" r="1.1"/>
+    <circle cx="20" cy="330" r="1"/><circle cx="70" cy="470" r="1.2"/><circle cx="140" cy="300" r="1"/><circle cx="450" cy="300" r="1.1"/>
+    <circle cx="620" cy="260" r="1"/><circle cx="840" cy="440" r="1"/><circle cx="1000" cy="300" r="1.1"/><circle cx="1400" cy="560" r="1"/>
+  </g>
+  <!-- Sterne, mittel -->
+  <g fill="#ffffff" opacity=".85">
+    <circle cx="120" cy="250" r="1.9"/><circle cx="330" cy="330" r="1.7"/><circle cx="540" cy="200" r="2"/><circle cx="800" cy="130" r="1.8"/>
+    <circle cx="1010" cy="220" r="2"/><circle cx="1330" cy="180" r="1.9"/><circle cx="1480" cy="260" r="1.7"/><circle cx="240" cy="590" r="1.8"/>
+    <circle cx="600" cy="540" r="1.7"/><circle cx="930" cy="640" r="1.9"/><circle cx="1250" cy="520" r="1.8"/><circle cx="450" cy="800" r="1.8"/>
+    <circle cx="90" cy="740" r="1.7"/><circle cx="1560" cy="420" r="1.8"/><circle cx="1210" cy="90" r="1.7"/><circle cx="700" cy="460" r="1.6"/>
+  </g>
+  <!-- Sterne, hell mit Schimmer -->
+  <g fill="#fff4d8">
+    <circle cx="210" cy="140" r="2.6"/><circle cx="880" cy="300" r="2.4"/><circle cx="1440" cy="190" r="2.6"/><circle cx="520" cy="700" r="2.4"/><circle cx="1090" cy="510" r="2.4"/>
+  </g>
+  <g fill="#cfd8ff" opacity=".25" filter="url(#wlt-blur2)">
+    <circle cx="210" cy="140" r="7"/><circle cx="880" cy="300" r="6"/><circle cx="1440" cy="190" r="7"/><circle cx="520" cy="700" r="6"/><circle cx="1090" cy="510" r="6"/>
+  </g>
+
+  <!-- Planet mit Ring am unteren rechten Rand -->
+  <circle cx="1330" cy="860" r="400" fill="url(#wlt-glow)"/>
+  <!-- Ring hinten (obere Hälfte) -->
+  <g transform="rotate(-14 1330 860)">
+    <ellipse cx="1330" cy="860" rx="540" ry="90" fill="none" stroke="#9a8fe0" stroke-opacity=".3" stroke-width="40"/>
+  </g>
+  <g clip-path="url(#wlt-clip)">
+    <circle cx="1330" cy="860" r="330" fill="url(#wlt-planet)"/>
+    <!-- Wolkenbänder -->
+    <g fill="none" stroke="#9a90e0" stroke-opacity=".18" stroke-width="22">
+      <path d="M980 640Q1330 590 1700 650"/><path d="M960 720Q1330 670 1700 730"/>
+    </g>
+    <!-- weicher Schatten -->
+    <circle cx="1560" cy="1000" r="420" fill="url(#wlt-shade)"/>
+  </g>
+  <!-- Ring vorne (untere Hälfte) -->
+  <g transform="rotate(-14 1330 860)">
+    <g clip-path="url(#wlt-ringclip)">
+      <ellipse cx="1330" cy="860" rx="540" ry="90" fill="none" stroke="#b8aef0" stroke-opacity=".35" stroke-width="40"/>
+    </g>
+  </g>
+
+  <!-- Kleiner Mond oben links -->
+  <circle cx="190" cy="180" r="34" fill="url(#wlt-moon)" opacity=".85"/>
+  <circle cx="200" cy="190" r="34" fill="#070a1c" opacity=".35"/>
+</svg>

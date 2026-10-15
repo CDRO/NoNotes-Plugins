@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="str-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3a86"/><stop offset=".35" stop-color="#a24f94"/><stop offset=".7" stop-color="#ee7d6c"/><stop offset="1" stop-color="#ffb870"/></linearGradient>
+    <radialGradient id="str-sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff0c0" stop-opacity=".95"/><stop offset=".3" stop-color="#ffc47a" stop-opacity=".5"/><stop offset="1" stop-color="#ff9a6a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="str-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6808a"/><stop offset=".4" stop-color="#9a4f93"/><stop offset="1" stop-color="#3f3478"/></linearGradient>
+    <linearGradient id="str-sand" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9946f"/><stop offset="1" stop-color="#7d4a62"/></linearGradient>
+    <linearGradient id="str-dune" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8707a"/><stop offset="1" stop-color="#6a3f6a"/></linearGradient>
+    <linearGradient id="str-glit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe2a0" stop-opacity=".8"/><stop offset="1" stop-color="#ffb088" stop-opacity="0"/></linearGradient>
+    <filter id="str-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="str-blur2" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+
+  <!-- Himmel -->
+  <rect width="1600" height="900" fill="url(#str-sky)"/>
+  <!-- Zarte Wolkenbänder -->
+  <g fill="#ffd0a0" opacity=".35" filter="url(#str-blur2)">
+    <ellipse cx="300" cy="200" rx="260" ry="12"/><ellipse cx="520" cy="250" rx="200" ry="9"/><ellipse cx="1260" cy="180" rx="300" ry="12"/><ellipse cx="1060" cy="300" rx="220" ry="9"/>
+  </g>
+  <!-- Sonne -->
+  <circle cx="860" cy="470" r="280" fill="url(#str-sun)"/>
+  <circle cx="860" cy="470" r="62" fill="#fff0c4"/>
+
+  <!-- Meer -->
+  <rect y="470" width="1600" height="270" fill="url(#str-sea)"/>
+  <!-- Sonnenspiegelung -->
+  <g filter="url(#str-blur2)" fill="url(#str-glit)">
+    <rect x="800" y="472" width="120" height="14" rx="7"/><rect x="780" y="498" width="160" height="12" rx="6"/>
+    <rect x="750" y="524" width="220" height="12" rx="6"/><rect x="720" y="552" width="280" height="12" rx="6"/>
+    <rect x="690" y="582" width="340" height="12" rx="6"/><rect x="650" y="614" width="420" height="12" rx="6"/>
+    <rect x="610" y="648" width="500" height="12" rx="6"/><rect x="560" y="684" width="600" height="12" rx="6"/>
+  </g>
+  <!-- ruhige Wellenlinien -->
+  <g fill="none" stroke="#ffd9b0" stroke-opacity=".25" stroke-width="3" stroke-linecap="round">
+    <path d="M100 520Q170 510 240 520"/><path d="M1260 510Q1340 500 1420 510"/><path d="M300 580Q400 568 500 580"/>
+    <path d="M1100 600Q1220 586 1340 600"/><path d="M60 650Q200 634 340 650"/><path d="M1240 670Q1380 654 1520 670"/>
+    <path d="M400 710Q560 692 720 710"/>
+  </g>
+  <!-- Horizontlinie weich -->
+  <rect y="466" width="1600" height="10" fill="#ffc690" opacity=".5" filter="url(#str-blur2)"/>
+
+  <!-- Schaumlinie am Strand -->
+  <path d="M0 720Q200 700 400 722Q620 744 840 718Q1060 694 1280 722Q1460 742 1600 720V760H0Z" fill="#f6c8b4" opacity=".55"/>
+
+  <!-- Sandstrand -->
+  <path d="M0 740Q240 724 480 744Q760 768 1040 740Q1320 716 1600 744V900H0Z" fill="url(#str-sand)"/>
+  <!-- Nasser Sandglanz -->
+  <path d="M0 746Q240 730 480 750Q760 774 1040 746Q1320 722 1600 750V770Q1320 744 1040 768Q760 796 480 772Q240 752 0 768Z" fill="#ffd2a8" opacity=".25"/>
+
+  <!-- Düne links -->
+  <path d="M0 640Q120 600 260 640Q380 676 470 740Q300 800 0 800Z" fill="url(#str-dune)"/>
+  <path d="M0 700Q150 660 300 720Q400 760 480 800H0Z" fill="#5a3560" opacity=".5"/>
+  <!-- Düne rechts -->
+  <path d="M1600 600Q1480 580 1340 630Q1230 670 1160 760Q1380 820 1600 790Z" fill="url(#str-dune)"/>
+  <path d="M1600 690Q1450 680 1300 740Q1230 780 1190 810L1600 850Z" fill="#5a3560" opacity=".5"/>
+
+  <!-- Dünengras -->
+  <g stroke="#5a3a5e" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M330 690Q326 660 316 644M338 690Q342 656 356 640M346 692Q356 668 372 662"/>
+    <path d="M1240 700Q1236 666 1226 650M1248 700Q1252 664 1266 648M1256 702Q1266 676 1282 670"/>
+  </g>
+
+  <!-- Palme links -->
+  <g>
+    <path d="M150 800Q190 640 170 470Q166 420 180 372" fill="none" stroke="#2c1f45" stroke-width="16" stroke-linecap="round"/>
+    <g fill="#2c1f45">
+      <path d="M180 372Q110 340 40 380Q110 350 180 372Z"/>
+      <path d="M180 372Q130 300 60 300Q130 310 180 372Z"/>
+      <path d="M180 372Q190 290 250 250Q214 300 180 372Z"/>
+      <path d="M180 372Q250 320 330 340Q250 340 180 372Z"/>
+      <path d="M180 372Q250 380 300 430Q240 400 180 372Z"/>
+      <path d="M180 372Q120 390 90 450Q130 410 180 372Z"/>
+    </g>
+  </g>
+  <!-- Palme rechts -->
+  <g>
+    <path d="M1470 790Q1430 660 1450 540Q1456 500 1440 452" fill="none" stroke="#2c1f45" stroke-width="14" stroke-linecap="round"/>
+    <g fill="#2c1f45">
+      <path d="M1440 452Q1510 420 1580 456Q1510 430 1440 452Z"/>
+      <path d="M1440 452Q1490 390 1560 392Q1490 400 1440 452Z"/>
+      <path d="M1440 452Q1430 380 1370 346Q1404 390 1440 452Z"/>
+      <path d="M1440 452Q1370 410 1296 430Q1370 430 1440 452Z"/>
+      <path d="M1440 452Q1380 466 1344 520Q1396 490 1440 452Z"/>
+      <path d="M1440 452Q1500 466 1530 520Q1490 490 1440 452Z"/>
+    </g>
+  </g>
+
+  <!-- Ferne Vögel -->
+  <g fill="none" stroke="#4a2f5e" stroke-width="2.5" stroke-linecap="round" opacity=".6">
+    <path d="M1020 300Q1030 292 1040 300Q1050 292 1060 300"/><path d="M1080 340Q1088 334 1096 340Q1104 334 1112 340"/>
+  </g>
+</svg>

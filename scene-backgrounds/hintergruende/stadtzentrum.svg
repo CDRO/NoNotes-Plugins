@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="stz-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c4a78"/><stop offset=".55" stop-color="#6f8fb8"/><stop offset="1" stop-color="#e8b998"/></linearGradient>
+    <linearGradient id="stz-glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fa6c8"/><stop offset="1" stop-color="#3f6288"/></linearGradient>
+    <linearGradient id="stz-glass2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5e83a8"/><stop offset="1" stop-color="#34536f"/></linearGradient>
+    <linearGradient id="stz-beton" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8f9a"/><stop offset="1" stop-color="#686d7a"/></linearGradient>
+    <linearGradient id="stz-far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8aa0c0"/><stop offset="1" stop-color="#b9b3b8"/></linearGradient>
+    <linearGradient id="stz-ground" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d8a8e"/><stop offset="1" stop-color="#5b5a64"/></linearGradient>
+    <radialGradient id="stz-lamp"><stop offset="0" stop-color="#ffd9a0" stop-opacity=".7"/><stop offset="1" stop-color="#ffd9a0" stop-opacity="0"/></radialGradient>
+    <filter id="stz-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+
+  <!-- Himmel -->
+  <rect width="1600" height="900" fill="url(#stz-sky)"/>
+  <g fill="#fff" opacity=".18" filter="url(#stz-blur)"><ellipse cx="300" cy="150" rx="220" ry="20"/><ellipse cx="1250" cy="110" rx="260" ry="18"/></g>
+
+  <!-- ferne Hochhaeuser -->
+  <g fill="url(#stz-far)" opacity=".8">
+    <rect x="40" y="330" width="90" height="300"/><rect x="140" y="270" width="70" height="360"/>
+    <rect x="1330" y="300" width="80" height="330"/><rect x="1420" y="350" width="110" height="280"/>
+  </g>
+
+  <!-- Glasturm links -->
+  <g>
+    <rect x="170" y="120" width="260" height="560" fill="url(#stz-glass)"/>
+    <path d="M170 120H430L400 680H170Z" fill="#fff" opacity=".08"/>
+    <g stroke="#2b4560" stroke-width="2" opacity=".45">
+      <path d="M170 190H430M170 260H430M170 330H430M170 400H430M170 470H430M170 540H430M170 610H430"/>
+      <path d="M235 120V680M300 120V680M365 120V680"/>
+    </g>
+    <rect x="160" y="112" width="280" height="14" fill="#4b6580"/>
+  </g>
+  <!-- Betonturm -->
+  <g>
+    <rect x="440" y="260" width="200" height="420" fill="url(#stz-beton)"/>
+    <g fill="#4a5a6e" opacity=".75">
+      <rect x="460" y="290" width="40" height="50"/><rect x="520" y="290" width="40" height="50"/><rect x="580" y="290" width="40" height="50"/>
+      <rect x="460" y="370" width="40" height="50"/><rect x="520" y="370" width="40" height="50"/><rect x="580" y="370" width="40" height="50"/>
+      <rect x="460" y="450" width="40" height="50"/><rect x="520" y="450" width="40" height="50"/><rect x="580" y="450" width="40" height="50"/>
+      <rect x="460" y="530" width="40" height="50"/><rect x="520" y="530" width="40" height="50"/><rect x="580" y="530" width="40" height="50"/>
+    </g>
+    <g fill="#f3cf8a" opacity=".6"><rect x="520" y="370" width="40" height="50"/><rect x="580" y="530" width="40" height="50"/></g>
+  </g>
+
+  <!-- Glasturm rechts, schraeg abgeschnitten -->
+  <g>
+    <path d="M1060 160L1440 230V680H1060Z" fill="url(#stz-glass2)"/>
+    <g stroke="#2b4560" stroke-width="2" opacity=".4">
+      <path d="M1060 250L1440 310M1060 340L1440 390M1060 430L1440 470M1060 520L1440 550M1060 610L1440 630"/>
+      <path d="M1150 160V680M1250 160V680M1350 160V680"/>
+    </g>
+    <path d="M1060 160L1440 230V300L1060 230Z" fill="#fff" opacity=".12"/>
+  </g>
+  <!-- Betongebaeude rechts -->
+  <g>
+    <rect x="1440" y="320" width="200" height="360" fill="url(#stz-beton)"/>
+    <g fill="#4a5a6e" opacity=".7"><rect x="1470" y="360" width="140" height="20"/><rect x="1470" y="420" width="140" height="20"/><rect x="1470" y="480" width="140" height="20"/><rect x="1470" y="540" width="140" height="20"/></g>
+  </g>
+  <!-- niedriges Geschaeft in der Mitte -->
+  <g>
+    <rect x="650" y="470" width="400" height="210" fill="#a49c98"/>
+    <rect x="650" y="462" width="400" height="14" fill="#6c6670"/>
+    <rect x="680" y="510" width="340" height="140" fill="#3c5878" opacity=".85"/>
+    <path d="M680 510H1020V560Z" fill="#fff" opacity=".1"/>
+    <g fill="#f3cf8a" opacity=".35"><rect x="700" y="530" width="120" height="100"/><rect x="880" y="530" width="120" height="100"/></g>
+  </g>
+
+  <!-- Platz und Strasse -->
+  <rect y="680" width="1600" height="220" fill="url(#stz-ground)"/>
+  <path d="M0 780H1600V830H0Z" fill="#4c4c56"/>
+  <g stroke="#d8d4c8" stroke-width="4" stroke-dasharray="50 40" opacity=".5"><path d="M0 805H1600"/></g>
+  <g stroke="#6e6c74" stroke-width="2" opacity=".5"><path d="M0 720H1600M0 750H1600"/><path d="M200 680L120 780M500 680L460 780M800 680V780M1100 680L1140 780M1400 680L1480 780"/></g>
+  <!-- Fussgaengerstreifen -->
+  <g fill="#e5e0d4" opacity=".4"><rect x="940" y="782" width="14" height="46"/><rect x="970" y="782" width="14" height="46"/><rect x="1000" y="782" width="14" height="46"/><rect x="1030" y="782" width="14" height="46"/></g>
+
+  <!-- Baeume -->
+  <g>
+    <rect x="696" y="612" width="10" height="72" fill="#4a3a30"/><ellipse cx="701" cy="590" rx="46" ry="52" fill="#4f7a5a"/><ellipse cx="690" cy="578" rx="22" ry="26" fill="#6a9a72" opacity=".6"/>
+    <rect x="1016" y="612" width="10" height="72" fill="#4a3a30"/><ellipse cx="1021" cy="590" rx="46" ry="52" fill="#4a7455"/><ellipse cx="1010" cy="578" rx="22" ry="26" fill="#6a9a72" opacity=".6"/>
+    <rect x="466" y="650" width="10" height="46" fill="#4a3a30"/><ellipse cx="471" cy="636" rx="34" ry="38" fill="#4f7a5a"/>
+  </g>
+
+  <!-- Haltestelle mit Tram -->
+  <g>
+    <rect x="1180" y="690" width="320" height="100" rx="12" fill="#c8ccd2"/>
+    <rect x="1180" y="690" width="320" height="22" rx="10" fill="#e84c3d" opacity=".85"/>
+    <rect x="1196" y="722" width="60" height="42" fill="#3f5a78"/><rect x="1266" y="722" width="60" height="42" fill="#3f5a78"/><rect x="1336" y="722" width="60" height="42" fill="#3f5a78"/><rect x="1406" y="722" width="80" height="42" fill="#3f5a78"/>
+    <rect x="1180" y="770" width="320" height="8" fill="#6a6e78"/>
+    <circle cx="1230" cy="792" r="10" fill="#3a3a44"/><circle cx="1450" cy="792" r="10" fill="#3a3a44"/>
+    <path d="M1340 690V640M1300 640H1380" stroke="#4a4a54" stroke-width="3"/>
+  </g>
+  <g>
+    <rect x="860" y="690" width="150" height="8" fill="#5a606c"/>
+    <path d="M864 698V750M1006 698V750" stroke="#5a606c" stroke-width="5"/>
+    <rect x="870" y="706" width="130" height="30" fill="#9fc0dc" opacity=".35"/>
+  </g>
+
+  <!-- Strassenlaternen -->
+  <g>
+    <g fill="url(#stz-lamp)"><circle cx="330" cy="560" r="70"/><circle cx="800" cy="580" r="70"/><circle cx="1130" cy="570" r="70"/></g>
+    <g stroke="#3a3f4c" stroke-width="5" fill="none"><path d="M330 720V580Q330 565 345 565"/><path d="M800 730V600Q800 585 815 585"/><path d="M1130 720V590Q1130 575 1145 575"/></g>
+    <g fill="#ffe3b0"><circle cx="347" cy="568" r="8"/><circle cx="817" cy="588" r="8"/><circle cx="1147" cy="578" r="8"/></g>
+  </g>
+
+  <!-- Passanten (einfache Silhouetten) -->
+  <g fill="#3a3f55" opacity=".8">
+    <rect x="560" y="725" width="12" height="32" rx="5"/><circle cx="566" cy="716" r="8"/>
+    <rect x="584" y="730" width="12" height="30" rx="5"/><circle cx="590" cy="721" r="8"/>
+    <rect x="1090" y="735" width="12" height="30" rx="5"/><circle cx="1096" cy="726" r="8"/>
+  </g>
+
+  <!-- sanfter Abendschleier -->
+  <rect width="1600" height="900" fill="#1b2b4a" opacity=".12"/>
+</svg>

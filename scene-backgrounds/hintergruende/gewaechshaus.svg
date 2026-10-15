@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="gew-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9dcd8"/><stop offset="1" stop-color="#e3eccd"/></linearGradient>
+    <linearGradient id="gew-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a7a08a"/><stop offset="1" stop-color="#6e6a58"/></linearGradient>
+    <linearGradient id="gew-soil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a4a32"/><stop offset="1" stop-color="#46301f"/></linearGradient>
+    <linearGradient id="gew-ray" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6c8" stop-opacity=".4"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gew-bed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a6a42"/><stop offset="1" stop-color="#6a4528"/></linearGradient>
+    <linearGradient id="gew-pot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d0794e"/><stop offset="1" stop-color="#a65a38"/></linearGradient>
+    <radialGradient id="gew-vig" cx=".5" cy=".5" r=".75"><stop offset=".65" stop-color="#1f3a28" stop-opacity="0"/><stop offset="1" stop-color="#1f3a28" stop-opacity=".35"/></radialGradient>
+    <filter id="gew-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="12"/></filter>
+    <!-- Blatt-Vorlage -->
+    <path id="gew-leaf" d="M0 0C-24 -20 -22 -60 0 -84C22 -60 24 -20 0 0Z"/>
+  </defs>
+
+  <!-- Himmel hinter dem Glas -->
+  <rect width="1600" height="900" fill="url(#gew-sky)"/>
+  <g fill="#fff" opacity=".6"><ellipse cx="300" cy="140" rx="110" ry="26"/><ellipse cx="380" cy="120" rx="70" ry="24"/><ellipse cx="1200" cy="200" rx="130" ry="28"/></g>
+  <!-- ferne Baeume -->
+  <g fill="#7fae7a" opacity=".6"><circle cx="150" cy="470" r="90"/><circle cx="330" cy="500" r="70"/><circle cx="1330" cy="480" r="100"/><circle cx="1500" cy="500" r="80"/><rect y="500" width="1600" height="150" fill="#8fb98a"/></g>
+
+  <!-- Sonnenstrahlen durchs Glas -->
+  <g fill="url(#gew-ray)" filter="url(#gew-blur)">
+    <path d="M300 0H460L700 800H380Z"/><path d="M700 0H820L1040 800H760Z"/><path d="M1080 0H1180L1330 800H1060Z"/>
+  </g>
+
+  <!-- Boden -->
+  <rect y="690" width="1600" height="210" fill="url(#gew-floor)"/>
+  <g stroke="#58553f" stroke-width="2" opacity=".5"><path d="M0 740H1600M0 800H1600M0 860H1600M400 690L250 900M800 690V900M1200 690L1350 900"/></g>
+
+  <!-- Glasdach-Rahmen und Sprossen -->
+  <g stroke="#f2f0e4" stroke-linecap="round" opacity=".9">
+    <path d="M0 0L800 -120L1600 0" stroke-width="0"/>
+    <path d="M0 150H1600" stroke-width="10"/>
+    <path d="M0 520H1600" stroke-width="8"/>
+    <g stroke-width="8"><path d="M0 0V690M400 0V690M800 0V690M1200 0V690M1600 0V690"/></g>
+    <g stroke-width="4" opacity=".8"><path d="M200 0V690M600 0V690M1000 0V690M1400 0V690M0 335H1600"/></g>
+  </g>
+  <!-- Glasreflexe -->
+  <g fill="#fff" opacity=".12"><path d="M60 40L180 40L90 300H20Z"/><path d="M460 200L560 200L470 470H400Z"/><path d="M860 40L960 40L880 260H810Z"/><path d="M1260 200L1370 200L1280 470H1210Z"/></g>
+
+  <!-- Bogenfenster Mitte: Eingang -->
+  <rect x="0" y="690" width="1600" height="14" fill="#d8d4c0" opacity=".6"/>
+
+  <!-- Beet links (grosse Pflanzen) -->
+  <g>
+    <rect x="80" y="620" width="520" height="110" rx="6" fill="url(#gew-bed)"/>
+    <rect x="70" y="608" width="540" height="24" rx="6" fill="#b0804e"/>
+    <rect x="90" y="580" width="500" height="30" fill="url(#gew-soil)"/>
+    <g fill="#4f9a4f">
+      <use href="#gew-leaf" transform="translate(160 590) scale(1.6) rotate(-18)"/><use href="#gew-leaf" transform="translate(160 590) scale(1.6) rotate(14)"/><use href="#gew-leaf" transform="translate(160 590) scale(1.7)"/>
+      <use href="#gew-leaf" transform="translate(300 590) scale(1.1) rotate(-25)" fill="#6bb25a"/><use href="#gew-leaf" transform="translate(300 590) scale(1.2) rotate(20)" fill="#6bb25a"/><use href="#gew-leaf" transform="translate(300 590) scale(1.2)" fill="#5aa650"/>
+      <use href="#gew-leaf" transform="translate(440 590) scale(2.2) rotate(-10)" fill="#3f8a48"/><use href="#gew-leaf" transform="translate(440 590) scale(2.0) rotate(18)" fill="#3f8a48"/><use href="#gew-leaf" transform="translate(440 590) scale(2.4)" fill="#4a9650"/>
+      <use href="#gew-leaf" transform="translate(540 590) scale(.8) rotate(-20)" fill="#7cc060"/><use href="#gew-leaf" transform="translate(540 590) scale(.9) rotate(20)" fill="#7cc060"/>
+    </g>
+    <!-- Blueten -->
+    <g fill="#e8806a"><circle cx="300" cy="500" r="10"/><circle cx="270" cy="520" r="8"/></g>
+    <g fill="#f2d060"><circle cx="540" cy="525" r="9"/></g>
+  </g>
+
+  <path d="M300 590V505M270 590V524M540 590V530M840 784V720M945 762V672M1390 604V505M1366 604V515" stroke="#4f9a4f" stroke-width="3" fill="none"/>
+  <!-- Beet rechts (niedriger, Salat) -->
+  <g>
+    <rect x="1020" y="640" width="500" height="100" rx="6" fill="url(#gew-bed)"/>
+    <rect x="1010" y="628" width="520" height="24" rx="6" fill="#b0804e"/>
+    <rect x="1030" y="606" width="480" height="26" fill="url(#gew-soil)"/>
+    <g>
+      <ellipse cx="1090" cy="604" rx="44" ry="26" fill="#78b85a"/><ellipse cx="1090" cy="598" rx="28" ry="16" fill="#98cc72"/>
+      <ellipse cx="1190" cy="604" rx="44" ry="26" fill="#68a850"/><ellipse cx="1190" cy="598" rx="28" ry="16" fill="#88c068"/>
+      <ellipse cx="1290" cy="604" rx="44" ry="26" fill="#78b85a"/><ellipse cx="1290" cy="598" rx="28" ry="16" fill="#98cc72"/>
+    </g>
+    <g fill="#4f9a4f">
+      <use href="#gew-leaf" transform="translate(1390 604) scale(1.3) rotate(-15)"/><use href="#gew-leaf" transform="translate(1390 604) scale(1.4) rotate(15)"/><use href="#gew-leaf" transform="translate(1390 604) scale(1.5)" fill="#5aa650"/>
+      <use href="#gew-leaf" transform="translate(1470 604) scale(.9) rotate(-10)" fill="#6bb25a"/><use href="#gew-leaf" transform="translate(1470 604) scale(1)" fill="#6bb25a"/>
+    </g>
+    <g fill="#d86a8a"><circle cx="1390" cy="500" r="9"/><circle cx="1366" cy="512" r="7"/></g>
+  </g>
+
+  <!-- Blumentoepfe am Boden, Mitte -->
+  <g>
+    <g>
+      <path d="M690 760H770L760 840H700Z" fill="url(#gew-pot)"/><rect x="684" y="750" width="92" height="16" rx="4" fill="#c26a42"/>
+      <g fill="#5aa650"><use href="#gew-leaf" transform="translate(730 752) scale(1.1) rotate(-30)"/><use href="#gew-leaf" transform="translate(730 752) scale(1.3)"/><use href="#gew-leaf" transform="translate(730 752) scale(1.1) rotate(30)"/></g>
+    </g>
+    <g>
+      <path d="M810 790H870L862 850H818Z" fill="url(#gew-pot)"/><rect x="804" y="781" width="72" height="14" rx="4" fill="#c26a42"/>
+      <g fill="#7cc060"><use href="#gew-leaf" transform="translate(840 784) scale(.8) rotate(-25)"/><use href="#gew-leaf" transform="translate(840 784) scale(.9) rotate(25)"/></g>
+      <circle cx="840" cy="716" r="9" fill="#f2d060"/>
+    </g>
+    <g>
+      <path d="M910 770H980L972 845H918Z" fill="url(#gew-pot)"/><rect x="904" y="760" width="82" height="16" rx="4" fill="#c26a42"/>
+      <g fill="#4f9a4f"><use href="#gew-leaf" transform="translate(945 762) scale(1) rotate(-20)"/><use href="#gew-leaf" transform="translate(945 762) scale(1.2)"/><use href="#gew-leaf" transform="translate(945 762) scale(1) rotate(22)"/></g>
+      <circle cx="945" cy="668" r="10" fill="#e8806a"/>
+    </g>
+  </g>
+
+  <!-- Giesskanne -->
+  <g>
+    <ellipse cx="1130" cy="855" rx="70" ry="10" fill="#000" opacity=".15"/>
+    <path d="M1080 790H1180L1172 850H1088Z" fill="#6a9aa8"/>
+    <path d="M1080 790H1180" stroke="#8cb8c4" stroke-width="6"/>
+    <path d="M1180 810L1250 750" stroke="#6a9aa8" stroke-width="12" stroke-linecap="round"/>
+    <path d="M1244 736L1270 764L1252 774L1236 746Z" fill="#8cb8c4"/>
+    <path d="M1080 800Q1030 790 1040 830Q1050 850 1086 835" fill="none" stroke="#6a9aa8" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1100 790Q1130 750 1160 790" fill="none" stroke="#8cb8c4" stroke-width="8"/>
+  </g>
+
+  <!-- Sonnenlichtflecken auf dem Boden -->
+  <g fill="#fff6c8" opacity=".18" filter="url(#gew-blur)"><path d="M420 720H620L680 880H400Z"/><path d="M1000 740H1100L1130 880H980Z"/></g>
+
+  <!-- Vignette -->
+  <rect width="1600" height="900" fill="url(#gew-vig)"/>
+</svg>
