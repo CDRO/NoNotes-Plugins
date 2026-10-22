@@ -8,19 +8,25 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
 
 - Ein Tag an der Notiz setzen, zum Beispiel `farbe:rot` oder englisch `color:red`. Gross-/Kleinschreibung ist egal,
   `farbe:grün` und `farbe:gruen` gehen beide.
-- **Unternotizen mitfärben:** zusätzlich `farbe:auch-kinder` (`color:with-children`) an derselben Notiz. Dann gilt die
-  Farbe für alle Unternotizen. Eine Unternotiz mit eigener Farbe behält sie; hat auch sie `auch-kinder`, gilt ihre Farbe
-  für ihren Teil des Baums.
-- Mehrere Farb-Tags an einer Notiz: Es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
-- **Per Rechtsklick** (ab NoNotes 2.8.0): Rechtsklick auf einen Knoten → **Farbe ▸**. Das Untermenü zeigt die 16 Farben
-  als Felder, so gezeichnet wie ein gefärbter Knoten (Name als Tooltip, die aktuelle Farbe ist markiert):
-  - Ein Klick auf ein Feld ersetzt die Farbe.
-  - **Keine Farbe** entfernt Farbe und Weitergabe.
-  - **Auch Unternotizen** schaltet die Weitergabe sofort an oder ab; das Untermenü bleibt offen.
-  - Gehört der Knoten zur Mehrfachauswahl (`Ctrl`+Klick), gilt alles für alle ausgewählten Knoten. Ein halb gefülltes
-    Häkchen heisst, dass nur ein Teil davon die Farbe weitergibt. Schliesst sich das Menü nach einer Änderung, ist die
-    Auswahl aufgehoben (ab NoNotes 2.8.1); wer mit `Esc` abbricht, behält sie.
-  - Die Tags werden in der Sprache der Oberfläche geschrieben (`farbe:rot` oder `color:red`).
+- **Unternotizen färben:** `farbe-kinder:blau` (englisch `color-children:blue`) färbt alle Unternotizen, die Notiz
+  selbst nicht:
+  - `farbe:rot` und `farbe-kinder:blau` zusammen: die Notiz ist rot, alles darunter blau.
+  - Für dieselbe Farbe setzt man beide Tags mit derselben Farbe.
+  - Eine Unternotiz mit eigener Farbe behält sie.
+  - Hat eine Unternotiz selbst ein `farbe-kinder:`, gilt das für ihren Teil des Baums.
+- Mehrere Farb-Tags derselben Art an einer Notiz: Es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
+- **Umstieg von 1.x:** `farbe:auch-kinder` (`color:with-children`) wird nicht mehr ausgewertet. Statt `farbe:rot` mit
+  `farbe:auch-kinder` schreibt man `farbe:rot` und `farbe-kinder:rot`.
+- **Per Rechtsklick** (ab NoNotes 2.8.0): Rechtsklick auf einen Knoten → **Farbe ▸**. Das Untermenü hat zwei Teile,
+  oben **Notiz** (`farbe:`), unten **Unternotizen** (`farbe-kinder:`). Jeder zeigt die 16 Farben als Felder, so
+  gezeichnet wie ein gefärbter Knoten (Name als Tooltip, die aktuelle Farbe ist markiert):
+  - Ein Klick auf ein Feld ersetzt die Farbe dieses Teils und schliesst das Menü.
+  - **Keine Farbe** entfernt nur das Tag dieses Teils.
+  - Gehört der Knoten zur Mehrfachauswahl (`Ctrl`+Klick), gilt alles für alle ausgewählten Knoten. Markiert ist eine
+    Farbe nur, wenn alle sie haben. Schliesst sich das Menü nach einer Änderung, ist die Auswahl aufgehoben (ab NoNotes
+    2.8.1); wer mit `Esc` abbricht, behält sie.
+  - Die Tags werden in der Sprache der Oberfläche geschrieben (`farbe:rot` und `farbe-kinder:rot`, englisch `color:red`
+    und `color-children:red`).
   - Im Lesemodus und an archivierten Notizen gibt es den Eintrag nicht.
   - Ältere NoNotes-Versionen färben weiter über Tags, nur ohne den Eintrag.
 - Die Auswahl in der Mindmap zeigt weiterhin ihren Rand; die Fläche behält die Farbe. Suche, Ziehen und Mehrfachauswahl
@@ -28,6 +34,8 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
 - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt in der Hauptfarbe.
 
 ## Die 16 Farben
+
+Für die Unternotizen steht `farbe-kinder:` statt `farbe:` (englisch `color-children:` statt `color:`).
 
 | Farbe | Tag | englisch |
 | --- | --- | --- |
@@ -67,7 +75,7 @@ Die Erweiterung braucht das Ereignis `mindmap:rendered` (NoNotes ab 1.8.0), für
 
 Oben in `tag-colors.js` steht die Liste `FARBEN`: pro Farbe der Name im Tag (`id`, ohne Umlaute; `en` für Englisch), der
 Anzeigename und je für `light` und `dark` die Flächenfarbe (`fill`) und die Farbe von Umrandung und Titel (`line`).
-`VORSILBEN` legt fest, was vor dem Doppelpunkt stehen darf, `AUCH_KINDER` den Wert für das Mitfärben der Unternotizen.
+`VORSILBEN` legt fest, was vor dem Doppelpunkt stehen darf, `VORSILBEN_KINDER` dasselbe für die Farbe der Unternotizen.
 Änderungen wirken nach dem Neuladen der Seite.
 
 ## Wie es funktioniert
@@ -83,12 +91,12 @@ von der Zahl der Knoten, auch wenn die Daten auf einem Server liegen. Die Farben
 Browser:
 - Farbtabelle und Kontraste;
 - Tags in beiden Sprachen;
-- Weitergabe an Unternotizen;
+- Farbe der Unternotizen, auch eine andere als die der Notiz;
 - Auswahl;
 - hell und dunkel;
 - Neuladen;
 - Aus- und Einschalten zur Laufzeit;
-- Rechtsklick: Farbwahl, «Keine Farbe», «Auch Unternotizen», Mehrfachauswahl, englische Oberfläche;
+- Rechtsklick: Farbwahl für Notiz und Unternotizen, «Keine Farbe», Mehrfachauswahl, englische Oberfläche;
 - Hilfe.
 
 Der Kern braucht `npm install` und Playwright mit Chromium. Der Ordner `.test/` geht nicht ins Paket.

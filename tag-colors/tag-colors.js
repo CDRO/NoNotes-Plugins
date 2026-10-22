@@ -2,11 +2,13 @@
 
    - Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung; im dunklen Modus des Systems umgekehrt.
    - 16 Farben, siehe FARBEN unten. Gross-/Kleinschreibung ist egal, «farbe:grün» und «farbe:gruen» gehen beide.
-   - «farbe:auch-kinder» («color:with-children») zusätzlich an derselben Notiz gibt ihre Farbe an alle Unternotizen weiter.
-     Eine Unternotiz mit eigener Farbe behält sie; hat auch sie «auch-kinder», gilt ihre Farbe für ihren Teil des Baums.
-   - Mehrere Farb-Tags an einer Notiz: es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
+   - «farbe-kinder:blau» («color-children:blue») färbt alle Unternotizen, die Notiz selbst nicht; mit «farbe:» zusammen
+     können Notiz und Unternotizen verschiedene Farben haben. Eine Unternotiz mit eigener Farbe behält sie; hat sie selbst
+     ein «farbe-kinder:», gilt das für ihren Teil des Baums.
+   - Mehrere Farb-Tags derselben Art an einer Notiz: es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
    - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt, wie sie ist.
-   - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit den 16 Farben, «Keine Farbe» und «Auch Unternotizen».
+   - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit je den 16 Farben und «Keine Farbe» für die Notiz und für
+     ihre Unternotizen.
      Gilt für alle ausgewählten Knoten, wenn der angeklickte dazugehört; danach ist die Auswahl aufgehoben (ab 2.8.1).
      Geschrieben wird in der Sprache der Oberfläche («farbe:rot» bzw. «color:red»).
    Benötigt das Ereignis «mindmap:rendered» (NoNotes ab 1.8.0). */
@@ -33,8 +35,8 @@ const FARBEN = [
   { id: 'pink', en: 'pink', name: 'Pink', light: { fill: '#f9d7e8', line: '#981657' }, dark: { fill: '#412030', line: '#eb70ad' } },
   { id: 'grau', en: 'gray', name: 'Grau', light: { fill: '#e6e7ea', line: '#4f545f' }, dark: { fill: '#2f3032', line: '#a6abb5' } },
 ];
-const VORSILBEN = ['farbe', 'color', 'colour'];          // vor dem Doppelpunkt
-const AUCH_KINDER = ['auch-kinder', 'with-children'];    // nach dem Doppelpunkt: Farbe an die Unternotizen weitergeben
+const VORSILBEN = ['farbe', 'color', 'colour'];                           // vor dem Doppelpunkt: Farbe der Notiz
+const VORSILBEN_KINDER = ['farbe-kinder', 'color-children', 'colour-children']; // Farbe aller Unternotizen
 /* --------------------------------------------------------------------------------------------------------------- */
 
 let ausschalten = null; // aus activate: nimmt Stylesheet und Klassen wieder weg
@@ -44,18 +46,18 @@ const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f
 NoNotesPlugins.register({
   id: 'tag-farben',
   name: 'Farben über Tags',
-  version: '1.2.0',
+  version: '2.0.0',
   api: 1,
   help: {
     de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
 
 - Tag an der Notiz setzen, zum Beispiel \`farbe:rot\` (englisch \`color:red\`). Gross-/Kleinschreibung ist egal.
-- **Unternotizen mitfärben:** zusätzlich \`farbe:auch-kinder\` (\`color:with-children\`). Eine Unternotiz mit eigener Farbe behält sie.
-- Mehrere Farb-Tags an einer Notiz: das erste gilt (Reihenfolge wie im Editor).
+- **Unternotizen färben:** \`farbe-kinder:blau\` (\`color-children:blue\`) färbt alle Unternotizen, die Notiz selbst nicht. Zusammen mit \`farbe:rot\` ist die Notiz rot und alles darunter blau; für dieselbe Farbe beide Tags mit derselben Farbe. Eine Unternotiz mit eigener Farbe behält sie, ein eigenes \`farbe-kinder:\` gilt für ihren Teil des Baums.
+- Mehrere Farb-Tags derselben Art an einer Notiz: das erste gilt (Reihenfolge wie im Editor).
 - Nur auf dem Bildschirm, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.
 
 #### Per Rechtsklick
-Rechtsklick auf einen Knoten → **Farbe ▸**: eine der 16 Farben wählen (ersetzt die bisherige), **Keine Farbe** (entfernt Farbe und Weitergabe) oder **Auch Unternotizen** an- und abhaken (wirkt sofort). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
+Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige) oder **Keine Farbe**. Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
 
 #### Die 16 Farben
 ${tagListe('de')}
@@ -64,19 +66,19 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
     en: `Colours **mind map nodes** by tag: lighter fill, darker outline, the title in the outline colour (reversed in dark mode).
 
 - Put a tag on the note, for example \`color:red\` (German \`farbe:rot\`). Case does not matter.
-- **Colour subnotes too:** add \`color:with-children\` (\`farbe:auch-kinder\`). A subnote with a colour of its own keeps it.
-- Several colour tags on one note: the first one wins (order as in the editor).
+- **Colour subnotes:** \`color-children:blue\` (\`farbe-kinder:blau\`) colours all subnotes, not the note itself. Together with \`color:red\` the note is red and everything below it blue; for the same colour, use both tags with the same colour. A subnote with a colour of its own keeps it; its own \`color-children:\` applies to its part of the tree.
+- Several colour tags of the same kind on one note: the first one wins (order as in the editor).
 - On screen only, not in export and print. The root stays as it is.
 
 #### By right-click
-Right-click a node → **Colour ▸**: pick one of the 16 colours (replaces the current one), **No colour** (removes colour and passing-on) or tick **Subnotes too** (takes effect at once). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
+Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one) or **No colour**. If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
 
 #### The 16 colours
 ${tagListe('en')}, also \`color:grey\`.
 
 German: ${tagListe('de')}.`,
   },
-  description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe:auch-kinder» färbt die Unternotizen mit. Farbwahl per Rechtsklick (ab NoNotes 2.8.0).',
+  description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe-kinder:blau» färbt die Unternotizen. Farbwahl per Rechtsklick (ab NoNotes 2.8.0).',
 
   activate(ctx) {
     const P = window.NoNotesPlugins;
@@ -90,15 +92,15 @@ German: ${tagListe('de')}.`,
     for (const f of FARBEN) { byName.set(f.id, f); byName.set(f.en, f); }
     byName.set('grey', byName.get('gray'));
 
-    // «Farbe : Grün» → { farbe: Grün } · «color:with-children» → { auchKinder: true } · sonst null
+    // «Farbe : Grün» → { art: 'notiz', farbe: Grün } · «color-children:blue» → { art: 'kinder', farbe: Blau } · sonst null
     const fold = v => String(v).toLowerCase().trim().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/\s+/g, '-');
     function deuten(tag) {
       const m = /^([^:]+):(.+)$/.exec(String(tag || '').replace(/^#/, ''));
-      if (!m || !VORSILBEN.includes(fold(m[1]))) return null;
-      const wert = fold(m[2]);
-      if (AUCH_KINDER.includes(wert)) return { auchKinder: true };
-      const farbe = byName.get(wert);
-      return farbe ? { farbe } : null;
+      if (!m) return null;
+      const vor = fold(m[1]);
+      const art = VORSILBEN.includes(vor) ? 'notiz' : VORSILBEN_KINDER.includes(vor) ? 'kinder' : null;
+      const farbe = art && byName.get(fold(m[2]));
+      return farbe ? { art, farbe } : null;
     }
 
     // Stylesheet: überschreibt nur den Grundzustand des Knotens. Darüber, Hover, Suche, Ziehen und Mehrfachauswahl der App
@@ -120,18 +122,19 @@ German: ${tagListe('de')}.`,
       .tf-panel .tf-sw:hover { outline: 2px solid var(--muted); outline-offset: 2px; }
       .tf-panel .tf-sw[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
       .tf-panel .tf-sw:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
-      .tf-panel .tf-check { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
-      .tf-panel .tf-check:hover { background: var(--hover); }
+      .tf-panel .tf-teil { display: flex; flex-direction: column; gap: 4px; }
+      .tf-panel .tf-titel { color: var(--muted); font-size: 12px; padding: 6px 10px 0; }
     `;
     document.head.appendChild(style);
 
-    let stand = { farbe: new Map(), auchKinder: new Set() }; // Notizkennung (Text) → Farbe; Kennungen mit «auch-kinder»
+    const leer = () => ({ notiz: new Map(), kinder: new Map() });
+    let stand = leer(); // je Art: Notizkennung (Text) → Farbe der Notiz bzw. ihrer Unternotizen
     let token = 0;
     let aktiv = true;
 
     /** Welche Notiz welches Farb-Tag hat: wenige Abfragen, unabhängig von der Zahl der Knoten (auch über das Netz). */
     async function laden() {
-      const farbe = new Map(), erstesTag = new Map(), auchKinder = new Set();
+      const neu = leer(), erstesTag = { notiz: new Map(), kinder: new Map() };
       const tags = (await ctx.backend.listAllTags()).filter(t => t.count > 0).map(t => ({ name: t.name, d: deuten(t.name) })).filter(t => t.d);
       await Promise.all(tags.map(async ({ name, d }) => {
         const [lebend, archiv] = await Promise.all([
@@ -139,21 +142,19 @@ German: ${tagListe('de')}.`,
           ctx.backend.listNotes('', { tag: name, scope: 'archive' }),
         ]);
         for (const n of [...lebend, ...archiv]) {
-          const id = String(n.id);
-          if (d.auchKinder) { auchKinder.add(id); continue; }
-          const vorher = erstesTag.get(id);
-          if (vorher == null || name.toLowerCase() < vorher.toLowerCase()) { erstesTag.set(id, name); farbe.set(id, d.farbe); }
+          const id = String(n.id), erstes = erstesTag[d.art], vorher = erstes.get(id);
+          if (vorher == null || name.toLowerCase() < vorher.toLowerCase()) { erstes.set(id, name); neu[d.art].set(id, d.farbe); }
         }
       }));
-      return { farbe, auchKinder };
+      return neu;
     }
 
-    /** Farbe eines Knotens: die eigene, sonst die der nächsten Elternnotiz mit Farbe und «auch-kinder». */
+    /** Farbe eines Knotens: die eigene, sonst die Kinderfarbe der nächsten Elternnotiz, die eine hat. */
     function farbeVon(id, eltern) {
-      const eigene = stand.farbe.get(id);
+      const eigene = stand.notiz.get(id);
       if (eigene) return eigene;
       for (let p = eltern.get(id), n = 0; p && p !== 'root' && n < 10000; p = eltern.get(p), n++) {
-        if (stand.auchKinder.has(p) && stand.farbe.has(p)) return stand.farbe.get(p);
+        if (stand.kinder.has(p)) return stand.kinder.get(p);
       }
       return null;
     }
@@ -182,13 +183,12 @@ German: ${tagListe('de')}.`,
     // ---- Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» --------------------------------------------------
     const englisch = !/^de\b/.test(ctx.language() || 'de');
     const T = englisch
-      ? { farbe: 'Colour', keine: 'No colour', kinder: 'Subnotes too', kinderTitel: 'Pass the colour on to all subnotes' }
-      : { farbe: 'Farbe', keine: 'Keine Farbe', kinder: 'Auch Unternotizen', kinderTitel: 'Die Farbe an alle Unternotizen weitergeben' };
+      ? { farbe: 'Colour', keine: 'No colour', notiz: 'Note', kinder: 'Subnotes', kinderTitel: 'Colour of all subnotes; a subnote with a colour of its own keeps it' }
+      : { farbe: 'Farbe', keine: 'Keine Farbe', notiz: 'Notiz', kinder: 'Unternotizen', kinderTitel: 'Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie' };
     const anzeige = f => (englisch ? f.en.charAt(0).toUpperCase() + f.en.slice(1) : f.name);
-    const farbTag = f => (englisch ? `color:${f.en}` : `farbe:${f.name.toLowerCase()}`);
-    const kinderTag = () => (englisch ? 'color:with-children' : 'farbe:auch-kinder');
-    const ohneFarbe = tags => tags.filter(t => { const d = deuten(t); return !d || d.auchKinder; });
-    const ohneWeitergabe = tags => tags.filter(t => { const d = deuten(t); return !(d && d.auchKinder); });
+    const farbTag = (art, f) => (englisch ? `${art === 'kinder' ? 'color-children' : 'color'}:${f.en}`
+      : `${art === 'kinder' ? 'farbe-kinder' : 'farbe'}:${f.name.toLowerCase()}`);
+    const ohne = (art, tags) => tags.filter(t => { const d = deuten(t); return !(d && d.art === art); });
 
     /** Tags der Notizen ändern (nur wo sich etwas ändert), danach neu zeichnen. */
     async function aendern(ids, fn) {
@@ -204,69 +204,64 @@ German: ${tagListe('de')}.`,
       await ctx.refresh();
     }
 
-    /** Das Untermenü. close(): erledigt, Menü zu (die App hebt dann die Mehrfachauswahl auf); applied(): erledigt, Menü bleibt
-     *  offen (ab NoNotes 2.8.1, die Auswahl wird beim Schliessen aufgehoben). */
-    function farbFeld(target, close, applied) {
+    /** Das Untermenü: oben die Farbe der Notiz, unten die der Unternotizen. Ein Klick ändert die Tags und schliesst das Menü
+     *  (close(): die App hebt dann die Mehrfachauswahl auf, ab NoNotes 2.8.1). */
+    function farbFeld(target, close) {
       const panel = document.createElement('div');
       panel.className = 'tf-panel';
-      const grid = document.createElement('div');
-      grid.className = 'tf-grid';
-      grid.setAttribute('role', 'group');
-      grid.setAttribute('aria-label', T.farbe);
-      const knoepfe = new Map();
-      for (const f of FARBEN) {
-        const b = document.createElement('button');
-        b.type = 'button';
-        b.className = `tf-sw tf-sw-${f.id}`;
-        b.dataset.farbe = f.id;
-        b.title = anzeige(f);
-        b.setAttribute('aria-label', anzeige(f));
-        b.setAttribute('aria-pressed', 'false');
-        b.addEventListener('click', () => { close(); aendern(target.ids, tags => [...ohneFarbe(tags), farbTag(f)]); });
-        knoepfe.set(f.id, b);
-        grid.appendChild(b);
-      }
-      const keine = document.createElement('button');
-      keine.type = 'button';
-      keine.className = 'tf-none';
-      keine.textContent = T.keine;
-      keine.addEventListener('click', () => { close(); aendern(target.ids, tags => ohneWeitergabe(ohneFarbe(tags))); });
-      const label = document.createElement('label');
-      label.className = 'tf-check';
-      label.title = T.kinderTitel;
-      const box = document.createElement('input');
-      box.type = 'checkbox';
-      box.className = 'tf-kinder';
-      box.addEventListener('change', () => {
-        box.indeterminate = false;
-        if (applied) applied();
-        const an = box.checked;
-        aendern(target.ids, tags => (an ? [...ohneWeitergabe(tags), kinderTag()] : ohneWeitergabe(tags)));
-      });
-      label.append(box, T.kinder);
-      panel.append(grid, keine, label);
-
-      // Stand der gewählten Notizen: gemeinsame Farbe markieren, Weitergabe an (alle), aus (keine) oder gemischt
-      Promise.all(target.ids.map(id => ctx.backend.getTags(id))).then(alle => {
-        const farben = new Set(), mitKindern = alle.filter(tags => tags.some(t => { const d = deuten(t); return d && d.auchKinder; })).length;
-        for (const tags of alle) {
-          const eigene = tags.map(deuten).filter(d => d && d.farbe);
-          farben.add(eigene.length ? eigene[0].farbe.id : '');
+      const knoepfe = { notiz: new Map(), kinder: new Map() };
+      for (const art of ['notiz', 'kinder']) {
+        if (art === 'kinder') { const sep = document.createElement('div'); sep.className = 'sep'; panel.appendChild(sep); }
+        const teil = document.createElement('div');
+        teil.className = `tf-teil tf-${art}`;
+        teil.setAttribute('role', 'group');
+        const titel = document.createElement('div');
+        titel.className = 'tf-titel';
+        titel.id = `tf-titel-${art}`;
+        titel.textContent = T[art];
+        if (art === 'kinder') titel.title = T.kinderTitel;
+        teil.setAttribute('aria-labelledby', titel.id);
+        const grid = document.createElement('div');
+        grid.className = 'tf-grid';
+        for (const f of FARBEN) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = `tf-sw tf-sw-${f.id}`;
+          b.dataset.farbe = f.id;
+          b.title = anzeige(f);
+          b.setAttribute('aria-label', anzeige(f));
+          b.setAttribute('aria-pressed', 'false');
+          b.addEventListener('click', () => { close(); aendern(target.ids, tags => [...ohne(art, tags), farbTag(art, f)]); });
+          knoepfe[art].set(f.id, b);
+          grid.appendChild(b);
         }
-        if (farben.size === 1) { const k = knoepfe.get([...farben][0]); if (k) k.setAttribute('aria-pressed', 'true'); }
-        box.checked = mitKindern > 0 && mitKindern === alle.length;
-        box.indeterminate = mitKindern > 0 && mitKindern < alle.length;
+        const keine = document.createElement('button');
+        keine.type = 'button';
+        keine.className = 'tf-none';
+        keine.textContent = T.keine;
+        keine.addEventListener('click', () => { close(); aendern(target.ids, tags => ohne(art, tags)); });
+        teil.append(titel, grid, keine);
+        panel.appendChild(teil);
+      }
+
+      // Stand der gewählten Notizen: je Art die gemeinsame Farbe markieren (bei verschiedenen keine)
+      Promise.all(target.ids.map(id => ctx.backend.getTags(id))).then(alle => {
+        for (const art of ['notiz', 'kinder']) {
+          const farben = new Set(alle.map(tags => { const d = tags.map(deuten).find(x => x && x.art === art); return d ? d.farbe.id : ''; }));
+          const k = farben.size === 1 && knoepfe[art].get([...farben][0]);
+          if (k) k.setAttribute('aria-pressed', 'true');
+        }
         panel.dataset.stand = 'geladen';
       }).catch(() => {});
       return panel;
     }
 
-    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, api) => farbFeld(target, api.close, api.applied) });
+    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, api) => farbFeld(target, api.close) });
 
     ctx.on('mindmap:rendered', neu);
     // Andere Datei oder anderer Bereich: dieselben Nummern sind andere Notizen. Den Stand verwerfen, sofort ohne Farben zeichnen
     // und neu laden (NoNotes ab 2.8.1 meldet das vor dem Zeichnen, ältere danach: dann korrigiert das hier die Farben)
-    ctx.on('database:replaced', () => { token++; stand = { farbe: new Map(), auchKinder: new Set() }; return neu(); });
+    ctx.on('database:replaced', () => { token++; stand = leer(); return neu(); });
     neu(); // die Mindmap ist beim Einschalten eventuell schon gezeichnet
 
     ausschalten = () => {
