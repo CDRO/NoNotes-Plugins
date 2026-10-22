@@ -24,7 +24,7 @@ function colorsOfFile() {
   const box = { NoNotesPlugins: { register() {} }, console };
   box.window = box;
   require('node:vm').runInNewContext(src + '\n;globalThis.__f = FARBEN;', box);
-  return box.__f;
+  return JSON.parse(JSON.stringify(box.__f)); // als Daten dieses Kontexts (Arrays aus vm haben einen anderen Prototyp)
 }
 
 const lum = h => { const n = parseInt(h.slice(1), 16); const c = [n >> 16, (n >> 8) & 255, n & 255].map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
@@ -128,7 +128,7 @@ async function main() {
     await tag('Andere', 'farbe:grün');
     await tag('Mehrere', 'farbe:gelb', 'farbe:blau');
     await tag('Tippfehler', 'farbe:rosa', 'farbe : ');
-    const deselect = async () => { await page.keyboard.press('Escape'); await page.waitForFunction(() => !document.querySelector('g.mm-node.mm-selected')); };
+    const deselect = async () => { await page.focus('#mindmap'); await page.keyboard.press('Escape'); await page.waitForFunction(() => !document.querySelector('g.mm-node.mm-selected, g.mm-node.mm-multi')); };
     await deselect(); // zurück in der Mindmap ist die zuletzt offene Notiz ausgewählt
     for (const [title, id] of [['Projekt', 'rot'], ['Teil A', 'rot'], ['Detail', 'rot'], ['Teil B', 'blau'], ['Andere', 'gruen'], ['Kind', null],
       ['Mehrere', 'blau'], ['Ohne', null], ['Tippfehler', null]]) await expect(title, id, 'light');
@@ -195,6 +195,127 @@ async function main() {
     await page.keyboard.press('Escape');
     await expect('Teil B', 'blau', 'light');
     part('Aus- und wieder einschalten zur Laufzeit: Farben weg und wieder da');
+
+    // Rechtsklick (NoNotes ab 2.8.0): «Farbe ▸» mit 16 Feldern, «Keine Farbe», «Auch Unternotizen»
+    const chips = async title => {
+      await node(title).dblclick();
+      await page.waitForFunction(t => document.body.classList.contains('editor-open') && document.querySelector('#title').value === t, title);
+      // Tags gelten je Datei ohne Unterschied der Schreibweise: ein schon vorhandenes «Farbe:Rot» wird übernommen
+      const out = await page.evaluate(() => [...document.querySelectorAll('#tagChips .chip')].map(c => c.firstChild.textContent.toLowerCase()));
+      await page.click('#backBtn');
+      await page.waitForSelector('body:not(.editor-open)');
+      return out;
+    };
+    async function colorMenu(title) {
+      await node(title).click({ button: 'right' });
+      await page.waitForSelector('#contextMenu:not([hidden])');
+      await page.hover('#contextMenu button[data-plugin="tag-farben"]');
+      await page.waitForSelector('.context-sub .tf-panel[data-stand="geladen"]'); // Markierung und Häkchen kommen nachgeladen
+    }
+    const panelState = () => page.evaluate(() => {
+      const box = document.querySelector('.tf-panel .tf-kinder');
+      return { pressed: [...document.querySelectorAll('.tf-panel .tf-sw[aria-pressed="true"]')].map(b => b.dataset.farbe), checked: box.checked, mixed: box.indeterminate };
+    });
+    await node('Ohne').click({ button: 'right' });
+    await page.waitForSelector('#contextMenu:not([hidden])');
+    const item = page.locator('#contextMenu button[data-plugin="tag-farben"]');
+    assert.equal(await item.locator('span').first().innerText(), 'Farbe');
+    assert.equal(await item.locator('.key').innerText(), '▸');
+    await page.keyboard.press('Escape');
+    await colorMenu('Ohne');
+    assert.equal(await page.locator('.tf-panel .tf-sw').count(), 16, '16 Farbfelder');
+    assert.deepEqual(await page.locator('.tf-panel .tf-sw').evaluateAll(b => b.map(x => x.title)), colors.map(c => c.name), 'Namen als Tooltip, in der Reihenfolge der Tabelle');
+    assert.deepEqual(await panelState(), { pressed: [], checked: false, mixed: false }, 'ohne Farbe: nichts markiert');
+    const sw = await page.locator('.tf-panel .tf-sw-rot').evaluate(b => [getComputedStyle(b).backgroundColor, getComputedStyle(b).borderTopColor]);
+    assert.deepEqual(sw, [rgb(byId.rot.light.fill), rgb(byId.rot.light.line)], 'Farbfeld gezeichnet wie ein gefärbter Knoten');
+    await page.click('.tf-panel .tf-sw-rot');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    await expect('Ohne', 'rot', 'light');
+    assert.deepEqual(await chips('Ohne'), ['farbe:rot'], 'Tag in der Sprache der Oberfläche');
+    await colorMenu('Ohne');
+    assert.deepEqual((await panelState()).pressed, ['rot'], 'die aktuelle Farbe ist markiert');
+    await page.click('.tf-panel .tf-sw-gruen');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    await expect('Ohne', 'gruen', 'light');
+    assert.deepEqual(await chips('Ohne'), ['farbe:grün'], 'die neue Farbe ersetzt die alte');
+    part('Rechtsklick: «Farbe ▸» mit 16 Feldern wie Knoten, Namen als Tooltip, Wahl ersetzt die Farbe, aktuelle markiert, Tag in der Sprache der Oberfläche');
+
+    // «Auch Unternotizen»: wirkt sofort, das Untermenü bleibt offen; wieder weg
+    await colorMenu('Andere');
+    assert.deepEqual(await panelState(), { pressed: ['gruen'], checked: false, mixed: false });
+    await page.click('.tf-panel .tf-kinder');
+    assert.equal(await page.locator('.context-sub').isVisible(), true, 'Untermenü bleibt offen');
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await deselect();
+    await expect('Kind', 'gruen', 'light');
+    await colorMenu('Andere');
+    assert.equal((await panelState()).checked, true, 'Häkchen zeigt den Stand');
+    await page.click('.tf-panel .tf-kinder');
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await deselect();
+    await expect('Kind', null, 'light');
+    await expect('Andere', 'gruen', 'light');
+    part('Rechtsklick: «Auch Unternotizen» wirkt sofort und zeigt den Stand, Untermenü bleibt offen');
+
+    // Mehrfachauswahl: alle ausgewählten; gemischter Stand der Weitergabe; «Keine Farbe» entfernt Farbe und Weitergabe
+    await tag('Teil B', 'farbe:auch-kinder');
+    await deselect();
+    await node('Teil B').click({ modifiers: ['Control'] });
+    await node('Mehrere').click({ modifiers: ['Control'] });
+    await page.waitForFunction(() => document.querySelectorAll('g.mm-node.mm-multi').length === 2);
+    await colorMenu('Mehrere');
+    assert.deepEqual(await panelState(), { pressed: ['blau'], checked: false, mixed: true }, 'beide blau, Weitergabe gemischt');
+    await page.click('.tf-panel .tf-sw-violett');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    await expect('Mehrere', 'violett', 'light');
+    await expect('Teil B', 'violett', 'light');
+    assert.deepEqual(await chips('Mehrere'), ['farbe:violett'], 'beide Farb-Tags ersetzt');
+    await deselect();
+    await colorMenu('Teil B');
+    await page.click('.tf-panel .tf-none');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    await expect('Teil B', null, 'light');
+    assert.deepEqual(await chips('Teil B'), [], '«Keine Farbe» entfernt Farbe und Weitergabe');
+    await deselect();
+    await page.click('.mm-root', { button: 'right' });
+    assert.equal(await page.locator('#contextMenu button[data-plugin="tag-farben"]').count(), 0, 'nicht an der Wurzel');
+    await page.keyboard.press('Escape');
+    part('Rechtsklick: Mehrfachauswahl färbt alle ausgewählten, gemischte Weitergabe erkennbar, «Keine Farbe» entfernt beide Tags, nicht an der Wurzel');
+
+    // Englische Oberfläche: Beschriftung und Tags auf Englisch
+    const ctxEn = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: 'en-US' });
+    await ctxEn.addInitScript(f => { try { if (!localStorage.getItem('nonotes.plugins')) { localStorage.setItem('nonotes.plugins', JSON.stringify([f])); localStorage.setItem('nonotes.lang', 'en'); } } catch (e) { /* egal */ } }, FILE);
+    const en = await ctxEn.newPage();
+    await en.goto('file://' + path.join(out, 'index.html'));
+    await en.waitForSelector(READY, { timeout: 30000 });
+    await en.click('#mindmap', { position: { x: 30, y: 700 } });
+    await en.keyboard.press('Tab');
+    await en.waitForSelector('#renameInput:not([hidden])');
+    await en.keyboard.type('Plan');
+    await en.keyboard.press('Enter');
+    const plan = en.locator('g.mm-node:has(> text:text-is("Plan"))');
+    await plan.waitFor();
+    await plan.click({ button: 'right' });
+    await en.hover('#contextMenu button[data-plugin="tag-farben"]');
+    await en.waitForSelector('.tf-panel');
+    assert.equal(await en.locator('#contextMenu button[data-plugin="tag-farben"] span').first().innerText(), 'Colour');
+    assert.equal(await en.locator('.tf-panel .tf-none').innerText(), 'No colour');
+    assert.match(await en.locator('.tf-panel .tf-check').innerText(), /Subnotes too/);
+    assert.equal(await en.locator('.tf-panel .tf-sw-tuerkis').getAttribute('title'), 'Teal');
+    await en.click('.tf-panel .tf-kinder');
+    await en.click('.tf-panel .tf-sw-tuerkis');
+    await plan.dblclick();
+    await en.waitForFunction(() => document.body.classList.contains('editor-open'));
+    await en.waitForFunction(() => document.querySelectorAll('#tagChips .chip').length === 2);
+    assert.deepEqual(await en.evaluate(() => [...document.querySelectorAll('#tagChips .chip')].map(c => c.firstChild.textContent)), ['color:teal', 'color:with-children']);
+    await ctxEn.close();
+    part('Englische Oberfläche: «Colour ▸», «No colour», «Subnotes too», Tags color:teal und color:with-children');
 
     // Hilfe
     await page.click('#menuBtn');

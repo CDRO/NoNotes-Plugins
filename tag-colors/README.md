@@ -12,6 +12,16 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
   Farbe für alle Unternotizen. Eine Unternotiz mit eigener Farbe behält sie; hat auch sie `auch-kinder`, gilt ihre Farbe
   für ihren Teil des Baums.
 - Mehrere Farb-Tags an einer Notiz: Es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
+- **Per Rechtsklick** (ab NoNotes 2.8.0): Rechtsklick auf einen Knoten → **Farbe ▸**. Das Untermenü zeigt die 16 Farben
+  als Felder, so gezeichnet wie ein gefärbter Knoten (Name als Tooltip, die aktuelle Farbe ist markiert):
+  - Ein Klick auf ein Feld ersetzt die Farbe.
+  - **Keine Farbe** entfernt Farbe und Weitergabe.
+  - **Auch Unternotizen** schaltet die Weitergabe sofort an oder ab; das Untermenü bleibt offen.
+  - Gehört der Knoten zur Mehrfachauswahl (`Ctrl`+Klick), gilt alles für alle ausgewählten Knoten. Ein halb gefülltes
+    Häkchen heisst, dass nur ein Teil davon die Farbe weitergibt.
+  - Die Tags werden in der Sprache der Oberfläche geschrieben (`farbe:rot` oder `color:red`).
+  - Im Lesemodus und an archivierten Notizen gibt es den Eintrag nicht.
+  - Ältere NoNotes-Versionen färben weiter über Tags, nur ohne den Eintrag.
 - Die Auswahl in der Mindmap zeigt weiterhin ihren Rand; die Fläche behält die Farbe. Suche, Ziehen und Mehrfachauswahl
   sehen aus wie immer.
 - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt in der Hauptfarbe.
@@ -49,7 +59,8 @@ Von Hand: den Ordner `tag-colors/` in den Ordner `plugins/` der App kopieren und
 laden» `tag-colors/tag-colors.js` eingeben. Soll sie immer laufen, trägt man sie in `plugins/plugins.js` ein:
 `NoNotesPlugins.list(['tag-colors/tag-colors.js']);`.
 
-Die Erweiterung braucht das Ereignis `mindmap:rendered` (NoNotes ab 1.8.0).
+Die Erweiterung braucht das Ereignis `mindmap:rendered` (NoNotes ab 1.8.0), für den Rechtsklick
+`ctx.ui.addContextMenuItem` (NoNotes ab 2.8.0).
 
 ## Anpassen
 
@@ -76,6 +87,7 @@ Browser:
 - hell und dunkel;
 - Neuladen;
 - Aus- und Einschalten zur Laufzeit;
+- Rechtsklick: Farbwahl, «Keine Farbe», «Auch Unternotizen», Mehrfachauswahl, englische Oberfläche;
 - Hilfe.
 
 Der Kern braucht `npm install` und Playwright mit Chromium. Der Ordner `.test/` geht nicht ins Paket.

@@ -6,6 +6,9 @@
      Eine Unternotiz mit eigener Farbe behält sie; hat auch sie «auch-kinder», gilt ihre Farbe für ihren Teil des Baums.
    - Mehrere Farb-Tags an einer Notiz: es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
    - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt, wie sie ist.
+   - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit den 16 Farben, «Keine Farbe» und «Auch Unternotizen».
+     Gilt für alle ausgewählten Knoten, wenn der angeklickte dazugehört. Geschrieben wird in der Sprache der Oberfläche
+     («farbe:rot» bzw. «color:red»).
    Benötigt das Ereignis «mindmap:rendered» (NoNotes ab 1.8.0). */
 
 /* ---- Farben ------------------------------------------------------------------------------------------------------
@@ -41,7 +44,7 @@ const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f
 NoNotesPlugins.register({
   id: 'tag-farben',
   name: 'Farben über Tags',
-  version: '1.0.0',
+  version: '1.1.0',
   api: 1,
   help: {
     de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
@@ -50,6 +53,9 @@ NoNotesPlugins.register({
 - **Unternotizen mitfärben:** zusätzlich \`farbe:auch-kinder\` (\`color:with-children\`). Eine Unternotiz mit eigener Farbe behält sie.
 - Mehrere Farb-Tags an einer Notiz: das erste gilt (Reihenfolge wie im Editor).
 - Nur auf dem Bildschirm, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.
+
+#### Per Rechtsklick
+Rechtsklick auf einen Knoten → **Farbe ▸**: eine der 16 Farben wählen (ersetzt die bisherige), **Keine Farbe** (entfernt Farbe und Weitergabe) oder **Auch Unternotizen** an- und abhaken (wirkt sofort). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
 
 #### Die 16 Farben
 ${tagListe('de')}
@@ -62,12 +68,15 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
 - Several colour tags on one note: the first one wins (order as in the editor).
 - On screen only, not in export and print. The root stays as it is.
 
+#### By right-click
+Right-click a node → **Colour ▸**: pick one of the 16 colours (replaces the current one), **No colour** (removes colour and passing-on) or tick **Subnotes too** (takes effect at once). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
+
 #### The 16 colours
 ${tagListe('en')}, also \`color:grey\`.
 
 German: ${tagListe('de')}.`,
   },
-  description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe:auch-kinder» färbt die Unternotizen mit.',
+  description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe:auch-kinder» färbt die Unternotizen mit. Farbwahl per Rechtsklick (ab NoNotes 2.8.0).',
 
   activate(ctx) {
     const P = window.NoNotesPlugins;
@@ -100,9 +109,20 @@ German: ${tagListe('de')}.`,
         + `g.mm-node.mm-selected.${KLASSE}${f.id} > rect { fill: ${c.fill}; }\n`
         + `g.${KLASSE}${f.id} > text { fill: ${c.line}; }\n`;
     }).join('');
+    // Farbfelder im Untermenü: gezeichnet wie ein gefärbter Knoten (Selektoren stärker als die Knöpfe des Kontextmenüs)
+    const felder = scheme => FARBEN.map(f => `.tf-panel .tf-sw.tf-sw-${f.id} { background: ${f[scheme].fill}; border-color: ${f[scheme].line}; }\n`).join('');
     const style = document.createElement('style');
     style.id = STYLE_ID;
-    style.textContent = regeln('light') + `@media (prefers-color-scheme: dark) {\n${regeln('dark')}}\n`;
+    style.textContent = regeln('light') + felder('light') + `@media (prefers-color-scheme: dark) {\n${regeln('dark')}${felder('dark')}}\n` + `
+      .tf-panel { display: flex; flex-direction: column; gap: 4px; }
+      .tf-panel .tf-grid { display: grid; grid-template-columns: repeat(4, auto); gap: 6px; padding: 4px 6px 6px; }
+      .tf-panel .tf-sw { width: 34px; height: 26px; padding: 0; border: 2px solid; border-radius: 8px; display: block; cursor: pointer; }
+      .tf-panel .tf-sw:hover { outline: 2px solid var(--muted); outline-offset: 2px; }
+      .tf-panel .tf-sw[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .tf-panel .tf-sw:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+      .tf-panel .tf-check { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+      .tf-panel .tf-check:hover { background: var(--hover); }
+    `;
     document.head.appendChild(style);
 
     let stand = { farbe: new Map(), auchKinder: new Set() }; // Notizkennung (Text) → Farbe; Kennungen mit «auch-kinder»
@@ -158,6 +178,87 @@ German: ${tagListe('de')}.`,
       stand = frisch;
       malen();
     }
+
+    // ---- Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» --------------------------------------------------
+    const englisch = !/^de\b/.test(ctx.language() || 'de');
+    const T = englisch
+      ? { farbe: 'Colour', keine: 'No colour', kinder: 'Subnotes too', kinderTitel: 'Pass the colour on to all subnotes' }
+      : { farbe: 'Farbe', keine: 'Keine Farbe', kinder: 'Auch Unternotizen', kinderTitel: 'Die Farbe an alle Unternotizen weitergeben' };
+    const anzeige = f => (englisch ? f.en.charAt(0).toUpperCase() + f.en.slice(1) : f.name);
+    const farbTag = f => (englisch ? `color:${f.en}` : `farbe:${f.name.toLowerCase()}`);
+    const kinderTag = () => (englisch ? 'color:with-children' : 'farbe:auch-kinder');
+    const ohneFarbe = tags => tags.filter(t => { const d = deuten(t); return !d || d.auchKinder; });
+    const ohneWeitergabe = tags => tags.filter(t => { const d = deuten(t); return !(d && d.auchKinder); });
+
+    /** Tags der Notizen ändern (nur wo sich etwas ändert), danach neu zeichnen. */
+    async function aendern(ids, fn) {
+      try {
+        for (const id of ids) {
+          const tags = await ctx.backend.getTags(id);
+          const next = fn(tags);
+          if (next.join('\n') !== tags.join('\n')) await ctx.backend.setTags(id, next);
+        }
+      } catch (e) {
+        ctx.ui.setStatus(`${T.farbe}: ${(e && e.message) || e}`, 'error');
+      }
+      await ctx.refresh();
+    }
+
+    function farbFeld(target, close) {
+      const panel = document.createElement('div');
+      panel.className = 'tf-panel';
+      const grid = document.createElement('div');
+      grid.className = 'tf-grid';
+      grid.setAttribute('role', 'group');
+      grid.setAttribute('aria-label', T.farbe);
+      const knoepfe = new Map();
+      for (const f of FARBEN) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = `tf-sw tf-sw-${f.id}`;
+        b.dataset.farbe = f.id;
+        b.title = anzeige(f);
+        b.setAttribute('aria-label', anzeige(f));
+        b.setAttribute('aria-pressed', 'false');
+        b.addEventListener('click', () => { close(); aendern(target.ids, tags => [...ohneFarbe(tags), farbTag(f)]); });
+        knoepfe.set(f.id, b);
+        grid.appendChild(b);
+      }
+      const keine = document.createElement('button');
+      keine.type = 'button';
+      keine.className = 'tf-none';
+      keine.textContent = T.keine;
+      keine.addEventListener('click', () => { close(); aendern(target.ids, tags => ohneWeitergabe(ohneFarbe(tags))); });
+      const label = document.createElement('label');
+      label.className = 'tf-check';
+      label.title = T.kinderTitel;
+      const box = document.createElement('input');
+      box.type = 'checkbox';
+      box.className = 'tf-kinder';
+      box.addEventListener('change', () => {
+        box.indeterminate = false;
+        const an = box.checked;
+        aendern(target.ids, tags => (an ? [...ohneWeitergabe(tags), kinderTag()] : ohneWeitergabe(tags)));
+      });
+      label.append(box, T.kinder);
+      panel.append(grid, keine, label);
+
+      // Stand der gewählten Notizen: gemeinsame Farbe markieren, Weitergabe an (alle), aus (keine) oder gemischt
+      Promise.all(target.ids.map(id => ctx.backend.getTags(id))).then(alle => {
+        const farben = new Set(), mitKindern = alle.filter(tags => tags.some(t => { const d = deuten(t); return d && d.auchKinder; })).length;
+        for (const tags of alle) {
+          const eigene = tags.map(deuten).filter(d => d && d.farbe);
+          farben.add(eigene.length ? eigene[0].farbe.id : '');
+        }
+        if (farben.size === 1) { const k = knoepfe.get([...farben][0]); if (k) k.setAttribute('aria-pressed', 'true'); }
+        box.checked = mitKindern > 0 && mitKindern === alle.length;
+        box.indeterminate = mitKindern > 0 && mitKindern < alle.length;
+        panel.dataset.stand = 'geladen';
+      }).catch(() => {});
+      return panel;
+    }
+
+    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, { close }) => farbFeld(target, close) });
 
     ctx.on('mindmap:rendered', neu);
     ctx.on('database:replaced', () => { token++; stand = { farbe: new Map(), auchKinder: new Set() }; });
