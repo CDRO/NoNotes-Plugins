@@ -271,6 +271,7 @@ async function main() {
     assert.deepEqual(await panelState(), { pressed: ['blau'], checked: false, mixed: true }, 'beide blau, Weitergabe gemischt');
     await page.click('.tf-panel .tf-sw-violett');
     await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    assert.equal(await page.locator('g.mm-node.mm-multi').count(), 0, 'nach der Farbwahl ist die Mehrfachauswahl aufgehoben');
     await deselect();
     await expect('Mehrere', 'violett', 'light');
     await expect('Teil B', 'violett', 'light');
@@ -287,6 +288,56 @@ async function main() {
     assert.equal(await page.locator('#contextMenu button[data-plugin="tag-farben"]').count(), 0, 'nicht an der Wurzel');
     await page.keyboard.press('Escape');
     part('Rechtsklick: Mehrfachauswahl färbt alle ausgewählten, gemischte Weitergabe erkennbar, «Keine Farbe» entfernt beide Tags, nicht an der Wurzel');
+
+    // Wechsel des Bereichs (Alt+Zahl): dieselben Nummern sind andere Notizen; nichts überträgt sich, die Farben stimmen
+    const answers = [];
+    page.on('dialog', d => d.accept(d.type() === 'prompt' ? (answers.shift() || '') : undefined));
+    const label = () => page.evaluate(() => document.querySelector('#storageInfo .label').textContent);
+    const tfNodes = () => page.evaluate(() => [...document.querySelectorAll('g.mm-node')].filter(g => [...g.classList].some(c => c.startsWith('tf-'))).map(g => g.querySelector(':scope > text').textContent).sort());
+    const before = await tfNodes();
+    assert.ok(before.length >= 4, 'im ersten Bereich sind Knoten gefärbt: ' + before.join(', '));
+    await node('Ohne').click({ modifiers: ['Control'] });
+    await node('Andere').click({ modifiers: ['Control'] });
+    await page.waitForFunction(() => document.querySelectorAll('g.mm-node.mm-multi').length === 2);
+    answers.push('Privat');
+    await page.click('#storageInfo');
+    await page.waitForSelector('#contextMenu:not([hidden])');
+    await page.click('#contextMenu button:has-text("Neuer Bereich…")');
+    await page.waitForFunction(() => /Privat/.test(document.querySelector('#storageInfo .label').textContent));
+    assert.equal(await page.locator('#multiBar').isVisible(), false, 'die Mehrfachauswahl bleibt im alten Bereich');
+    for (const t of ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9']) await newNote(t);
+    await page.waitForTimeout(300);
+    assert.deepEqual(await tfNodes(), [], 'neuer Bereich: keine Farben aus dem alten (gleiche Nummern)');
+    await page.keyboard.press('Alt+1');
+    await page.waitForFunction(() => !/Privat/.test(document.querySelector('#storageInfo .label').textContent));
+    await page.waitForFunction(n => [...document.querySelectorAll('g.mm-node')].filter(g => [...g.classList].some(c => c.startsWith('tf-'))).length === n, before.length);
+    assert.deepEqual(await tfNodes(), before, 'zurück im ersten Bereich: dieselben Farben wie vorher');
+    await expect('Mehrere', 'violett', 'light');
+    assert.equal(await page.locator('g.mm-node.mm-multi').count(), 0, 'keine Mehrfachauswahl über den Wechsel');
+    await page.keyboard.press('Alt+2');
+    await page.waitForFunction(() => /Privat/.test(document.querySelector('#storageInfo .label').textContent));
+    await page.waitForTimeout(300);
+    assert.deepEqual(await tfNodes(), [], 'wieder im zweiten Bereich: keine Farben');
+    await node('P2').click({ button: 'right' });
+    await page.hover('#contextMenu button[data-plugin="tag-farben"]');
+    await page.waitForSelector('.tf-panel[data-stand="geladen"]');
+    assert.deepEqual(await panelState(), { pressed: [], checked: false, mixed: false }, 'das Untermenü liest den Bereich, der offen ist');
+    await page.click('.tf-panel .tf-sw-pink');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    await expect('P2', 'pink', 'light');
+    assert.deepEqual(await tfNodes(), ['P2']);
+    await page.keyboard.press('Alt+1');
+    await page.waitForFunction(() => !/Privat/.test(document.querySelector('#storageInfo .label').textContent));
+    await page.waitForFunction(n => [...document.querySelectorAll('g.mm-node')].filter(g => [...g.classList].some(c => c.startsWith('tf-'))).length === n, before.length);
+    assert.deepEqual(await tfNodes(), before, 'die Farbe aus dem zweiten Bereich bleibt dort');
+    await page.keyboard.press('Alt+2');
+    await page.waitForFunction(() => /Privat/.test(document.querySelector('#storageInfo .label').textContent));
+    await page.waitForFunction(() => [...document.querySelectorAll('g.mm-node')].filter(g => [...g.classList].some(c => c.startsWith('tf-'))).length === 1);
+    assert.deepEqual(await tfNodes(), ['P2'], 'und ist wieder da');
+    await page.keyboard.press('Alt+1');
+    await page.waitForFunction(() => !/Privat/.test(document.querySelector('#storageInfo .label').textContent));
+    part('Wechsel des Bereichs (Alt+Zahl): Farben stimmen in beiden Bereichen, nichts überträgt sich, keine Mehrfachauswahl über den Wechsel');
 
     // Englische Oberfläche: Beschriftung und Tags auf Englisch
     const ctxEn = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: 'en-US' });

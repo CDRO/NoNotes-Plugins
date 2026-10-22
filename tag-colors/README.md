@@ -18,7 +18,8 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
   - **Keine Farbe** entfernt Farbe und Weitergabe.
   - **Auch Unternotizen** schaltet die Weitergabe sofort an oder ab; das Untermenü bleibt offen.
   - Gehört der Knoten zur Mehrfachauswahl (`Ctrl`+Klick), gilt alles für alle ausgewählten Knoten. Ein halb gefülltes
-    Häkchen heisst, dass nur ein Teil davon die Farbe weitergibt.
+    Häkchen heisst, dass nur ein Teil davon die Farbe weitergibt. Schliesst sich das Menü nach einer Änderung, ist die
+    Auswahl aufgehoben (ab NoNotes 2.8.1); wer mit `Esc` abbricht, behält sie.
   - Die Tags werden in der Sprache der Oberfläche geschrieben (`farbe:rot` oder `color:red`).
   - Im Lesemodus und an archivierten Notizen gibt es den Eintrag nicht.
   - Ältere NoNotes-Versionen färben weiter über Tags, nur ohne den Eintrag.

@@ -7,8 +7,8 @@
    - Mehrere Farb-Tags an einer Notiz: es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
    - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt, wie sie ist.
    - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit den 16 Farben, «Keine Farbe» und «Auch Unternotizen».
-     Gilt für alle ausgewählten Knoten, wenn der angeklickte dazugehört. Geschrieben wird in der Sprache der Oberfläche
-     («farbe:rot» bzw. «color:red»).
+     Gilt für alle ausgewählten Knoten, wenn der angeklickte dazugehört; danach ist die Auswahl aufgehoben (ab 2.8.1).
+     Geschrieben wird in der Sprache der Oberfläche («farbe:rot» bzw. «color:red»).
    Benötigt das Ereignis «mindmap:rendered» (NoNotes ab 1.8.0). */
 
 /* ---- Farben ------------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f
 NoNotesPlugins.register({
   id: 'tag-farben',
   name: 'Farben über Tags',
-  version: '1.1.0',
+  version: '1.2.0',
   api: 1,
   help: {
     de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
@@ -55,7 +55,7 @@ NoNotesPlugins.register({
 - Nur auf dem Bildschirm, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.
 
 #### Per Rechtsklick
-Rechtsklick auf einen Knoten → **Farbe ▸**: eine der 16 Farben wählen (ersetzt die bisherige), **Keine Farbe** (entfernt Farbe und Weitergabe) oder **Auch Unternotizen** an- und abhaken (wirkt sofort). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
+Rechtsklick auf einen Knoten → **Farbe ▸**: eine der 16 Farben wählen (ersetzt die bisherige), **Keine Farbe** (entfernt Farbe und Weitergabe) oder **Auch Unternotizen** an- und abhaken (wirkt sofort). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
 
 #### Die 16 Farben
 ${tagListe('de')}
@@ -69,7 +69,7 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
 - On screen only, not in export and print. The root stays as it is.
 
 #### By right-click
-Right-click a node → **Colour ▸**: pick one of the 16 colours (replaces the current one), **No colour** (removes colour and passing-on) or tick **Subnotes too** (takes effect at once). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
+Right-click a node → **Colour ▸**: pick one of the 16 colours (replaces the current one), **No colour** (removes colour and passing-on) or tick **Subnotes too** (takes effect at once). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
 
 #### The 16 colours
 ${tagListe('en')}, also \`color:grey\`.
@@ -204,7 +204,9 @@ German: ${tagListe('de')}.`,
       await ctx.refresh();
     }
 
-    function farbFeld(target, close) {
+    /** Das Untermenü. close(): erledigt, Menü zu (die App hebt dann die Mehrfachauswahl auf); applied(): erledigt, Menü bleibt
+     *  offen (ab NoNotes 2.8.1, die Auswahl wird beim Schliessen aufgehoben). */
+    function farbFeld(target, close, applied) {
       const panel = document.createElement('div');
       panel.className = 'tf-panel';
       const grid = document.createElement('div');
@@ -237,6 +239,7 @@ German: ${tagListe('de')}.`,
       box.className = 'tf-kinder';
       box.addEventListener('change', () => {
         box.indeterminate = false;
+        if (applied) applied();
         const an = box.checked;
         aendern(target.ids, tags => (an ? [...ohneWeitergabe(tags), kinderTag()] : ohneWeitergabe(tags)));
       });
@@ -258,10 +261,12 @@ German: ${tagListe('de')}.`,
       return panel;
     }
 
-    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, { close }) => farbFeld(target, close) });
+    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, api) => farbFeld(target, api.close, api.applied) });
 
     ctx.on('mindmap:rendered', neu);
-    ctx.on('database:replaced', () => { token++; stand = { farbe: new Map(), auchKinder: new Set() }; });
+    // Andere Datei oder anderer Bereich: dieselben Nummern sind andere Notizen. Den Stand verwerfen, sofort ohne Farben zeichnen
+    // und neu laden (NoNotes ab 2.8.1 meldet das vor dem Zeichnen, ältere danach: dann korrigiert das hier die Farben)
+    ctx.on('database:replaced', () => { token++; stand = { farbe: new Map(), auchKinder: new Set() }; return neu(); });
     neu(); // die Mindmap ist beim Einschalten eventuell schon gezeichnet
 
     ausschalten = () => {
