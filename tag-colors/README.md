@@ -15,6 +15,13 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
   - Eine Unternotiz mit eigener Farbe behält sie.
   - Hat eine Unternotiz selbst ein `farbe-kinder:`, gilt das für ihren Teil des Baums.
 - Mehrere Farb-Tags derselben Art an einer Notiz: Es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
+- **Schraffiert** (seit 2.1.0): `+schraffiert` am Farb-Tag, etwa `farbe:rot+schraffiert` oder
+  `farbe-kinder:blau+schraffiert` (englisch `color:red+hatched`), hebt einen Knoten hervor:
+  - Die Fläche bekommt diagonale Streifen, 4 px breit bei Zoom 100 %. Sie wachsen und schrumpfen mit dem Zoom.
+  - Die Streifen wechseln zwischen der Farbe und einer helleren Fassung davon. Diese wird aus der Farbe berechnet: hell
+    zum Weiss hin, dunkel zur Linienfarbe hin.
+  - Der Titel behält auf beiden Streifen mindestens 4.5:1 Kontrast.
+  - Ein unbekannter Zusatz nach `+` zählt nicht; die Farbe gilt trotzdem.
 - **Umstieg von 1.x:** `farbe:auch-kinder` (`color:with-children`) wird nicht mehr ausgewertet. Statt `farbe:rot` mit
   `farbe:auch-kinder` schreibt man `farbe:rot` und `farbe-kinder:rot`.
 - **Per Rechtsklick** (ab NoNotes 2.8.0): Rechtsklick auf einen Knoten → **Farbe ▸**. Das Untermenü hat zwei Teile,
@@ -22,6 +29,9 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
   gezeichnet wie ein gefärbter Knoten (Name als Tooltip, die aktuelle Farbe ist markiert):
   - Ein Klick auf ein Feld ersetzt die Farbe dieses Teils und schliesst das Menü.
   - **Keine Farbe** entfernt nur das Tag dieses Teils.
+  - **Schraffiert** schaltet die Schraffur dieses Teils sofort an oder ab; das Untermenü bleibt offen. Es geht nur, wenn
+    dort eine Farbe gesetzt ist. Bei einer Mehrfachauswahl heisst ein halb gefülltes Häkchen «nur ein Teil davon».
+  - Eine neue Farbe behält die Schraffur.
   - Gehört der Knoten zur Mehrfachauswahl (`Ctrl`+Klick), gilt alles für alle ausgewählten Knoten. Markiert ist eine
     Farbe nur, wenn alle sie haben. Schliesst sich das Menü nach einer Änderung, ist die Auswahl aufgehoben (ab NoNotes
     2.8.1); wer mit `Esc` abbricht, behält sie.
@@ -76,6 +86,7 @@ Die Erweiterung braucht das Ereignis `mindmap:rendered` (NoNotes ab 1.8.0), für
 Oben in `tag-colors.js` steht die Liste `FARBEN`: pro Farbe der Name im Tag (`id`, ohne Umlaute; `en` für Englisch), der
 Anzeigename und je für `light` und `dark` die Flächenfarbe (`fill`) und die Farbe von Umrandung und Titel (`line`).
 `VORSILBEN` legt fest, was vor dem Doppelpunkt stehen darf, `VORSILBEN_KINDER` dasselbe für die Farbe der Unternotizen.
+`MUSTER` nennt die Zusätze nach `+` (heute `schraffiert`/`hatched`), `STREIFEN` die Breite eines Streifens in Pixeln.
 Änderungen wirken nach dem Neuladen der Seite.
 
 ## Wie es funktioniert
@@ -83,7 +94,9 @@ Anzeigename und je für `light` und `dark` die Flächenfarbe (`fill`) und die Fa
 Nach jedem Zeichnen der Mindmap färbt die Erweiterung sofort mit dem letzten bekannten Stand und liest dann die Tags neu:
 einmal die Liste aller Tags, danach für jedes benutzte Farb-Tag die Notizen damit. Das sind wenige Abfragen, unabhängig
 von der Zahl der Knoten, auch wenn die Daten auf einem Server liegen. Die Farben kommen als Klassen an die Knoten
-(`tf-rot` …) und aus einem eigenen Stylesheet. Beim Ausschalten verschwinden beide sofort.
+(`tf-rot` …, dazu `tf-schraffiert`) und aus einem eigenen Stylesheet. Die Schraffur ist ein SVG-Muster je Farbe (hell und
+dunkel) im `<defs>` der Mindmap, in Einheiten der Karte, darum wächst sie mit dem Zoom. Beim Ausschalten verschwinden
+Klassen, Stylesheet und Muster sofort.
 
 ## Test
 
@@ -92,6 +105,7 @@ Browser:
 - Farbtabelle und Kontraste;
 - Tags in beiden Sprachen;
 - Farbe der Unternotizen, auch eine andere als die der Notiz;
+- Schraffur: Streifenfarben (heller, sichtbar, Titel 4.5:1), Muster in der Karte, hell und dunkel, Rechtsklick;
 - Auswahl;
 - hell und dunkel;
 - Neuladen;

@@ -23,7 +23,7 @@ function colorsOfFile() {
   const src = fs.readFileSync(path.join(REPO, FILE), 'utf8');
   const box = { NoNotesPlugins: { register() {} }, console };
   box.window = box;
-  require('node:vm').runInNewContext(src + '\n;globalThis.__f = FARBEN;', box);
+  require('node:vm').runInNewContext(src + "\n;globalThis.__f = FARBEN.map(f => Object.assign({}, f, { streifen: { light: tagFarbenStreifen(f.light, 'light'), dark: tagFarbenStreifen(f.dark, 'dark') } }));", box);
   return JSON.parse(JSON.stringify(box.__f)); // als Daten dieses Kontexts (Arrays aus vm haben einen anderen Prototyp)
 }
 
@@ -48,8 +48,15 @@ async function main() {
     }
     assert.ok(lum(c.light.fill) > lum(c.light.line), `${c.id} hell: Fläche heller als die Umrandung`);
     assert.ok(lum(c.dark.fill) < lum(c.dark.line), `${c.id} dunkel: Fläche dunkler als die Umrandung`);
+    for (const s of ['light', 'dark']) {
+      const st = c.streifen[s];
+      assert.match(st, /^#[0-9a-f]{6}$/);
+      assert.ok(contrast(st, c[s].line) >= 4.5, `${c.id} ${s}: Titel auf dem hellen Streifen lesbar (4.5:1)`);
+      assert.ok(lum(st) > lum(c[s].fill), `${c.id} ${s}: Streifen heller als die Fläche`);
+      assert.ok(contrast(st, c[s].fill) >= 1.07, `${c.id} ${s}: Streifen sichtbar (${contrast(st, c[s].fill).toFixed(2)})`);
+    }
   }
-  part('Farbtabelle: 16 Farben, eindeutige Namen, Titel lesbar (5:1), Fläche hell und Umrandung dunkel (dunkel umgekehrt)');
+  part('Farbtabelle: 16 Farben, eindeutige Namen, Titel lesbar (5:1), Fläche hell und Umrandung dunkel (dunkel umgekehrt); Schraffur heller, sichtbar, Titel darauf 4.5:1');
 
   // ---------- App mit diesem Repository bauen ----------
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nonotes-tag-colors-'));
@@ -138,6 +145,33 @@ async function main() {
     assert.equal(root, rgb('#2563eb'), 'die Wurzel bleibt in der Hauptfarbe');
     part('Farben: farbe:/color: und farbe-kinder:/color-children: in beiden Sprachen, Gross-/Kleinschreibung, Umlaut, Unternotizen in eigener Farbe, die nächste Kinderfarbe darüber gilt, eigene Farbe gewinnt, «auch-kinder» gilt nicht mehr, mehrere Tags: das erste, Unbekanntes nicht, Wurzel unverändert');
 
+    // Schraffur (seit 2.1.0): «+schraffiert» am Farb-Tag, auch englisch und für Unternotizen; ein unbekannter Zusatz lässt die Farbe stehen
+    await newNote('Markiert');
+    await newNote('Markiert Kind', 'Markiert');
+    await newNote('Unbekannt');
+    await tag('Markiert', 'Farbe:Rot+Schraffiert', 'farbe-kinder:blau+hatched');
+    await tag('Unbekannt', 'farbe:gelb+gepunktet');
+    await deselect();
+    const hatch = (title, id, scheme) => page.waitForFunction(([t, want]) => {
+      const g = [...document.querySelectorAll('g.mm-node')].find(x => x.querySelector(':scope > text').textContent === t);
+      return g && getComputedStyle(g.querySelector(':scope > rect')).fill.includes(want);
+    }, [title, `tfSchraffur-${id}-${scheme}`], { timeout: 5000 });
+    await hatch('Markiert', 'rot', 'light');
+    await hatch('Markiert Kind', 'blau', 'light');
+    await expect('Unbekannt', 'gelb', 'light');
+    assert.equal(await node('Markiert').evaluate(g => getComputedStyle(g.querySelector(':scope > text')).fill), rgb(byId.rot.light.line), 'Titel in der Linienfarbe');
+    const defs = await page.evaluate(() => {
+      const d = document.querySelector('#mindmap > #tagFarbenDefs');
+      const p = d && d.querySelector('pattern#tfSchraffur-rot-light');
+      return d && { n: d.querySelectorAll('pattern').length, units: p.getAttribute('patternUnits'), w: p.getAttribute('width'), stripe: p.lastElementChild.getAttribute('width'), fills: [...p.children].map(r => r.getAttribute('fill')) };
+    });
+    assert.deepEqual(defs, { n: 32, units: 'userSpaceOnUse', w: '8', stripe: '4', fills: [byId.rot.light.fill, byId.rot.streifen.light] }, 'Muster je Farbe hell und dunkel, 4 px breite Streifen in Einheiten der Karte (wachsen mit dem Zoom)');
+    await node('Markiert').click();
+    await page.waitForFunction(() => document.querySelector('g.mm-node.mm-selected'));
+    await hatch('Markiert', 'rot', 'light');
+    await page.keyboard.press('Escape');
+    part('Schraffur: farbe:rot+schraffiert und farbe-kinder:blau+hatched, Muster mit dem Zoom, Titel in der Linienfarbe, auch ausgewählt; unbekannter Zusatz: nur die Farbe');
+
     // Auswahl: die Fläche behält die Farbe, der Rand zeigt die Auswahl
     await node('Andere').click();
     await page.waitForFunction(() => document.querySelector('g.mm-node.mm-selected'));
@@ -170,6 +204,7 @@ async function main() {
     await expect('Teil B', 'blau', 'dark');
     await expect('Andere', 'gruen', 'dark');
     await expect('Detail', 'blau', 'dark');
+    await hatch('Markiert', 'rot', 'dark');
     await page.emulateMedia({ colorScheme: 'light' });
     part('Dunkler Modus: Fläche dunkel, Umrandung und Titel hell');
 
@@ -188,6 +223,7 @@ async function main() {
     await page.uncheck(`#pluginList input[data-file="${FILE}"]`);
     await page.waitForFunction(() => !document.getElementById('tagFarbenStyle'));
     assert.equal(await page.evaluate(() => document.querySelectorAll('g.mm-node[class*="tf-"]').length), 0, 'keine Klassen mehr');
+    assert.equal(await page.evaluate(() => !!document.getElementById('tagFarbenDefs')), false, 'keine Muster mehr');
     await page.keyboard.press('Escape');
     await expect('Teil B', null, 'light');
     // und wieder ein
@@ -198,7 +234,8 @@ async function main() {
     await page.waitForSelector('#tagFarbenStyle', { state: 'attached' });
     await page.keyboard.press('Escape');
     await expect('Teil B', 'blau', 'light');
-    part('Aus- und wieder einschalten zur Laufzeit: Farben weg und wieder da');
+    await hatch('Markiert', 'rot', 'light');
+    part('Aus- und wieder einschalten zur Laufzeit: Farben und Muster weg und wieder da');
 
     // Rechtsklick (NoNotes ab 2.8.0): «Farbe ▸» mit den Teilen «Notiz» und «Unternotizen», je 16 Felder und «Keine Farbe»
     const chips = async title => {
@@ -246,6 +283,50 @@ async function main() {
     await expect('Ohne', 'gruen', 'light');
     assert.deepEqual(await chips('Ohne'), ['farbe:grün'], 'die neue Farbe ersetzt die alte');
     part('Rechtsklick: «Farbe ▸» mit «Notiz» und «Unternotizen», je 16 Felder wie Knoten, Namen als Tooltip, Wahl ersetzt die Farbe, aktuelle markiert, Tag in der Sprache der Oberfläche');
+
+    // «Schraffiert» je Teil: nur mit Farbe, wirkt sofort, das Menü bleibt offen; eine neue Farbe behält die Schraffur
+    const hatchState = () => page.evaluate(() => Object.fromEntries(['notiz', 'kinder'].map(art => {
+      const b = document.querySelector(`.tf-panel .tf-${art} .tf-schraffur`);
+      return [art, { on: b.checked, mixed: b.indeterminate, off: b.disabled, label: b.parentElement.textContent }];
+    })));
+    await colorMenu('Ohne');
+    assert.deepEqual(await hatchState(), { notiz: { on: false, mixed: false, off: false, label: 'Schraffiert' }, kinder: { on: false, mixed: false, off: true, label: 'Schraffiert' } }, 'ohne Kinderfarbe lässt sich dort nicht schraffieren');
+    await page.click('.tf-panel .tf-notiz .tf-schraffur');
+    assert.equal(await page.locator('.context-sub').isVisible(), true, 'Untermenü bleibt offen');
+    assert.equal(await page.locator('.tf-panel .tf-notiz .tf-grid.tf-mit-schraffur').count(), 1, 'die Felder zeigen die Schraffur');
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await deselect();
+    await hatch('Ohne', 'gruen', 'light');
+    assert.deepEqual(await chips('Ohne'), ['farbe:grün+schraffiert']);
+    await colorMenu('Ohne');
+    assert.equal((await hatchState()).notiz.on, true, 'Häkchen zeigt den Stand');
+    await page.click('.tf-panel .tf-notiz .tf-sw-orange');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    await hatch('Ohne', 'orange', 'light');
+    assert.deepEqual(await chips('Ohne'), ['farbe:orange+schraffiert'], 'neue Farbe, Schraffur bleibt');
+    await colorMenu('Ohne');
+    await page.click('.tf-panel .tf-notiz .tf-schraffur');
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await deselect();
+    assert.deepEqual(await chips('Ohne'), ['farbe:orange'], 'Häkchen weg: Schraffur weg');
+    await colorMenu('Ohne');
+    await page.click('.tf-panel .tf-notiz .tf-sw-gruen');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    await expect('Ohne', 'gruen', 'light');
+    // gemischt: Markiert (schraffiert) und Ohne (nicht)
+    await node('Markiert').click({ modifiers: ['Control'] });
+    await node('Ohne').click({ modifiers: ['Control'] });
+    await page.waitForFunction(() => document.querySelectorAll('g.mm-node.mm-multi').length === 2);
+    await colorMenu('Ohne');
+    assert.deepEqual((await hatchState()).notiz, { on: false, mixed: true, off: false, label: 'Schraffiert' }, 'gemischter Stand');
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await deselect();
+    part('Rechtsklick: «Schraffiert» je Teil, nur mit Farbe, sofort und bei offenem Menü, gemischter Stand; neue Farbe behält die Schraffur');
 
     // Teil «Unternotizen»: farbe-kinder: in einer anderen Farbe als die Notiz; «Keine Farbe» dort nimmt nur dieses Tag weg
     await colorMenu('Andere');
@@ -372,12 +453,21 @@ async function main() {
     await en.waitForSelector('.tf-panel[data-stand="geladen"]');
     await en.click('.tf-panel .tf-kinder .tf-sw-indigo');
     await en.waitForSelector('#contextMenu', { state: 'hidden' });
+    await en.waitForSelector('g.mm-node.tf-tuerkis');
+    await plan.click({ button: 'right' });
+    await en.hover('#contextMenu button[data-plugin="tag-farben"]');
+    await en.waitForSelector('.tf-panel[data-stand="geladen"]');
+    assert.equal(await en.locator('.tf-panel .tf-notiz .tf-check').innerText(), 'Hatched');
+    await en.click('.tf-panel .tf-notiz .tf-schraffur');
+    await en.keyboard.press('Escape');
+    await en.keyboard.press('Escape');
+    await en.waitForSelector('g.mm-node.tf-tuerkis.tf-schraffiert');
     await plan.dblclick();
     await en.waitForFunction(() => document.body.classList.contains('editor-open'));
     await en.waitForFunction(() => document.querySelectorAll('#tagChips .chip').length === 2);
-    assert.deepEqual((await en.evaluate(() => [...document.querySelectorAll('#tagChips .chip')].map(c => c.firstChild.textContent))).sort(), ['color-children:indigo', 'color:teal']);
+    assert.deepEqual((await en.evaluate(() => [...document.querySelectorAll('#tagChips .chip')].map(c => c.firstChild.textContent))).sort(), ['color-children:indigo', 'color:teal+hatched']);
     await ctxEn.close();
-    part('Englische Oberfläche: «Colour ▸» mit «Note» und «Subnotes», «No colour», Tags color:teal und color-children:indigo');
+    part('Englische Oberfläche: «Colour ▸» mit «Note» und «Subnotes», «No colour», Tags color:teal+hatched und color-children:indigo');
 
     // Hilfe
     await page.click('#menuBtn');
@@ -385,7 +475,7 @@ async function main() {
     await page.waitForSelector('#helpDialog[open]');
     await page.click('#helpTabs button[data-tab="plugins"]');
     const help = await page.locator('#helpDialog .help-panel[data-panel="plugins"]').innerText();
-    for (const s of ['Farben über Tags', 'farbe:rot', 'farbe-kinder:blau', 'farbe:grau', 'color-children:blue']) assert.ok(help.includes(s), 'Hilfe nennt ' + s);
+    for (const s of ['Farben über Tags', 'farbe:rot', 'farbe-kinder:blau', 'farbe:grau', 'color-children:blue', 'farbe:rot+schraffiert', 'color:red+hatched']) assert.ok(help.includes(s), 'Hilfe nennt ' + s);
     assert.ok(!help.includes('auch-kinder'), 'die alte Schreibweise nicht mehr');
     part('Hilfe: Abschnitt mit allen Tags');
 

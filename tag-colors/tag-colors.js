@@ -6,9 +6,11 @@
      können Notiz und Unternotizen verschiedene Farben haben. Eine Unternotiz mit eigener Farbe behält sie; hat sie selbst
      ein «farbe-kinder:», gilt das für ihren Teil des Baums.
    - Mehrere Farb-Tags derselben Art an einer Notiz: es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
+   - Zusätze nach «+» am Farb-Tag (seit 2.1.0): «farbe:rot+schraffiert» («color:red+hatched») zeichnet die Fläche schraffiert,
+     abwechselnd in der Farbe und einer daraus berechneten helleren Fassung; auch «farbe-kinder:blau+schraffiert».
    - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt, wie sie ist.
-   - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit je den 16 Farben und «Keine Farbe» für die Notiz und für
-     ihre Unternotizen.
+   - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit je den 16 Farben, «Keine Farbe» und «Schraffiert» für die
+     Notiz und für ihre Unternotizen.
      Gilt für alle ausgewählten Knoten, wenn der angeklickte dazugehört; danach ist die Auswahl aufgehoben (ab 2.8.1).
      Geschrieben wird in der Sprache der Oberfläche («farbe:rot» bzw. «color:red»).
    Benötigt das Ereignis «mindmap:rendered» (NoNotes ab 1.8.0). */
@@ -37,7 +39,27 @@ const FARBEN = [
 ];
 const VORSILBEN = ['farbe', 'color', 'colour'];                           // vor dem Doppelpunkt: Farbe der Notiz
 const VORSILBEN_KINDER = ['farbe-kinder', 'color-children', 'colour-children']; // Farbe aller Unternotizen
+const MUSTER = [{ id: 'schraffiert', en: 'hatched' }];   // Zusätze nach «+»: farbe:rot+schraffiert
+const STREIFEN = 4;                                        // Breite eines Streifens in Pixeln bei Zoom 100 % (wächst mit dem Zoom)
 /* --------------------------------------------------------------------------------------------------------------- */
+
+/** Zweite Streifenfarbe der Schraffur, aus der Farbe berechnet: hell zum Weiss hin, dunkel zur Linienfarbe hin, jeweils nur so
+ *  weit, dass der Titel (Linienfarbe) auf dem Streifen mindestens 4.5:1 Kontrast behält. c: { fill, line }, scheme: light | dark. */
+const tagFarbenStreifen = (() => {
+  const rgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
+  const hex = c => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+  const mix = (a, b, t) => { const x = rgb(a), y = rgb(b); return hex(x.map((v, i) => v + (y[i] - v) * t)); };
+  const lum = h => { const c = rgb(h).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const kontrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  return (c, scheme) => {
+    const ziel = scheme === 'dark' ? c.line : '#ffffff';
+    for (let t = scheme === 'dark' ? 0.3 : 0.85; t > 0.001; t -= 0.01) {
+      const s = mix(c.fill, ziel, t);
+      if (kontrast(s, c.line) >= 4.5) return s;
+    }
+    return c.fill;
+  };
+})();
 
 let ausschalten = null; // aus activate: nimmt Stylesheet und Klassen wieder weg
 
@@ -46,7 +68,7 @@ const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f
 NoNotesPlugins.register({
   id: 'tag-farben',
   name: 'Farben über Tags',
-  version: '2.0.0',
+  version: '2.1.0',
   api: 1,
   help: {
     de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
@@ -54,10 +76,11 @@ NoNotesPlugins.register({
 - Tag an der Notiz setzen, zum Beispiel \`farbe:rot\` (englisch \`color:red\`). Gross-/Kleinschreibung ist egal.
 - **Unternotizen färben:** \`farbe-kinder:blau\` (\`color-children:blue\`) färbt alle Unternotizen, die Notiz selbst nicht. Zusammen mit \`farbe:rot\` ist die Notiz rot und alles darunter blau; für dieselbe Farbe beide Tags mit derselben Farbe. Eine Unternotiz mit eigener Farbe behält sie, ein eigenes \`farbe-kinder:\` gilt für ihren Teil des Baums.
 - Mehrere Farb-Tags derselben Art an einer Notiz: das erste gilt (Reihenfolge wie im Editor).
+- **Schraffiert:** \`+schraffiert\` am Farb-Tag, etwa \`farbe:rot+schraffiert\` oder \`farbe-kinder:blau+schraffiert\` (englisch \`color:red+hatched\`). Die Fläche bekommt diagonale Streifen in der Farbe und einer helleren Fassung davon; der Titel bleibt lesbar, die Streifen wachsen mit dem Zoom.
 - Nur auf dem Bildschirm, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.
 
 #### Per Rechtsklick
-Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige) oder **Keine Farbe**. Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
+Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
 
 #### Die 16 Farben
 ${tagListe('de')}
@@ -68,10 +91,11 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
 - Put a tag on the note, for example \`color:red\` (German \`farbe:rot\`). Case does not matter.
 - **Colour subnotes:** \`color-children:blue\` (\`farbe-kinder:blau\`) colours all subnotes, not the note itself. Together with \`color:red\` the note is red and everything below it blue; for the same colour, use both tags with the same colour. A subnote with a colour of its own keeps it; its own \`color-children:\` applies to its part of the tree.
 - Several colour tags of the same kind on one note: the first one wins (order as in the editor).
+- **Hatched:** add \`+hatched\` to the colour tag, for example \`color:red+hatched\` or \`color-children:blue+hatched\` (German \`farbe:rot+schraffiert\`). The fill gets diagonal stripes in the colour and a lighter shade of it; the title stays legible, the stripes grow with the zoom.
 - On screen only, not in export and print. The root stays as it is.
 
 #### By right-click
-Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one) or **No colour**. If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
+Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one, hatching stays), **No colour** or tick **Hatched** (takes effect at once, only with a colour). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
 
 #### The 16 colours
 ${tagListe('en')}, also \`color:grey\`.
@@ -92,27 +116,43 @@ German: ${tagListe('de')}.`,
     for (const f of FARBEN) { byName.set(f.id, f); byName.set(f.en, f); }
     byName.set('grey', byName.get('gray'));
 
-    // «Farbe : Grün» → { art: 'notiz', farbe: Grün } · «color-children:blue» → { art: 'kinder', farbe: Blau } · sonst null
+    const musterName = new Map();
+    for (const m of MUSTER) { musterName.set(m.id, m); musterName.set(m.en, m); }
+
+    // «Farbe : Grün» → { art: 'notiz', farbe: Grün, schraffiert: false } · «color-children:blue+hatched» → { art: 'kinder',
+    // farbe: Blau, schraffiert: true } · sonst null. Unbekannte Zusätze nach «+» zählen nicht, die Farbe gilt trotzdem.
     const fold = v => String(v).toLowerCase().trim().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/\s+/g, '-');
     function deuten(tag) {
       const m = /^([^:]+):(.+)$/.exec(String(tag || '').replace(/^#/, ''));
       if (!m) return null;
       const vor = fold(m[1]);
       const art = VORSILBEN.includes(vor) ? 'notiz' : VORSILBEN_KINDER.includes(vor) ? 'kinder' : null;
-      const farbe = art && byName.get(fold(m[2]));
-      return farbe ? { art, farbe } : null;
+      const [name, ...zusatz] = m[2].split('+');
+      const farbe = art && byName.get(fold(name));
+      if (!farbe) return null;
+      return { art, farbe, schraffiert: zusatz.some(z => (musterName.get(fold(z)) || {}).id === 'schraffiert') };
     }
 
     // Stylesheet: überschreibt nur den Grundzustand des Knotens. Darüber, Hover, Suche, Ziehen und Mehrfachauswahl der App
     // (stärkere Regeln) bleiben sichtbar; die Auswahl zeigt ihren Rand, die Fläche behält die Farbe.
+    // Schraffiert: Muster aus dem <defs> der Mindmap (siehe musterZeichnen), mit :where() nicht stärker als die einfache Farbe
+    const SCHRAFFIERT = KLASSE + 'schraffiert';
+    const musterId = (f, scheme) => `tfSchraffur-${f.id}-${scheme}`;
     const regeln = scheme => FARBEN.map(f => {
       const c = f[scheme];
       return `g.${KLASSE}${f.id} > rect { fill: ${c.fill}; stroke: ${c.line}; }\n`
         + `g.mm-node.mm-selected.${KLASSE}${f.id} > rect { fill: ${c.fill}; }\n`
+        + `g.${KLASSE}${f.id}:where(.${SCHRAFFIERT}) > rect { fill: url(#${musterId(f, scheme)}); }\n`
+        + `g.mm-node.mm-selected.${KLASSE}${f.id}:where(.${SCHRAFFIERT}) > rect { fill: url(#${musterId(f, scheme)}); }\n`
         + `g.${KLASSE}${f.id} > text { fill: ${c.line}; }\n`;
     }).join('');
-    // Farbfelder im Untermenü: gezeichnet wie ein gefärbter Knoten (Selektoren stärker als die Knöpfe des Kontextmenüs)
-    const felder = scheme => FARBEN.map(f => `.tf-panel .tf-sw.tf-sw-${f.id} { background: ${f[scheme].fill}; border-color: ${f[scheme].line}; }\n`).join('');
+    // Farbfelder im Untermenü: gezeichnet wie ein gefärbter Knoten (Selektoren stärker als die Knöpfe des Kontextmenüs), mit
+    // abgehakter Schraffur schraffiert
+    const felder = scheme => FARBEN.map(f => {
+      const c = f[scheme], st = tagFarbenStreifen(c, scheme);
+      return `.tf-panel .tf-sw.tf-sw-${f.id} { background: ${c.fill}; border-color: ${c.line}; }\n`
+        + `.tf-panel .tf-mit-schraffur .tf-sw.tf-sw-${f.id} { background: repeating-linear-gradient(45deg, ${c.fill} 0 ${STREIFEN}px, ${st} ${STREIFEN}px ${2 * STREIFEN}px); }\n`;
+    }).join('');
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = regeln('light') + felder('light') + `@media (prefers-color-scheme: dark) {\n${regeln('dark')}${felder('dark')}}\n` + `
@@ -124,11 +164,15 @@ German: ${tagListe('de')}.`,
       .tf-panel .tf-sw:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
       .tf-panel .tf-teil { display: flex; flex-direction: column; gap: 4px; }
       .tf-panel .tf-titel { color: var(--muted); font-size: 12px; padding: 6px 10px 0; }
+      .tf-panel .tf-check { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+      .tf-panel .tf-check:hover { background: var(--hover); }
+      .tf-panel .tf-check.tf-aus { opacity: .5; cursor: default; }
+      .tf-panel .tf-check.tf-aus:hover { background: none; }
     `;
     document.head.appendChild(style);
 
     const leer = () => ({ notiz: new Map(), kinder: new Map() });
-    let stand = leer(); // je Art: Notizkennung (Text) → Farbe der Notiz bzw. ihrer Unternotizen
+    let stand = leer(); // je Art: Notizkennung (Text) → { farbe, schraffiert } der Notiz bzw. ihrer Unternotizen
     let token = 0;
     let aktiv = true;
 
@@ -143,13 +187,13 @@ German: ${tagListe('de')}.`,
         ]);
         for (const n of [...lebend, ...archiv]) {
           const id = String(n.id), erstes = erstesTag[d.art], vorher = erstes.get(id);
-          if (vorher == null || name.toLowerCase() < vorher.toLowerCase()) { erstes.set(id, name); neu[d.art].set(id, d.farbe); }
+          if (vorher == null || name.toLowerCase() < vorher.toLowerCase()) { erstes.set(id, name); neu[d.art].set(id, { farbe: d.farbe, schraffiert: d.schraffiert }); }
         }
       }));
       return neu;
     }
 
-    /** Farbe eines Knotens: die eigene, sonst die Kinderfarbe der nächsten Elternnotiz, die eine hat. */
+    /** Farbe eines Knotens ({ farbe, schraffiert }): die eigene, sonst die Kinderfarbe der nächsten Elternnotiz, die eine hat. */
     function farbeVon(id, eltern) {
       const eigene = stand.notiz.get(id);
       if (eigene) return eigene;
@@ -159,13 +203,34 @@ German: ${tagListe('de')}.`,
       return null;
     }
 
+    /** Muster der Schraffur im <defs> der Mindmap: je Farbe hell und dunkel. In Einheiten der Mindmap, also mit dem Zoom wachsend. */
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const DEFS_ID = 'tagFarbenDefs';
+    function musterZeichnen() {
+      const svg = document.getElementById('mindmap');
+      if (!svg || document.getElementById(DEFS_ID)) return;
+      const make = (name, attrs) => { const e = document.createElementNS(SVG_NS, name); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); return e; };
+      const defs = make('defs', { id: DEFS_ID });
+      for (const f of FARBEN) {
+        for (const scheme of ['light', 'dark']) {
+          const w = 2 * STREIFEN;
+          const p = make('pattern', { id: musterId(f, scheme), patternUnits: 'userSpaceOnUse', width: w, height: w, patternTransform: 'rotate(45)' });
+          p.append(make('rect', { width: w, height: w, fill: f[scheme].fill }), make('rect', { width: STREIFEN, height: w, fill: tagFarbenStreifen(f[scheme], scheme) }));
+          defs.appendChild(p);
+        }
+      }
+      svg.insertBefore(defs, svg.firstChild);
+    }
+
     function malen() {
+      if (aktiv) musterZeichnen();
       const eltern = new Map();
       for (const e of document.querySelectorAll('path.mm-edge[data-from][data-to]')) eltern.set(e.dataset.to, e.dataset.from);
       for (const g of document.querySelectorAll('g.mm-node[data-id]')) {
-        const f = aktiv && !g.classList.contains('mm-root') ? farbeVon(g.dataset.id, eltern) : null;
-        for (const k of [...g.classList]) if (k.startsWith(KLASSE) && (!f || k !== KLASSE + f.id)) g.classList.remove(k);
-        if (f) g.classList.add(KLASSE + f.id);
+        const s = aktiv && !g.classList.contains('mm-root') ? farbeVon(g.dataset.id, eltern) : null;
+        const soll = s ? [KLASSE + s.farbe.id, ...(s.schraffiert ? [SCHRAFFIERT] : [])] : [];
+        for (const k of [...g.classList]) if (k.startsWith(KLASSE) && !soll.includes(k)) g.classList.remove(k);
+        for (const k of soll) g.classList.add(k);
       }
     }
 
@@ -183,12 +248,21 @@ German: ${tagListe('de')}.`,
     // ---- Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» --------------------------------------------------
     const englisch = !/^de\b/.test(ctx.language() || 'de');
     const T = englisch
-      ? { farbe: 'Colour', keine: 'No colour', notiz: 'Note', kinder: 'Subnotes', kinderTitel: 'Colour of all subnotes; a subnote with a colour of its own keeps it' }
-      : { farbe: 'Farbe', keine: 'Keine Farbe', notiz: 'Notiz', kinder: 'Unternotizen', kinderTitel: 'Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie' };
+      ? { farbe: 'Colour', keine: 'No colour', notiz: 'Note', kinder: 'Subnotes', kinderTitel: 'Colour of all subnotes; a subnote with a colour of its own keeps it', schraffiert: 'Hatched', schraffiertTitel: 'Diagonal stripes in the colour and a lighter shade (needs a colour)' }
+      : { farbe: 'Farbe', keine: 'Keine Farbe', notiz: 'Notiz', kinder: 'Unternotizen', kinderTitel: 'Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie', schraffiert: 'Schraffiert', schraffiertTitel: 'Diagonale Streifen in der Farbe und einer helleren Fassung (braucht eine Farbe)' };
     const anzeige = f => (englisch ? f.en.charAt(0).toUpperCase() + f.en.slice(1) : f.name);
     const farbTag = (art, f) => (englisch ? `${art === 'kinder' ? 'color-children' : 'color'}:${f.en}`
       : `${art === 'kinder' ? 'farbe-kinder' : 'farbe'}:${f.name.toLowerCase()}`);
     const ohne = (art, tags) => tags.filter(t => { const d = deuten(t); return !(d && d.art === art); });
+    const erstes = (art, tags) => tags.map(deuten).find(d => d && d.art === art) || null;
+    /** Farb-Tag mit oder ohne «+schraffiert»; das Wort in der Sprache des Tags (farbe… deutsch, color… englisch). */
+    function mitSchraffur(tag, an) {
+      const i = tag.indexOf(':');
+      const vor = tag.slice(0, i), [name, ...zusatz] = tag.slice(i + 1).split('+');
+      const rest = zusatz.filter(z => (musterName.get(fold(z)) || {}).id !== 'schraffiert');
+      if (an) rest.push(fold(vor).startsWith('farbe') ? 'schraffiert' : 'hatched');
+      return [`${vor}:${name}`, ...rest].join('+');
+    }
 
     /** Tags der Notizen ändern (nur wo sich etwas ändert), danach neu zeichnen. */
     async function aendern(ids, fn) {
@@ -204,12 +278,14 @@ German: ${tagListe('de')}.`,
       await ctx.refresh();
     }
 
-    /** Das Untermenü: oben die Farbe der Notiz, unten die der Unternotizen. Ein Klick ändert die Tags und schliesst das Menü
-     *  (close(): die App hebt dann die Mehrfachauswahl auf, ab NoNotes 2.8.1). */
-    function farbFeld(target, close) {
+    /** Das Untermenü: oben die Farbe der Notiz, unten die der Unternotizen. Ein Klick auf eine Farbe oder «Keine Farbe» ändert die
+     *  Tags und schliesst das Menü (close(): die App hebt dann die Mehrfachauswahl auf, ab NoNotes 2.8.1); «Schraffiert» wirkt
+     *  sofort und lässt das Menü offen (applied(), ab 2.8.1; die Auswahl wird beim Schliessen aufgehoben). */
+    function farbFeld(target, close, applied) {
       const panel = document.createElement('div');
       panel.className = 'tf-panel';
       const knoepfe = { notiz: new Map(), kinder: new Map() };
+      const haken = {};
       for (const art of ['notiz', 'kinder']) {
         if (art === 'kinder') { const sep = document.createElement('div'); sep.className = 'sep'; panel.appendChild(sep); }
         const teil = document.createElement('div');
@@ -231,7 +307,11 @@ German: ${tagListe('de')}.`,
           b.title = anzeige(f);
           b.setAttribute('aria-label', anzeige(f));
           b.setAttribute('aria-pressed', 'false');
-          b.addEventListener('click', () => { close(); aendern(target.ids, tags => [...ohne(art, tags), farbTag(art, f)]); });
+          // Neue Farbe, die Schraffur bleibt
+          b.addEventListener('click', () => {
+            close();
+            aendern(target.ids, tags => { const alt = erstes(art, tags); return [...ohne(art, tags), mitSchraffur(farbTag(art, f), !!(alt && alt.schraffiert))]; });
+          });
           knoepfe[art].set(f.id, b);
           grid.appendChild(b);
         }
@@ -240,23 +320,48 @@ German: ${tagListe('de')}.`,
         keine.className = 'tf-none';
         keine.textContent = T.keine;
         keine.addEventListener('click', () => { close(); aendern(target.ids, tags => ohne(art, tags)); });
-        teil.append(titel, grid, keine);
+        const label = document.createElement('label');
+        label.className = 'tf-check';
+        label.title = T.schraffiertTitel;
+        const box = document.createElement('input');
+        box.type = 'checkbox';
+        box.className = 'tf-schraffur';
+        box.disabled = true; // bis der Stand geladen ist
+        box.addEventListener('change', () => {
+          box.indeterminate = false;
+          grid.classList.toggle('tf-mit-schraffur', box.checked);
+          if (applied) applied();
+          const an = box.checked;
+          aendern(target.ids, tags => tags.map(t => { const d = deuten(t); return d && d.art === art ? mitSchraffur(t, an) : t; }));
+        });
+        label.append(box, T.schraffiert);
+        haken[art] = { box, label, grid };
+        teil.append(titel, grid, keine, label);
         panel.appendChild(teil);
       }
 
-      // Stand der gewählten Notizen: je Art die gemeinsame Farbe markieren (bei verschiedenen keine)
+      // Stand der gewählten Notizen: je Art die gemeinsame Farbe markieren (bei verschiedenen keine); Schraffiert an (alle mit Farbe),
+      // aus oder gemischt; ohne Farbe in diesem Teil lässt sich nicht schraffieren
       Promise.all(target.ids.map(id => ctx.backend.getTags(id))).then(alle => {
         for (const art of ['notiz', 'kinder']) {
-          const farben = new Set(alle.map(tags => { const d = tags.map(deuten).find(x => x && x.art === art); return d ? d.farbe.id : ''; }));
+          const stile = alle.map(tags => erstes(art, tags));
+          const farben = new Set(stile.map(d => (d ? d.farbe.id : '')));
           const k = farben.size === 1 && knoepfe[art].get([...farben][0]);
           if (k) k.setAttribute('aria-pressed', 'true');
+          const mitFarbe = stile.filter(Boolean).length, mitMuster = stile.filter(d => d && d.schraffiert).length;
+          const h = haken[art];
+          h.box.disabled = mitFarbe === 0;
+          h.label.classList.toggle('tf-aus', mitFarbe === 0);
+          h.box.checked = mitMuster > 0 && mitMuster === mitFarbe;
+          h.box.indeterminate = mitMuster > 0 && mitMuster < mitFarbe;
+          h.grid.classList.toggle('tf-mit-schraffur', h.box.checked);
         }
         panel.dataset.stand = 'geladen';
       }).catch(() => {});
       return panel;
     }
 
-    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, api) => farbFeld(target, api.close) });
+    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, api) => farbFeld(target, api.close, api.applied) });
 
     ctx.on('mindmap:rendered', neu);
     // Andere Datei oder anderer Bereich: dieselben Nummern sind andere Notizen. Den Stand verwerfen, sofort ohne Farben zeichnen
@@ -269,6 +374,8 @@ German: ${tagListe('de')}.`,
       token++;
       malen();
       style.remove();
+      const defs = document.getElementById(DEFS_ID);
+      if (defs) defs.remove();
     };
   },
 
