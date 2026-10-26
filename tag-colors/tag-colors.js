@@ -62,13 +62,14 @@ const tagFarbenStreifen = (() => {
 })();
 
 let ausschalten = null; // aus activate: nimmt Stylesheet und Klassen wieder weg
+const LEGENDE_KEY = 'plugin:tag-farben:legende'; // Text der Legende in der Datenbank (meta), seit 2.2.0
 
 const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f.en : 'farbe:' + f.id}\``).join(', ');
 
 NoNotesPlugins.register({
   id: 'tag-farben',
   name: 'Farben über Tags',
-  version: '2.1.0',
+  version: '2.2.0',
   api: 1,
   help: {
     de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
@@ -81,6 +82,9 @@ NoNotesPlugins.register({
 
 #### Per Rechtsklick
 Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
+
+#### Legende
+Der Knopf **Legende** in der Leiste der Mindmap blendet eine Notiz ein, die erklärt, was die Farben bedeuten (eine je Datenbank, für alle im Arbeitsbereich gleich). Ein Klick in die Legende bearbeitet sie: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` oder ein Klick daneben speichert. Farb-Tags im Text wie \`farbe:rot\` oder \`farbe:blau+schraffiert\` erscheinen als Farbfeld mit Namen. Ist sie leer, beginnt sie mit den Farben, die gerade benutzt werden. Die Ecke (oben rechts, oben links, unten links, unten rechts) wählt die Auswahl im Kopf, **–** klappt sie ein; beides merkt sich der Browser. Im Markdown-Export und im Druck steht sie unter dem Mindmap-Bild. Braucht NoNotes 2.11.0 oder neuer.
 
 #### Die 16 Farben
 ${tagListe('de')}
@@ -97,12 +101,15 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
 #### By right-click
 Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one, hatching stays), **No colour** or tick **Hatched** (takes effect at once, only with a colour). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
 
+#### Legend
+The **Legend** button in the mind map toolbar shows a note that explains what the colours mean (one per database, the same for everyone in the workspace). Click into the legend to edit it: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` or a click outside saves. Colour tags in the text such as \`color:red\` or \`color:blue+hatched\` appear as a swatch with the name. When empty, it starts with the colours currently in use. The selector in its header picks the corner (top right, top left, bottom left, bottom right), **–** collapses it; the browser remembers both. In the Markdown export and in print it appears below the mind map image. Needs NoNotes 2.11.0 or later.
+
 #### The 16 colours
 ${tagListe('en')}, also \`color:grey\`.
 
 German: ${tagListe('de')}.`,
   },
-  description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe-kinder:blau» färbt die Unternotizen. Farbwahl per Rechtsklick (ab NoNotes 2.8.0).',
+  description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe-kinder:blau» färbt die Unternotizen. Farbwahl per Rechtsklick (ab NoNotes 2.8.0), Legende über der Mindmap (ab 2.11.0).',
 
   activate(ctx) {
     const P = window.NoNotesPlugins;
@@ -150,8 +157,8 @@ German: ${tagListe('de')}.`,
     // abgehakter Schraffur schraffiert
     const felder = scheme => FARBEN.map(f => {
       const c = f[scheme], st = tagFarbenStreifen(c, scheme);
-      return `.tf-panel .tf-sw.tf-sw-${f.id} { background: ${c.fill}; border-color: ${c.line}; }\n`
-        + `.tf-panel .tf-mit-schraffur .tf-sw.tf-sw-${f.id} { background: repeating-linear-gradient(45deg, ${c.fill} 0 ${STREIFEN}px, ${st} ${STREIFEN}px ${2 * STREIFEN}px); }\n`;
+      return `.tf-panel .tf-sw.tf-sw-${f.id}, .tf-legende .tf-lg-sw.tf-sw-${f.id} { background: ${c.fill}; border-color: ${c.line}; }\n`
+        + `.tf-panel .tf-mit-schraffur .tf-sw.tf-sw-${f.id}, .tf-legende .tf-lg-sw.tf-lg-schraffiert.tf-sw-${f.id} { background: repeating-linear-gradient(45deg, ${c.fill} 0 ${STREIFEN}px, ${st} ${STREIFEN}px ${2 * STREIFEN}px); }\n`;
     }).join('');
     const style = document.createElement('style');
     style.id = STYLE_ID;
@@ -168,6 +175,29 @@ German: ${tagListe('de')}.`,
       .tf-panel .tf-check:hover { background: var(--hover); }
       .tf-panel .tf-check.tf-aus { opacity: .5; cursor: default; }
       .tf-panel .tf-check.tf-aus:hover { background: none; }
+      .tf-legende { position: absolute; z-index: 6; width: 290px; max-height: calc(100% - var(--map-bar-bottom, 48px) - 24px); overflow: auto; background: var(--panel);
+        color: var(--text); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); font-size: 13px; line-height: 1.45; }
+      .tf-legende.tf-ecke-or { top: calc(var(--map-bar-bottom, 48px) + 8px); right: 12px; } .tf-legende.tf-ecke-ol { top: calc(var(--map-bar-bottom, 48px) + 8px); left: 12px; }
+      .tf-legende.tf-ecke-ul { bottom: 12px; left: 12px; } .tf-legende.tf-ecke-ur { bottom: 12px; right: 12px; }
+      .tf-legende .tf-lg-kopf { display: flex; align-items: center; gap: 6px; padding: 6px 8px 4px 10px; }
+      .tf-legende .tf-lg-titel { all: unset; flex: 1; font-weight: 600; cursor: pointer; }
+      .tf-legende .tf-lg-titel:focus-visible { outline: 2px solid var(--accent); border-radius: 4px; }
+      .tf-legende .tf-lg-ecke { font-size: 11px; padding: 1px 2px; max-width: 105px; }
+      .tf-legende .tf-lg-zu { padding: 0 8px; line-height: 1.4; }
+      .tf-legende .tf-lg-inhalt { padding: 2px 12px 10px; cursor: text; }
+      .tf-legende.tf-lg-nurlesen .tf-lg-inhalt { cursor: default; }
+      .tf-legende .tf-lg-inhalt > :first-child { margin-top: 0; } .tf-legende .tf-lg-inhalt > :last-child { margin-bottom: 0; }
+      .tf-legende .tf-lg-inhalt ul { padding-left: 18px; margin: 4px 0; }
+      .tf-legende .tf-lg-leer { color: var(--muted); font-style: italic; }
+      .tf-legende .tf-lg-sw { display: inline-block; width: 18px; height: 12px; border: 2px solid; border-radius: 4px; vertical-align: -2px; margin-right: 5px; }
+      .tf-legende .tf-lg-sw.tf-lg-kinder { border-style: dashed; }
+      .tf-legende .tf-lg-name { font-weight: 600; }
+      .tf-legende .tf-lg-text { display: block; box-sizing: border-box; width: calc(100% - 16px); margin: 2px 8px 4px; min-height: 90px; font: 12px/1.45 ui-monospace, Menlo, Consolas, monospace; resize: vertical; }
+      .tf-legende .tf-lg-hinweis { padding: 0 10px 8px; color: var(--muted); font-size: 11px; }
+      .tf-legende.tf-lg-eingeklappt { width: auto; overflow: visible; }
+      .tf-legende.tf-lg-eingeklappt .tf-lg-ecke, .tf-legende.tf-lg-eingeklappt .tf-lg-zu, .tf-legende.tf-lg-eingeklappt .tf-lg-inhalt { display: none; }
+      .tf-legende.tf-lg-eingeklappt .tf-lg-titel::after { content: ' ▸'; }
+      @media print { .tf-legende { display: none; } }
     `;
     document.head.appendChild(style);
 
@@ -262,6 +292,223 @@ German: ${tagListe('de')}.`,
       const rest = zusatz.filter(z => (musterName.get(fold(z)) || {}).id !== 'schraffiert');
       if (an) rest.push(fold(vor).startsWith('farbe') ? 'schraffiert' : 'hatched');
       return [`${vor}:${name}`, ...rest].join('+');
+    }
+
+    /** Die Legende: Text (Markdown) in der Datenbank (meta LEGENDE_KEY, für alle im Arbeitsbereich gleich), Ecke und eingeklappt
+     *  je Browser. Farb-Tags im Text («farbe:rot», «color:blue+hatched») erscheinen als Farbfeld. Ein Klick bearbeitet den Text
+     *  (Ctrl+B, Ctrl+I, Ctrl+K), Esc oder ein Klick daneben speichert; während des Tippens wird nach kurzer Pause gespeichert.
+     *  Im Export und Druck steht sie unter dem Mindmap-Bild, die Farben mit Namen. */
+    function legendeAnlegen() {
+      const L = englisch
+        ? { titel: 'Legend', knopf: 'Legend', knopfTitel: 'Show or hide the legend: what the colours mean', zu: 'Collapse', auf: 'Expand legend', ecke: 'Position of the legend',
+            ecken: { or: 'Top right', ol: 'Top left', ul: 'Bottom left', ur: 'Bottom right' }, leer: 'Click to describe what the colours mean.',
+            hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc or a click outside saves', schraffiert: 'hatched', kinder: 'subnotes', bedeutung: '…' }
+        : { titel: 'Legende', knopf: 'Legende', knopfTitel: 'Legende ein- oder ausblenden: was die Farben bedeuten', zu: 'Einklappen', auf: 'Legende aufklappen', ecke: 'Lage der Legende',
+            ecken: { or: 'Oben rechts', ol: 'Oben links', ul: 'Unten links', ur: 'Unten rechts' }, leer: 'Klicken, um zu beschreiben, was die Farben bedeuten.',
+            hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc oder Klick daneben speichert', schraffiert: 'schraffiert', kinder: 'Unternotizen', bedeutung: '…' };
+      const KEY = LEGENDE_KEY;
+      const PREF = 'nonotes.tagFarben.legende';
+      const E = window.NoNotesEditing, M = window.NoNotesMarkdown;
+      const pref = (() => { try { return Object.assign({ ecke: 'or', zu: false, sichtbar: null }, JSON.parse(localStorage.getItem(PREF) || '{}')); } catch (e) { return { ecke: 'or', zu: false, sichtbar: null }; } })();
+      const merken = () => { try { localStorage.setItem(PREF, JSON.stringify(pref)); } catch (e) { /* egal */ } };
+      let text = '';
+      let gelesen = false;
+      let timer = null;
+      let bearbeiten = false;
+
+      const box = document.createElement('aside');
+      box.className = 'tf-legende';
+      box.setAttribute('aria-label', L.titel);
+      const kopf = document.createElement('div');
+      kopf.className = 'tf-lg-kopf';
+      const titel = document.createElement('button');
+      titel.type = 'button';
+      titel.className = 'tf-lg-titel';
+      titel.textContent = L.titel;
+      const ecke = document.createElement('select');
+      ecke.className = 'tf-lg-ecke';
+      ecke.setAttribute('aria-label', L.ecke);
+      ecke.title = L.ecke;
+      for (const [k, v] of Object.entries(L.ecken)) { const o = document.createElement('option'); o.value = k; o.textContent = v; ecke.appendChild(o); }
+      const zuKnopf = document.createElement('button');
+      zuKnopf.type = 'button';
+      zuKnopf.className = 'tf-lg-zu';
+      zuKnopf.textContent = '–';
+      zuKnopf.title = L.zu;
+      zuKnopf.setAttribute('aria-label', L.zu);
+      kopf.append(titel, ecke, zuKnopf);
+      const inhalt = document.createElement('div');
+      inhalt.className = 'tf-lg-inhalt md';
+      inhalt.tabIndex = 0;
+      const feld = document.createElement('textarea');
+      feld.className = 'tf-lg-text';
+      feld.hidden = true;
+      feld.setAttribute('aria-label', L.titel);
+      const hinweis = document.createElement('div');
+      hinweis.className = 'tf-lg-hinweis';
+      hinweis.textContent = L.hinweis;
+      hinweis.hidden = true;
+      box.append(kopf, inhalt, feld, hinweis);
+      const entfernen = ctx.ui.addMapOverlay(box);
+      const knopf = ctx.ui.addMapButton({ label: L.knopf, title: L.knopfTitel, action: () => {
+        pref.sichtbar = !istSichtbar();
+        if (pref.sichtbar) pref.zu = false;
+        merken();
+        zeigen();
+        if (pref.sichtbar && !text.trim() && !ctx.readOnly()) oeffnen();
+      } });
+      const offSection = ctx.export.addMapSection(() => (text.trim() ? { title: L.titel, markdown: fuerExport(text) } : null));
+
+      const istSichtbar = () => (pref.sichtbar == null ? !!text.trim() : pref.sichtbar);
+
+      /** «farbe:rot», «farbe-kinder:blau+schraffiert», «color:red» … im Text: [{ index, length, d }] */
+      const TOKEN_RE = /(^|[^\w:])((?:farbe|color|colour)(?:-kinder|-children)?\s*:\s*[A-Za-zÄÖÜäöü-]+(?:\+[A-Za-zÄÖÜäöü-]+)*)/g;
+      const name = d => anzeige(d.farbe) + (d.schraffiert ? ` (${L.schraffiert})` : '') + (d.art === 'kinder' ? ` – ${L.kinder}` : '');
+      /** Für Export und Druck: Farb-Tags durch ihren Namen ersetzen. */
+      function fuerExport(t) {
+        return t.replace(TOKEN_RE, (all, vor, tok) => { const d = deuten(tok.replace(/\s+/g, '')); return d ? vor + '**' + name(d) + '**' : all; });
+      }
+
+      /** Text als Markdown, Farb-Tags als Farbfeld mit Namen. */
+      function malenLegende() {
+        if (!M) { inhalt.textContent = text; return; }
+        inhalt.innerHTML = text.trim() ? M.render(text, {}) : `<p class="tf-lg-leer">${L.leer}</p>`;
+        const walker = document.createTreeWalker(inhalt, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) if (!n.parentElement.closest('code')) nodes.push(n);
+        for (const node of nodes) {
+          const s = node.nodeValue;
+          TOKEN_RE.lastIndex = 0;
+          const frag = document.createDocumentFragment();
+          let last = 0, found = false;
+          for (let m; (m = TOKEN_RE.exec(s));) {
+            const d = deuten(m[2].replace(/\s+/g, ''));
+            if (!d) continue;
+            found = true;
+            const start = m.index + m[1].length;
+            frag.append(s.slice(last, start));
+            const sw = document.createElement('span');
+            sw.className = `tf-lg-sw tf-sw-${d.farbe.id}${d.schraffiert ? ' tf-lg-schraffiert' : ''}${d.art === 'kinder' ? ' tf-lg-kinder' : ''}`;
+            sw.setAttribute('aria-hidden', 'true');
+            const label = document.createElement('span');
+            label.className = 'tf-lg-name';
+            label.textContent = name(d);
+            frag.append(sw, label);
+            last = start + m[2].length;
+          }
+          if (!found) continue;
+          frag.append(s.slice(last));
+          node.replaceWith(frag);
+        }
+      }
+
+      function zeigen() {
+        const sicht = istSichtbar() || bearbeiten;
+        box.hidden = !sicht;
+        knopf.setAttribute('aria-pressed', String(sicht));
+        knopf.hidden = ctx.readOnly() && !text.trim();
+        box.className = `tf-legende tf-ecke-${pref.ecke}${pref.zu && !bearbeiten ? ' tf-lg-eingeklappt' : ''}${ctx.readOnly() ? ' tf-lg-nurlesen' : ''}`;
+        ecke.value = pref.ecke;
+        titel.title = pref.zu ? L.auf : '';
+        titel.setAttribute('aria-expanded', String(!pref.zu));
+      }
+
+      async function speichern() {
+        clearTimeout(timer);
+        timer = null;
+        if (ctx.readOnly()) return;
+        try { await ctx.backend.setMeta(KEY, text); } catch (e) { ctx.ui.setStatus(`${L.titel}: ${(e && e.message) || e}`, 'error'); }
+      }
+
+      /** Vorlage für eine leere Legende: die Farben, die gerade benutzt werden. */
+      function vorlage() {
+        const seen = new Map();
+        for (const art of ['notiz', 'kinder']) for (const v of stand[art].values()) seen.set(v.farbe.id + (v.schraffiert ? '+' : ''), v);
+        const tag = v => farbTag('notiz', v.farbe) + (v.schraffiert ? (englisch ? '+hatched' : '+schraffiert') : '');
+        const zeilen = [...seen.values()].sort((a, b) => FARBEN.indexOf(a.farbe) - FARBEN.indexOf(b.farbe) || a.schraffiert - b.schraffiert).map(v => `- ${tag(v)}: ${L.bedeutung}`);
+        return zeilen.join('\n');
+      }
+
+      function oeffnen() {
+        if (ctx.readOnly() || bearbeiten) return;
+        bearbeiten = true;
+        if (!text.trim()) text = vorlage();
+        feld.value = text;
+        inhalt.hidden = true;
+        feld.hidden = false;
+        hinweis.hidden = false;
+        zeigen();
+        groesse();
+        feld.focus();
+        const i = feld.value.indexOf(L.bedeutung);
+        if (i >= 0) feld.setSelectionRange(i, i + L.bedeutung.length);
+      }
+
+      async function schliessen() {
+        if (!bearbeiten) return;
+        bearbeiten = false;
+        text = feld.value.replace(/\s+$/, '');
+        feld.hidden = true;
+        hinweis.hidden = true;
+        inhalt.hidden = false;
+        if (text.trim() && pref.sichtbar === false) pref.sichtbar = true;
+        malenLegende();
+        zeigen();
+        await speichern();
+      }
+
+      function groesse() { feld.style.height = 'auto'; feld.style.height = Math.min(feld.scrollHeight + 2, 360) + 'px'; }
+
+      inhalt.addEventListener('click', e => { if (!e.target.closest('a')) oeffnen(); });
+      inhalt.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); oeffnen(); } });
+      feld.addEventListener('input', () => {
+        text = feld.value;
+        groesse();
+        clearTimeout(timer);
+        timer = setTimeout(speichern, 800);
+      });
+      feld.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); schliessen(); return; }
+        const mod = e.ctrlKey || e.metaKey;
+        if (!mod || !E) return;
+        const k = e.key.toLowerCase();
+        const s0 = feld.selectionStart, e0 = feld.selectionEnd;
+        const r = k === 'b' ? E.wrap(feld.value, s0, e0, '**', '**', englisch ? 'bold' : 'fett')
+          : k === 'i' ? E.wrap(feld.value, s0, e0, '*', '*', englisch ? 'italic' : 'kursiv')
+          : k === 'k' ? E.link(feld.value, s0, e0) : null;
+        if (!r) return;
+        e.preventDefault();
+        feld.value = r.text;
+        feld.setSelectionRange(r.selStart, r.selEnd);
+        feld.dispatchEvent(new Event('input'));
+      });
+      document.addEventListener('pointerdown', aussen, true);
+      function aussen(e) { if (bearbeiten && !box.contains(e.target)) schliessen(); }
+      titel.addEventListener('click', () => { pref.zu = !pref.zu; merken(); zeigen(); });
+      zuKnopf.addEventListener('click', () => { pref.zu = true; merken(); zeigen(); });
+      ecke.addEventListener('change', () => { pref.ecke = ecke.value; merken(); zeigen(); });
+
+      /** Text aus der Datenbank lesen (nach dem Einschalten, nach einem Wechsel der Datei, nach dem Neuzeichnen: im Dienst kann
+       *  jemand anders ihn geändert haben). Während des Bearbeitens nicht. */
+      async function nachladen(neuerBereich) {
+        if (bearbeiten) return;
+        let v = null;
+        try { v = await ctx.backend.getMeta(KEY); } catch (e) { return; }
+        if (bearbeiten) return;
+        const next = v == null ? '' : String(v);
+        if (gelesen && next === text && !neuerBereich) return;
+        gelesen = true;
+        text = next;
+        malenLegende();
+        zeigen();
+      }
+
+      zeigen();
+      nachladen(true);
+      return {
+        nachladen,
+        weg() { clearTimeout(timer); document.removeEventListener('pointerdown', aussen, true); offSection(); entfernen(); knopf.remove(); },
+      };
     }
 
     /** Tags der Notizen ändern (nur wo sich etwas ändert), danach neu zeichnen. */
@@ -363,10 +610,13 @@ German: ${tagListe('de')}.`,
 
     if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, api) => farbFeld(target, api.close, api.applied) });
 
-    ctx.on('mindmap:rendered', neu);
+    // ---- Legende (NoNotes ab 2.11.0): was die Farben bedeuten, oben rechts (oder in einer anderen Ecke) über der Mindmap ----------
+    const legende = ctx.ui.addMapOverlay && ctx.export ? legendeAnlegen() : null;
+
+    ctx.on('mindmap:rendered', () => { if (legende) legende.nachladen(); return neu(); });
     // Andere Datei oder anderer Bereich: dieselben Nummern sind andere Notizen. Den Stand verwerfen, sofort ohne Farben zeichnen
     // und neu laden (NoNotes ab 2.8.1 meldet das vor dem Zeichnen, ältere danach: dann korrigiert das hier die Farben)
-    ctx.on('database:replaced', () => { token++; stand = leer(); return neu(); });
+    ctx.on('database:replaced', () => { token++; stand = leer(); if (legende) legende.nachladen(true); return neu(); });
     neu(); // die Mindmap ist beim Einschalten eventuell schon gezeichnet
 
     ausschalten = () => {
@@ -374,6 +624,7 @@ German: ${tagListe('de')}.`,
       token++;
       malen();
       style.remove();
+      if (legende) legende.weg();
       const defs = document.getElementById(DEFS_ID);
       if (defs) defs.remove();
     };

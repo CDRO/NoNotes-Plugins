@@ -469,13 +469,65 @@ async function main() {
     await ctxEn.close();
     part('Englische Oberfläche: «Colour ▸» mit «Note» und «Subnotes», «No colour», Tags color:teal+hatched und color-children:indigo');
 
+    // Legende (NoNotes ab 2.11.0): Knopf in der Leiste, Vorlage mit den benutzten Farben, bearbeiten, Farbfelder, Ecke, einklappen,
+    // nach dem Neuladen noch da, im Druck unter dem Bild
+    const lg = page.locator('.map-plugin-btn', { hasText: 'Legende' });
+    assert.equal(await lg.count(), 1, 'Knopf «Legende» in der Leiste');
+    assert.equal(await page.locator('.tf-legende').isVisible(), false, 'leer: noch verborgen');
+    await lg.click();
+    await page.waitForSelector('.tf-legende .tf-lg-text:not([hidden])');
+    const vorlage = await page.inputValue('.tf-legende .tf-lg-text');
+    assert.match(vorlage, /^- farbe:rot: …$/m, 'Vorlage nennt benutzte Farben');
+    assert.match(vorlage, /\+schraffiert: …$/m, 'und die schraffierten');
+    assert.equal(await page.evaluate(() => document.activeElement.classList.contains('tf-lg-text')), true, 'Fokus im Text');
+    await page.fill('.tf-legende .tf-lg-text', 'Neu');
+    await page.keyboard.press('Control+a');
+    await page.keyboard.press('Control+b');
+    assert.equal(await page.inputValue('.tf-legende .tf-lg-text'), '**Neu**', 'Ctrl+B macht fett');
+    await page.fill('.tf-legende .tf-lg-text', '- farbe:rot: dringend\n- farbe:blau+schraffiert: wartet\n- `farbe:grün` im Code bleibt Text\n\nDas *gilt* für alle.');
+    await page.click('#mindmap', { position: { x: 600, y: 700 } }); // Klick daneben speichert
+    await page.waitForSelector('.tf-legende .tf-lg-text', { state: 'hidden' });
+    assert.deepEqual(await page.locator('.tf-legende .tf-lg-name').allInnerTexts(), ['Rot', 'Blau (schraffiert)']);
+    assert.equal(await page.locator('.tf-legende .tf-lg-sw.tf-sw-blau.tf-lg-schraffiert').count(), 1);
+    assert.ok((await page.locator('.tf-legende code').innerText()).includes('farbe:grün'), 'im Code kein Farbfeld');
+    const swBg = await page.locator('.tf-legende .tf-lg-sw.tf-sw-rot').evaluate(e => getComputedStyle(e).backgroundColor);
+    assert.equal(swBg, rgb(byId.rot.light.fill), 'Farbfeld in der Farbe');
+    await page.selectOption('.tf-legende .tf-lg-ecke', 'ul');
+    assert.ok(await page.locator('.tf-legende.tf-ecke-ul').isVisible(), 'unten links');
+    const box = await page.locator('.tf-legende').boundingBox();
+    const bar = await page.locator('.map-toolbar').boundingBox();
+    await page.selectOption('.tf-legende .tf-lg-ecke', 'or');
+    const boxOr = await page.locator('.tf-legende').boundingBox();
+    assert.ok(boxOr.y >= bar.y + bar.height, 'oben rechts unter der Leiste');
+    assert.ok(box.y > boxOr.y, 'unten liegt tiefer');
+    await page.click('.tf-legende .tf-lg-zu');
+    assert.ok(await page.locator('.tf-legende.tf-lg-eingeklappt').isVisible(), 'eingeklappt');
+    await page.waitForFunction(SAVED, null, { timeout: 10000 });
+    await page.reload();
+    await page.waitForSelector(READY, { timeout: 30000 });
+    await page.waitForSelector('.tf-legende.tf-lg-eingeklappt', { state: 'visible' });
+    await page.click('.tf-legende .tf-lg-titel');
+    assert.deepEqual(await page.locator('.tf-legende .tf-lg-name').allInnerTexts(), ['Rot', 'Blau (schraffiert)'], 'nach dem Neuladen aus der Datenbank');
+    await page.evaluate(() => { window.__printed = []; window.print = () => window.__printed.push(document.getElementById('printArea').innerHTML); });
+    await page.keyboard.press('Control+p');
+    await page.waitForSelector('#printDialog[open]');
+    await page.click('#printGoBtn');
+    await page.waitForFunction(() => window.__printed.length === 1);
+    const druck = await page.evaluate(() => window.__printed[0]);
+    assert.match(druck, /<section class="print-map-section"><h2>Legende<\/h2><div class="md"><ul><li><strong>Rot<\/strong>: dringend<\/li><li><strong>Blau \(schraffiert\)<\/strong>: wartet<\/li>/, 'im Druck unter dem Bild, mit Namen');
+    await lg.click();
+    assert.equal(await page.locator('.tf-legende').isVisible(), false, 'Knopf blendet aus');
+    await lg.click();
+    assert.equal(await page.locator('.tf-legende').isVisible(), true, 'und wieder ein');
+    part('Legende: Knopf, Vorlage mit den benutzten Farben, Ctrl+B, Klick daneben speichert, Farbfelder (nicht im Code), Ecke unter der Leiste, einklappen, nach dem Neuladen da, im Druck unter dem Bild');
+
     // Hilfe
     await page.click('#menuBtn');
     await page.click('#menuHelpBtn');
     await page.waitForSelector('#helpDialog[open]');
     await page.click('#helpTabs button[data-tab="plugins"]');
     const help = await page.locator('#helpDialog .help-panel[data-panel="plugins"]').innerText();
-    for (const s of ['Farben über Tags', 'farbe:rot', 'farbe-kinder:blau', 'farbe:grau', 'color-children:blue', 'farbe:rot+schraffiert', 'color:red+hatched']) assert.ok(help.includes(s), 'Hilfe nennt ' + s);
+    for (const s of ['Farben über Tags', 'farbe:rot', 'farbe-kinder:blau', 'farbe:grau', 'color-children:blue', 'farbe:rot+schraffiert', 'color:red+hatched', 'Legende']) assert.ok(help.includes(s), 'Hilfe nennt ' + s);
     assert.ok(!help.includes('auch-kinder'), 'die alte Schreibweise nicht mehr');
     part('Hilfe: Abschnitt mit allen Tags');
 

@@ -43,6 +43,26 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
   sehen aus wie immer.
 - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt in der Hauptfarbe.
 
+## Legende (seit 2.2.0, NoNotes ab 2.11.0)
+
+Was eine Farbe bedeutet, steht in der **Legende** über der Mindmap:
+
+- Der Knopf **Legende** in der Leiste der Mindmap blendet sie ein oder aus. Ist sie noch leer, öffnet sie sich gleich zum
+  Bearbeiten, mit einer Vorlage: je benutzte Farbe eine Zeile wie `- farbe:rot: …` (schraffierte mit `+schraffiert`).
+- **Bearbeiten:** ein Klick in die Legende zeigt den Text (Markdown). `Ctrl+B`, `Ctrl+I` und `Ctrl+K` setzen fett, kursiv und
+  einen Link, eine Toolleiste gibt es nicht. `Esc` oder ein Klick daneben speichert; beim Tippen wird nach kurzer Pause
+  gespeichert.
+- **Farbfelder:** Farb-Tags im Text (`farbe:rot`, `farbe:blau+schraffiert`, `farbe-kinder:grün`, englisch `color:red` …)
+  erscheinen als Farbfeld mit dem Namen der Farbe, schraffierte gestreift, die der Unternotizen gestrichelt umrandet. In Code
+  (`` `farbe:rot` ``) bleibt der Text, wie er ist.
+- **Lage:** Die Auswahl im Kopf setzt die Ecke (oben rechts, oben links, unten links, unten rechts), **–** klappt die Legende
+  zu einem Knopf ein. Beides merkt sich der Browser; oben steht sie unter der Leiste der Mindmap.
+- **Gespeichert** wird der Text in der Datenbank (Einstellung `plugin:tag-farben:legende`): er reist mit der Datei, und im Dienst
+  sehen alle im Arbeitsbereich dieselbe Legende. Im Lesemodus lässt sie sich nicht bearbeiten; ist sie dann leer, fehlt der Knopf.
+- **Export und Druck:** Im Markdown-Export (`index.md` bzw. die eine Datei) und im Druck mit Mindmap-Bild steht sie als Abschnitt
+  «Legende» direkt unter dem Bild; die Farben erscheinen dort mit ihrem Namen.
+- Ist die Erweiterung ausgeschaltet, bleibt der Text in der Datenbank, wird aber weder gezeigt noch exportiert.
+
 ## Die 16 Farben
 
 Für die Unternotizen steht `farbe-kinder:` statt `farbe:` (englisch `color-children:` statt `color:`).
@@ -79,7 +99,7 @@ laden» `tag-colors/tag-colors.js` eingeben. Soll sie immer laufen, trägt man s
 `NoNotesPlugins.list(['tag-colors/tag-colors.js']);`.
 
 Die Erweiterung braucht das Ereignis `mindmap:rendered` (NoNotes ab 1.8.0), für den Rechtsklick
-`ctx.ui.addContextMenuItem` (NoNotes ab 2.8.0).
+`ctx.ui.addContextMenuItem` (NoNotes ab 2.8.0), für die Legende `ctx.ui.addMapOverlay`, `ctx.ui.addMapButton` und `ctx.export.addMapSection` (NoNotes ab 2.11.0).
 
 ## Anpassen
 
@@ -111,6 +131,7 @@ Browser:
 - Neuladen;
 - Aus- und Einschalten zur Laufzeit;
 - Rechtsklick: Farbwahl für Notiz und Unternotizen, «Keine Farbe», Mehrfachauswahl, englische Oberfläche;
+- Legende: Knopf, Vorlage, Ctrl+B, Speichern, Farbfelder, Ecke, einklappen, Neuladen, Druck;
 - Hilfe.
 
 Der Kern braucht `npm install` und Playwright mit Chromium. Der Ordner `.test/` geht nicht ins Paket.
