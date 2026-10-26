@@ -80,8 +80,9 @@ let tbfAusschalten = null;
 NoNotesPlugins.register({
   id: 'table-format',
   name: 'Tabellen formatieren',
-  version: '1.0.0',
+  version: '1.0.1',
   api: 1,
+  description: 'Farbe, Fett, Spaltenbreite, Zeilenhöhe und ganze Breite für Tabellen in der Vorschau, per Rechtsklick auf ein Feld (ab NoNotes 2.10.0).',
   help: {
     de: `Formatiert **Tabellen** in der Vorschau: Rechtsklick auf ein Feld → **Formatieren ▸**.
 

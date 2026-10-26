@@ -72,7 +72,7 @@ async function main() {
   assert.equal(built.status, 0, built.stderr || built.stdout);
   assert.ok(fs.existsSync(path.join(out, 'plugins', FILE)), 'die Erweiterung ist im Paket');
   assert.ok(!fs.existsSync(path.join(out, 'plugins', '.test')), 'der Test nicht');
-  assert.match(fs.readFileSync(path.join(out, 'plugins', 'plugins.js'), 'utf8'), /"id":"table-format"/, 'im Verzeichnis der Erweiterungen');
+  assert.match(fs.readFileSync(path.join(out, 'plugins', 'plugins.js'), 'utf8'), /"id":"table-format","name":"Tabellen formatieren","version":"1\.0\.1","api":1,"description":"Farbe, Fett[^"]+"/, 'im Verzeichnis der Erweiterungen, mit Beschreibung');
   part('Paket: Erweiterung im Ordner plugins/ und im Verzeichnis, der Test nicht');
 
   const browser = await chromium.launch();
