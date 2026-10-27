@@ -41,7 +41,11 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
   - Ältere NoNotes-Versionen färben weiter über Tags, nur ohne den Eintrag.
 - Die Auswahl in der Mindmap zeigt weiterhin ihren Rand; die Fläche behält die Farbe. Suche, Ziehen und Mehrfachauswahl
   sehen aus wie immer.
-- Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt in der Hauptfarbe.
+- **Beim Kopieren als Bild** (seit 2.4.0, NoNotes ab 3.1.0): *Als Bild kopieren* (Rechtsklick, `Ctrl+C` oder der Knopf in der Leiste der
+  Mindmap) übernimmt die Farben ins Bild, schraffierte mit Streifen wie bei Zoom 100 %, immer in der hellen Fassung. Abschalten:
+  Rechtsklick auf einen Knoten → **Farbe ▸** → Häkchen **Farben beim Kopieren als Bild** (Standard: an). Das gilt in diesem Browser
+  und wirkt sofort; im Lesemodus zeigt das Untermenü nur dieses Häkchen.
+- Export und Druck zeichnen die Mindmap weiterhin ohne diese Farben. Die Wurzel bleibt in der Hauptfarbe.
 
 ## Legende (seit 2.2.0, NoNotes ab 2.11.0)
 

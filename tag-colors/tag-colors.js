@@ -8,7 +8,8 @@
    - Mehrere Farb-Tags derselben Art an einer Notiz: es gilt das erste in der Reihenfolge, in der der Editor die Tags zeigt.
    - Zusätze nach «+» am Farb-Tag (seit 2.1.0): «farbe:rot+schraffiert» («color:red+hatched») zeichnet die Fläche schraffiert,
      abwechselnd in der Farbe und einer daraus berechneten helleren Fassung; auch «farbe-kinder:blau+schraffiert».
-   - Nur auf dem Bildschirm: Export und Druck zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt, wie sie ist.
+   - Auf dem Schirm und beim Kopieren als Bild (seit 2.4.0, NoNotes ab 3.1.0; abschaltbar im Untermenü «Farbe ▸»): Export und Druck
+     zeichnen die Mindmap ohne diese Farben. Die Wurzel bleibt, wie sie ist.
    - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit je den 16 Farben, «Keine Farbe» und «Schraffiert» für die
      Notiz und für ihre Unternotizen.
      Gilt für alle ausgewählten Knoten, wenn der angeklickte dazugehört; danach ist die Auswahl aufgehoben (ab 2.8.1).
@@ -69,7 +70,7 @@ const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f
 NoNotesPlugins.register({
   id: 'tag-farben',
   name: 'Farben über Tags',
-  version: '2.3.0',
+  version: '2.4.0',
   api: 1,
   help: {
     de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
@@ -78,7 +79,10 @@ NoNotesPlugins.register({
 - **Unternotizen färben:** \`farbe-kinder:blau\` (\`color-children:blue\`) färbt alle Unternotizen, die Notiz selbst nicht. Zusammen mit \`farbe:rot\` ist die Notiz rot und alles darunter blau; für dieselbe Farbe beide Tags mit derselben Farbe. Eine Unternotiz mit eigener Farbe behält sie, ein eigenes \`farbe-kinder:\` gilt für ihren Teil des Baums.
 - Mehrere Farb-Tags derselben Art an einer Notiz: das erste gilt (Reihenfolge wie im Editor).
 - **Schraffiert:** \`+schraffiert\` am Farb-Tag, etwa \`farbe:rot+schraffiert\` oder \`farbe-kinder:blau+schraffiert\` (englisch \`color:red+hatched\`). Die Fläche bekommt diagonale Streifen in der Farbe und einer helleren Fassung davon; der Titel bleibt lesbar, die Streifen wachsen mit dem Zoom.
-- Nur auf dem Bildschirm, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.
+- Auf dem Bildschirm und im kopierten Bild, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.
+
+#### Beim Kopieren als Bild
+*Als Bild kopieren* (Rechtsklick, \`Ctrl\`+\`C\` oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild, schraffierte mit Streifen. Abschalten: Rechtsklick auf einen Knoten → **Farbe ▸** → **Farben beim Kopieren als Bild**; das gilt in diesem Browser und geht auch im Lesemodus. Braucht NoNotes 3.1.0 oder neuer (seit 2.4.0).
 
 #### Per Rechtsklick
 Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
@@ -96,7 +100,10 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
 - **Colour subnotes:** \`color-children:blue\` (\`farbe-kinder:blau\`) colours all subnotes, not the note itself. Together with \`color:red\` the note is red and everything below it blue; for the same colour, use both tags with the same colour. A subnote with a colour of its own keeps it; its own \`color-children:\` applies to its part of the tree.
 - Several colour tags of the same kind on one note: the first one wins (order as in the editor).
 - **Hatched:** add \`+hatched\` to the colour tag, for example \`color:red+hatched\` or \`color-children:blue+hatched\` (German \`farbe:rot+schraffiert\`). The fill gets diagonal stripes in the colour and a lighter shade of it; the title stays legible, the stripes grow with the zoom.
-- On screen only, not in export and print. The root stays as it is.
+- On screen and in the copied image, not in export and print. The root stays as it is.
+
+#### When copying as an image
+*Copy as image* (right-click, \`Ctrl\`+\`C\` or the button in the mind map toolbar) includes the colours in the image, hatched ones with stripes. To turn this off: right-click a node → **Colour ▸** → **Colours when copying as image**; it applies in this browser and also works in read-only mode. Needs NoNotes 3.1.0 or later (since 2.4.0).
 
 #### By right-click
 Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one, hatching stays), **No colour** or tick **Hatched** (takes effect at once, only with a colour). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
@@ -280,8 +287,10 @@ German: ${tagListe('de')}.`,
     // ---- Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» --------------------------------------------------
     const englisch = !/^de\b/.test(ctx.language() || 'de');
     const T = englisch
-      ? { farbe: 'Colour', keine: 'No colour', notiz: 'Note', kinder: 'Subnotes', kinderTitel: 'Colour of all subnotes; a subnote with a colour of its own keeps it', schraffiert: 'Hatched', schraffiertTitel: 'Diagonal stripes in the colour and a lighter shade (needs a colour)' }
-      : { farbe: 'Farbe', keine: 'Keine Farbe', notiz: 'Notiz', kinder: 'Unternotizen', kinderTitel: 'Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie', schraffiert: 'Schraffiert', schraffiertTitel: 'Diagonale Streifen in der Farbe und einer helleren Fassung (braucht eine Farbe)' };
+      ? { farbe: 'Colour', keine: 'No colour', notiz: 'Note', kinder: 'Subnotes', kinderTitel: 'Colour of all subnotes; a subnote with a colour of its own keeps it', schraffiert: 'Hatched', schraffiertTitel: 'Diagonal stripes in the colour and a lighter shade (needs a colour)',
+        bild: 'Colours when copying as image', bildTitel: 'Copy as image (right-click, Ctrl+C or the button in the mind map toolbar) includes the colours; remembered in this browser' }
+      : { farbe: 'Farbe', keine: 'Keine Farbe', notiz: 'Notiz', kinder: 'Unternotizen', kinderTitel: 'Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie', schraffiert: 'Schraffiert', schraffiertTitel: 'Diagonale Streifen in der Farbe und einer helleren Fassung (braucht eine Farbe)',
+        bild: 'Farben beim Kopieren als Bild', bildTitel: 'Als Bild kopieren (Rechtsklick, Ctrl+C oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild; gilt in diesem Browser' };
     const anzeige = f => (englisch ? f.en.charAt(0).toUpperCase() + f.en.slice(1) : f.name);
     const farbTag = (art, f) => (englisch ? `${art === 'kinder' ? 'color-children' : 'color'}:${f.en}`
       : `${art === 'kinder' ? 'farbe-kinder' : 'farbe'}:${f.name.toLowerCase()}`);
@@ -577,7 +586,8 @@ German: ${tagListe('de')}.`,
       panel.className = 'tf-panel';
       const knoepfe = { notiz: new Map(), kinder: new Map() };
       const haken = {};
-      for (const art of ['notiz', 'kinder']) {
+      const nurLesen = !!(ctx.readOnly && ctx.readOnly()); // ctx.readOnly seit NoNotes 2.11.0
+      for (const art of nurLesen ? [] : ['notiz', 'kinder']) {
         if (art === 'kinder') { const sep = document.createElement('div'); sep.className = 'sep'; panel.appendChild(sep); }
         const teil = document.createElement('div');
         teil.className = `tf-teil tf-${art}`;
@@ -631,6 +641,21 @@ German: ${tagListe('de')}.`,
         panel.appendChild(teil);
       }
 
+      // Farben beim Kopieren als Bild (2.4.0): ein Schalter für diesen Browser, auch im Lesemodus; wirkt sofort, das Menü bleibt offen
+      if (kannBild) {
+        if (!nurLesen) { const sep = document.createElement('div'); sep.className = 'sep'; panel.appendChild(sep); }
+        const label = document.createElement('label');
+        label.className = 'tf-check tf-bild';
+        label.title = T.bildTitel;
+        const box = document.createElement('input');
+        box.type = 'checkbox';
+        box.checked = bildAn();
+        box.addEventListener('change', () => bildSetzen(box.checked));
+        label.append(box, T.bild);
+        panel.appendChild(label);
+      }
+      if (nurLesen) { panel.dataset.stand = 'geladen'; return panel; }
+
       // Stand der gewählten Notizen: je Art die gemeinsame Farbe markieren (bei verschiedenen keine); Schraffiert an (alle mit Farbe),
       // aus oder gemischt; ohne Farbe in diesem Teil lässt sich nicht schraffieren
       Promise.all(target.ids.map(id => ctx.backend.getTags(id))).then(alle => {
@@ -652,7 +677,36 @@ German: ${tagListe('de')}.`,
       return panel;
     }
 
-    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, panel: (target, api) => farbFeld(target, api.close, api.applied) });
+    // ---- Farben im kopierten Bild (NoNotes ab 3.1.0: ctx.export.addMapStyle) --------------------------------------------------
+    // Nur beim Kopieren als Bild und nur, wenn der Schalter im Untermenü an ist (Standard: an, je Browser). Das Bild ist immer hell,
+    // darum die helle Fassung; schraffierte Knoten bekommen ein Muster wie auf dem Schirm bei Zoom 100 %. Export und Druck bleiben
+    // ohne Farben.
+    const BILD_PREF = 'nonotes.tagFarben.bild';
+    const bildAn = () => { try { return localStorage.getItem(BILD_PREF) !== '0'; } catch (e) { return true; } };
+    const bildSetzen = an => { try { localStorage.setItem(BILD_PREF, an ? '1' : '0'); } catch (e) { /* egal */ } };
+    const kannBild = !!(ctx.export && ctx.export.addMapStyle);
+    if (kannBild) {
+      ctx.export.addMapStyle(async ({ target, ids }) => {
+        if (target !== 'copy' || !aktiv || !bildAn()) return null;
+        if (!stand.notiz.size && !stand.kinder.size) stand = await laden();
+        const eltern = new Map((await ctx.backend.getTree({ archive: true })).map(r => [String(r.id), r.parent_id == null ? 'root' : String(r.parent_id)]));
+        const nodes = {}, muster = new Map();
+        for (const id of ids) {
+          const st = farbeVon(String(id), eltern);
+          if (!st) continue;
+          const c = st.farbe.light, mid = `tfBild-${st.farbe.id}`;
+          if (st.schraffiert) muster.set(mid, st.farbe);
+          nodes[id] = { fill: st.schraffiert ? `url(#${mid})` : c.fill, stroke: c.line, text: c.line };
+        }
+        const w = 2 * STREIFEN;
+        const defs = [...muster].map(([mid, f]) => `<pattern id="${mid}" patternUnits="userSpaceOnUse" width="${w}" height="${w}" patternTransform="rotate(45)">`
+          + `<rect width="${w}" height="${w}" fill="${f.light.fill}"/><rect width="${STREIFEN}" height="${w}" fill="${tagFarbenStreifen(f.light, 'light')}"/></pattern>`).join('');
+        return { nodes, defs };
+      });
+    }
+
+    // Mit dem Schalter für das Bild gibt es das Untermenü auch im Lesemodus (dann nur mit dem Schalter)
+    if (ctx.ui.addContextMenuItem) ctx.ui.addContextMenuItem({ label: T.farbe, write: !kannBild, panel: (target, api) => farbFeld(target, api.close, api.applied) });
 
     // ---- Legende (NoNotes ab 2.11.0): was die Farben bedeuten, oben rechts (oder in einer anderen Ecke) über der Mindmap ----------
     const legende = ctx.ui.addMapOverlay && ctx.export ? legendeAnlegen() : null;

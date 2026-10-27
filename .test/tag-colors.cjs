@@ -1,5 +1,6 @@
 /* Test der Erweiterung «Farben über Tags» (tag-colors/) in der echten App: baut NoNotes mit diesem Repository
-   (tools/build.cjs --plugins) und prüft im Browser Farben, Farbe der Unternotizen, Auswahl, hell/dunkel, Ausschalten.
+   (tools/build.cjs --plugins) und prüft im Browser Farben, Farbe der Unternotizen, Auswahl, hell/dunkel, Ausschalten,
+   Rechtsklick, Legende, Farben beim Kopieren als Bild (NoNotes ab 3.1.0) und den Lesemodus.
    Der Ordner .test/ geht nicht ins Paket (der Build überspringt Ordner mit Punkt).
 
    Aufruf: NONOTES_CORE=../NoNotes node .test/tag-colors.cjs   (der Kern braucht npm install, Playwright mit Chromium) */
@@ -458,6 +459,7 @@ async function main() {
     await en.hover('#contextMenu button[data-plugin="tag-farben"]');
     await en.waitForSelector('.tf-panel[data-stand="geladen"]');
     assert.equal(await en.locator('.tf-panel .tf-notiz .tf-check').innerText(), 'Hatched');
+    assert.equal(await en.locator('.tf-panel .tf-bild').innerText(), 'Colours when copying as image');
     await en.click('.tf-panel .tf-notiz .tf-schraffur');
     await en.keyboard.press('Escape');
     await en.keyboard.press('Escape');
@@ -467,7 +469,7 @@ async function main() {
     await en.waitForFunction(() => document.querySelectorAll('#tagChips .chip').length === 2);
     assert.deepEqual((await en.evaluate(() => [...document.querySelectorAll('#tagChips .chip')].map(c => c.firstChild.textContent))).sort(), ['color-children:indigo', 'color:teal+hatched']);
     await ctxEn.close();
-    part('Englische Oberfläche: «Colour ▸» mit «Note» und «Subnotes», «No colour», Tags color:teal+hatched und color-children:indigo');
+    part('Englische Oberfläche: «Colour ▸» mit «Note» und «Subnotes», «No colour», «Colours when copying as image», Tags color:teal+hatched und color-children:indigo');
 
     // Legende (NoNotes ab 2.11.0): Knopf in der Leiste, Vorlage mit den benutzten Farben, bearbeiten, Farbfelder, Ecke, einklappen,
     // nach dem Neuladen noch da, im Druck unter dem Bild
@@ -521,13 +523,142 @@ async function main() {
     assert.equal(await page.locator('.tf-legende').isVisible(), true, 'und wieder ein');
     part('Legende: Knopf, Vorlage mit den benutzten Farben, Ctrl+B, Klick daneben speichert, Farbfelder (nicht im Code), Ecke unter der Leiste, einklappen, nach dem Neuladen da, im Druck unter dem Bild');
 
+    // Als Bild kopieren (NoNotes ab 3.1.0, Erweiterung ab 2.4.0): Farben im kopierten Bild in der hellen Fassung, schraffierte mit
+    // Muster; nur die Knoten im Bild; abschaltbar im Untermenü «Farbe ▸», je Browser gemerkt; Druck ohne Farben
+    await ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
+    const spy = () => page.evaluate(() => { const o = NoNotesMindmap.toSvgString; NoNotesMindmap.toSvgString = (r, opt) => (window.__svg = o(r, opt)); });
+    const copyImage = async how => {
+      await page.evaluate(() => { window.__svg = null; document.querySelector('#status').textContent = ''; });
+      await how();
+      await page.waitForFunction(() => window.__svg && /in die Zwischenablage kopiert/.test(document.querySelector('#status').textContent));
+      return page.evaluate(() => window.__svg);
+    };
+    const inImage = (svg, title) => {
+      const m = new RegExp(`<rect [^>]*fill="([^"]+)" stroke="([^"]+)"[^>]*/>\\s*<text [^>]*fill="([^"]+)"[^>]*>${title}</text>`).exec(svg);
+      return m && { fill: m[1], stroke: m[2], text: m[3] };
+    };
+    const live = () => page.evaluate(k => Object.fromEntries([...document.querySelectorAll('g.mm-node:not(.mm-root)')].map(g => {
+      const farbe = [...g.classList].find(c => c.startsWith(k) && c !== k + 'schraffiert');
+      return [g.querySelector(':scope > text').textContent, farbe ? { farbe: farbe.slice(k.length), schraffiert: g.classList.contains(k + 'schraffiert') } : null];
+    })), 'tf-');
+    await spy();
+    await deselect();
+    const soll = await live();
+    let svg = await copyImage(() => page.click('#mapCopyBtn'));
+    const blank = Object.keys(soll).find(t => !soll[t]);
+    assert.ok(blank, 'ein Knoten ohne Farbe ist dabei');
+    const plain = inImage(svg, blank);
+    assert.ok(plain && !colors.some(c => c.light.fill === plain.fill), 'ohne Farbe: wie die App');
+    assert.ok(Object.values(soll).some(v => v && v.schraffiert), 'ein schraffierter Knoten ist dabei');
+    for (const [title, st] of Object.entries(soll)) {
+      const got = inImage(svg, title);
+      assert.ok(got, `${title} im Bild`);
+      if (!st) { assert.deepEqual(got, plain, `${title}: ohne Farbe`); continue; }
+      const c = byId[st.farbe].light;
+      assert.deepEqual(got, { fill: st.schraffiert ? `url(#tfBild-${st.farbe})` : c.fill, stroke: c.line, text: c.line }, `${title}: ${st.farbe} hell${st.schraffiert ? ', schraffiert' : ''}`);
+    }
+    const imgDefs = await page.evaluate(svg => {
+      const d = new DOMParser().parseFromString(svg, 'image/svg+xml');
+      return [...d.querySelectorAll('defs > pattern')].map(p => ({ id: p.id, w: p.getAttribute('width'), stripe: p.lastElementChild.getAttribute('width'), fills: [...p.children].map(r => r.getAttribute('fill')) }));
+    }, svg);
+    const hatched = [...new Set(Object.values(soll).filter(v => v && v.schraffiert).map(v => v.farbe))].sort();
+    assert.deepEqual(imgDefs.map(p => p.id).sort(), hatched.map(f => 'tfBild-' + f), 'ein Muster je schraffierter Farbe im Bild');
+    const pRot = imgDefs.find(p => p.id === 'tfBild-rot');
+    assert.deepEqual(pRot, { id: 'tfBild-rot', w: '8', stripe: '4', fills: [byId.rot.light.fill, byId.rot.streifen.light] }, 'Muster wie auf dem Schirm (hell, Zoom 100 %)');
+    await node('Projekt').click();
+    svg = await copyImage(async () => { await page.focus('#mindmap'); await page.keyboard.press('Control+c'); });
+    assert.ok(inImage(svg, 'Projekt') && !inImage(svg, 'Andere'), 'ab einem Knoten: nur der Ast');
+    assert.equal(inImage(svg, 'Projekt').fill, byId[soll.Projekt.farbe].light.fill, 'auch ab einem Knoten');
+    assert.ok(!druck.includes('tfBild') && !druck.includes(byId.rot.light.fill), 'der Druck bleibt ohne Farben');
+    // Abschalten im Untermenü: wirkt sofort, das Menü bleibt offen, die Mindmap behält ihre Farben
+    await node(blank).click({ button: 'right' });
+    await page.hover('#contextMenu button[data-plugin="tag-farben"]');
+    await page.waitForSelector('.tf-panel[data-stand="geladen"]');
+    assert.equal(await page.locator('.tf-panel .tf-bild').innerText(), 'Farben beim Kopieren als Bild');
+    assert.equal(await page.isChecked('.tf-panel .tf-bild input'), true, 'Standard: an');
+    await page.uncheck('.tf-panel .tf-bild input');
+    assert.equal(await page.locator('.tf-panel').isVisible(), true, 'das Untermenü bleibt offen');
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await deselect();
+    svg = await copyImage(() => page.click('#mapCopyBtn'));
+    assert.ok(!svg.includes('tfBild') && !colors.some(c => svg.includes(`fill="${c.light.fill}"`)), 'ausgeschaltet: keine Farben im Bild');
+    await expect('Projekt', soll.Projekt.farbe, 'light');
+    assert.equal(await page.evaluate(() => localStorage.getItem('nonotes.tagFarben.bild')), '0', 'je Browser gemerkt');
+    await page.reload();
+    await page.waitForSelector(READY, { timeout: 30000 });
+    await node(blank).click({ button: 'right' });
+    await page.hover('#contextMenu button[data-plugin="tag-farben"]');
+    await page.waitForSelector('.tf-panel[data-stand="geladen"]');
+    assert.equal(await page.isChecked('.tf-panel .tf-bild input'), false, 'nach dem Neuladen noch aus');
+    await page.check('.tf-panel .tf-bild input');
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('Escape');
+    await page.waitForSelector('#contextMenu', { state: 'hidden' });
+    await spy();
+    await deselect();
+    svg = await copyImage(() => page.click('#mapCopyBtn'));
+    assert.equal(inImage(svg, 'Projekt').fill, byId[soll.Projekt.farbe].light.fill, 'wieder an: Farben im Bild');
+    part('Als Bild kopieren: Farben in der hellen Fassung, Muster für schraffierte, ab einem Knoten nur der Ast, Druck ohne Farben; Schalter im Untermenü wirkt sofort, je Browser gemerkt');
+
+    // Lesemodus (etwa als Leserin im Dienst): «Farbe ▸» nur mit dem Schalter für das Bild, das Kopieren behält die Farben
+    const ctxRo = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: 'de-CH', colorScheme: 'light' });
+    await ctxRo.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await ctxRo.addInitScript(f => { try { if (!localStorage.getItem('nonotes.plugins')) localStorage.setItem('nonotes.plugins', JSON.stringify([f])); } catch (e) { /* egal */ } }, FILE);
+    await ctxRo.addInitScript(() => { // wie test/collab.cjs im Kern: die Hülle meldet den Lesemodus, sobald __readonly gesetzt ist
+      let edition;
+      Object.defineProperty(window, 'NoNotesEdition', { configurable: true, get: () => edition, set: v => {
+        edition = v;
+        const make = v.createShell;
+        v.createShell = host => { const shell = make(host); if (localStorage.getItem('__readonly') === '1') Object.defineProperty(shell, 'readOnly', { get: () => true }); return shell; };
+      } });
+    });
+    const ro = await ctxRo.newPage();
+    ro.on('pageerror', e => errors.push('pageerror (Lesemodus): ' + e.message));
+    await ro.goto('file://' + path.join(out, 'index.html'));
+    await ro.waitForSelector(READY, { timeout: 30000 });
+    const roNode = t => ro.locator(`g.mm-node:has(> text:text-is("${t}"))`);
+    await ro.click('#mindmap', { position: { x: 30, y: 700 } });
+    await ro.keyboard.press('Tab');
+    await ro.waitForSelector('#renameInput:not([hidden])');
+    await ro.keyboard.type('Gelesen');
+    await ro.keyboard.press('Enter');
+    await roNode('Gelesen').dblclick();
+    await ro.waitForFunction(() => document.body.classList.contains('editor-open'));
+    await ro.fill('#tagInput', 'farbe:grün');
+    await ro.keyboard.press('Enter');
+    await ro.waitForFunction(SAVED);
+    await ro.click('#backBtn');
+    await ro.evaluate(() => localStorage.setItem('__readonly', '1'));
+    await ro.reload();
+    await ro.waitForSelector(READY, { timeout: 30000 });
+    await ro.waitForSelector('g.mm-node.tf-gruen');
+    await roNode('Gelesen').click({ button: 'right' });
+    await ro.hover('#contextMenu button[data-plugin="tag-farben"]');
+    await ro.waitForSelector('.tf-panel[data-stand="geladen"]');
+    assert.equal(await ro.locator('.tf-panel .tf-sw').count(), 0, 'keine Farbfelder');
+    assert.equal(await ro.locator('.tf-panel .sep').count(), 0, 'kein Trennstrich');
+    assert.equal(await ro.isChecked('.tf-panel .tf-bild input'), true);
+    await ro.keyboard.press('Escape');
+    await ro.keyboard.press('Escape');
+    await ro.waitForSelector('#contextMenu', { state: 'hidden' });
+    await ro.evaluate(() => { const o = NoNotesMindmap.toSvgString; NoNotesMindmap.toSvgString = (r, opt) => (window.__svg = o(r, opt)); });
+    await roNode('Gelesen').click();
+    await ro.focus('#mindmap');
+    await ro.keyboard.press('Control+c');
+    await ro.waitForFunction(() => window.__svg && /in die Zwischenablage kopiert/.test(document.querySelector('#status').textContent));
+    assert.equal(inImage(await ro.evaluate(() => window.__svg), 'Gelesen').fill, byId.gruen.light.fill, 'Farbe im Bild');
+    await ctxRo.close();
+    part('Lesemodus: «Farbe ▸» nur mit dem Schalter für das Bild, ohne Farbfelder; Kopieren mit Farben');
+
     // Hilfe
     await page.click('#menuBtn');
     await page.click('#menuHelpBtn');
     await page.waitForSelector('#helpDialog[open]');
     await page.click('#helpTabs button[data-tab="plugins"]');
     const help = await page.locator('#helpDialog .help-panel[data-panel="plugins"]').innerText();
-    for (const s of ['Farben über Tags', 'farbe:rot', 'farbe-kinder:blau', 'farbe:grau', 'color-children:blue', 'farbe:rot+schraffiert', 'color:red+hatched', 'Legende']) assert.ok(help.includes(s), 'Hilfe nennt ' + s);
+    for (const s of ['Farben über Tags', 'farbe:rot', 'farbe-kinder:blau', 'farbe:grau', 'color-children:blue', 'farbe:rot+schraffiert', 'color:red+hatched', 'Legende', 'Beim Kopieren als Bild']) assert.ok(help.includes(s), 'Hilfe nennt ' + s);
     assert.ok(!help.includes('auch-kinder'), 'die alte Schreibweise nicht mehr');
     part('Hilfe: Abschnitt mit allen Tags');
 
