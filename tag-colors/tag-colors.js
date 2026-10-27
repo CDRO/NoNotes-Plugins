@@ -69,7 +69,7 @@ const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f
 NoNotesPlugins.register({
   id: 'tag-farben',
   name: 'Farben über Tags',
-  version: '2.2.0',
+  version: '2.3.0',
   api: 1,
   help: {
     de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
@@ -84,7 +84,7 @@ NoNotesPlugins.register({
 Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
 
 #### Legende
-Der Knopf **Legende** in der Leiste der Mindmap blendet eine Notiz ein, die erklärt, was die Farben bedeuten (eine je Datenbank, für alle im Arbeitsbereich gleich). Ein Klick in die Legende bearbeitet sie: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` oder ein Klick daneben speichert. Farb-Tags im Text wie \`farbe:rot\` oder \`farbe:blau+schraffiert\` erscheinen als Farbfeld mit Namen. Ist sie leer, beginnt sie mit den Farben, die gerade benutzt werden. Die Ecke (oben rechts, oben links, unten links, unten rechts) wählt die Auswahl im Kopf, **–** klappt sie ein; beides merkt sich der Browser. Im Markdown-Export und im Druck steht sie unter dem Mindmap-Bild. Braucht NoNotes 2.11.0 oder neuer.
+Der Knopf **Legende** in der Leiste der Mindmap blendet eine Notiz ein, die erklärt, was die Farben bedeuten (eine je Datenbank, für alle im Arbeitsbereich gleich). Ein Klick in die Legende bearbeitet sie: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` oder ein Klick daneben speichert. Farb-Tags im Text wie \`farbe:rot\` oder \`farbe:blau+schraffiert\` erscheinen als Farbfeld mit Namen. Ist sie leer, beginnt sie mit den Farben, die gerade benutzt werden. Kommen später Farben dazu, ergänzt der Knopf **+** im Kopf der Legende die fehlenden als neue Zeilen am Ende; was schon dasteht, bleibt unberührt (seit 2.3.0). Die Ecke (oben rechts, oben links, unten links, unten rechts) wählt die Auswahl im Kopf, **–** klappt sie ein; beides merkt sich der Browser. Im Markdown-Export und im Druck steht sie unter dem Mindmap-Bild. Braucht NoNotes 2.11.0 oder neuer.
 
 #### Die 16 Farben
 ${tagListe('de')}
@@ -102,7 +102,7 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
 Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one, hatching stays), **No colour** or tick **Hatched** (takes effect at once, only with a colour). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
 
 #### Legend
-The **Legend** button in the mind map toolbar shows a note that explains what the colours mean (one per database, the same for everyone in the workspace). Click into the legend to edit it: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` or a click outside saves. Colour tags in the text such as \`color:red\` or \`color:blue+hatched\` appear as a swatch with the name. When empty, it starts with the colours currently in use. The selector in its header picks the corner (top right, top left, bottom left, bottom right), **–** collapses it; the browser remembers both. In the Markdown export and in print it appears below the mind map image. Needs NoNotes 2.11.0 or later.
+The **Legend** button in the mind map toolbar shows a note that explains what the colours mean (one per database, the same for everyone in the workspace). Click into the legend to edit it: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` or a click outside saves. Colour tags in the text such as \`color:red\` or \`color:blue+hatched\` appear as a swatch with the name. When empty, it starts with the colours currently in use. When colours are added later, the **+** button in its header adds the missing ones as new lines at the end; what is already there stays untouched (since 2.3.0). The selector in its header picks the corner (top right, top left, bottom left, bottom right), **–** collapses it; the browser remembers both. In the Markdown export and in print it appears below the mind map image. Needs NoNotes 2.11.0 or later.
 
 #### The 16 colours
 ${tagListe('en')}, also \`color:grey\`.
@@ -183,7 +183,8 @@ German: ${tagListe('de')}.`,
       .tf-legende .tf-lg-titel { all: unset; flex: 1; font-weight: 600; cursor: pointer; }
       .tf-legende .tf-lg-titel:focus-visible { outline: 2px solid var(--accent); border-radius: 4px; }
       .tf-legende .tf-lg-ecke { font-size: 11px; padding: 1px 2px; max-width: 105px; }
-      .tf-legende .tf-lg-zu { padding: 0 8px; line-height: 1.4; }
+      .tf-legende .tf-lg-zu, .tf-legende .tf-lg-plus { padding: 0 8px; line-height: 1.4; }
+      .tf-legende.tf-lg-eingeklappt .tf-lg-plus { display: none; }
       .tf-legende .tf-lg-inhalt { padding: 2px 12px 10px; cursor: text; }
       .tf-legende.tf-lg-nurlesen .tf-lg-inhalt { cursor: default; }
       .tf-legende .tf-lg-inhalt > :first-child { margin-top: 0; } .tf-legende .tf-lg-inhalt > :last-child { margin-bottom: 0; }
@@ -273,6 +274,7 @@ German: ${tagListe('de')}.`,
       if (mine !== token || !aktiv) return;
       stand = frisch;
       malen();
+      if (legende) legende.auffrischen(); // der Knopf «+» hängt an den benutzten Farben
     }
 
     // ---- Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» --------------------------------------------------
@@ -301,9 +303,11 @@ German: ${tagListe('de')}.`,
     function legendeAnlegen() {
       const L = englisch
         ? { titel: 'Legend', knopf: 'Legend', knopfTitel: 'Show or hide the legend: what the colours mean', zu: 'Collapse', auf: 'Expand legend', ecke: 'Position of the legend',
+            ergaenzen: 'Add missing colours: colours in use that the legend does not mention yet come as new lines at the end',
             ecken: { or: 'Top right', ol: 'Top left', ul: 'Bottom left', ur: 'Bottom right' }, leer: 'Click to describe what the colours mean.',
             hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc or a click outside saves', schraffiert: 'hatched', kinder: 'subnotes', bedeutung: '…' }
         : { titel: 'Legende', knopf: 'Legende', knopfTitel: 'Legende ein- oder ausblenden: was die Farben bedeuten', zu: 'Einklappen', auf: 'Legende aufklappen', ecke: 'Lage der Legende',
+            ergaenzen: 'Fehlende Farben ergänzen: benutzte Farben, die in der Legende noch fehlen, kommen als neue Zeilen ans Ende',
             ecken: { or: 'Oben rechts', ol: 'Oben links', ul: 'Unten links', ur: 'Unten rechts' }, leer: 'Klicken, um zu beschreiben, was die Farben bedeuten.',
             hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc oder Klick daneben speichert', schraffiert: 'schraffiert', kinder: 'Unternotizen', bedeutung: '…' };
       const KEY = LEGENDE_KEY;
@@ -336,7 +340,14 @@ German: ${tagListe('de')}.`,
       zuKnopf.textContent = '–';
       zuKnopf.title = L.zu;
       zuKnopf.setAttribute('aria-label', L.zu);
-      kopf.append(titel, ecke, zuKnopf);
+      // Fehlende Farben ergänzen (2.3.0): nur sichtbar, wenn benutzte Farben in der Legende fehlen
+      const plusKnopf = document.createElement('button');
+      plusKnopf.type = 'button';
+      plusKnopf.className = 'tf-lg-plus';
+      plusKnopf.textContent = '+';
+      plusKnopf.title = L.ergaenzen;
+      plusKnopf.setAttribute('aria-label', L.ergaenzen);
+      kopf.append(titel, plusKnopf, ecke, zuKnopf);
       const inhalt = document.createElement('div');
       inhalt.className = 'tf-lg-inhalt md';
       inhalt.tabIndex = 0;
@@ -409,6 +420,7 @@ German: ${tagListe('de')}.`,
         knopf.hidden = ctx.readOnly() && !text.trim();
         box.className = `tf-legende tf-ecke-${pref.ecke}${pref.zu && !bearbeiten ? ' tf-lg-eingeklappt' : ''}${ctx.readOnly() ? ' tf-lg-nurlesen' : ''}`;
         ecke.value = pref.ecke;
+        plusKnopf.hidden = ctx.readOnly() || !fehlende().length;
         titel.title = pref.zu ? L.auf : '';
         titel.setAttribute('aria-expanded', String(!pref.zu));
       }
@@ -420,13 +432,43 @@ German: ${tagListe('de')}.`,
         try { await ctx.backend.setMeta(KEY, text); } catch (e) { ctx.ui.setStatus(`${L.titel}: ${(e && e.message) || e}`, 'error'); }
       }
 
-      /** Vorlage für eine leere Legende: die Farben, die gerade benutzt werden. */
-      function vorlage() {
+      /** Zeilen für die Farben, die gerade benutzt werden (je Farbe und Schraffur eine), ohne die in skip (Schlüssel «rot», «rot+»). */
+      function zeilenFuer(skip) {
         const seen = new Map();
         for (const art of ['notiz', 'kinder']) for (const v of stand[art].values()) seen.set(v.farbe.id + (v.schraffiert ? '+' : ''), v);
         const tag = v => farbTag('notiz', v.farbe) + (v.schraffiert ? (englisch ? '+hatched' : '+schraffiert') : '');
-        const zeilen = [...seen.values()].sort((a, b) => FARBEN.indexOf(a.farbe) - FARBEN.indexOf(b.farbe) || a.schraffiert - b.schraffiert).map(v => `- ${tag(v)}: ${L.bedeutung}`);
-        return zeilen.join('\n');
+        return [...seen.entries()].filter(([k]) => !(skip && skip.has(k))).map(([, v]) => v)
+          .sort((a, b) => FARBEN.indexOf(a.farbe) - FARBEN.indexOf(b.farbe) || a.schraffiert - b.schraffiert).map(v => `- ${tag(v)}: ${L.bedeutung}`);
+      }
+
+      /** Vorlage für eine leere Legende: die Farben, die gerade benutzt werden. */
+      function vorlage() { return zeilenFuer(null).join('\n'); }
+
+      /** Farben, die der Text schon nennt (gleich ob für Notizen oder Unternotizen): Schlüssel «rot», «rot+» (schraffiert). */
+      function genannt(t) {
+        const out = new Set();
+        TOKEN_RE.lastIndex = 0;
+        for (let m; (m = TOKEN_RE.exec(t));) { const d = deuten(m[2].replace(/\s+/g, '')); if (d) out.add(d.farbe.id + (d.schraffiert ? '+' : '')); }
+        return out;
+      }
+
+      /** Benutzte Farben, die in der Legende noch fehlen, als Zeilen. */
+      const fehlende = () => (text.trim() ? zeilenFuer(genannt(text)) : []);
+
+      /** Hängt die fehlenden Farben als neue Zeilen ans Ende; was dasteht, bleibt. Danach bearbeiten, die erste neue Bedeutung ausgewählt. */
+      async function ergaenzen() {
+        if (ctx.readOnly()) return;
+        const neu = fehlende();
+        if (!neu.length) { zeigen(); return; }
+        const basis = bearbeiten ? feld.value : text;
+        const davor = basis.replace(/\s+$/, '');
+        const start = davor.length + (davor ? 1 : 0);
+        text = (davor ? davor + '\n' : '') + neu.join('\n');
+        if (bearbeiten) { feld.value = text; groesse(); await speichern(); } else { await speichern(); oeffnen(); }
+        const i = feld.value.indexOf(L.bedeutung, start);
+        feld.focus();
+        if (i >= 0) feld.setSelectionRange(i, i + L.bedeutung.length);
+        zeigen();
       }
 
       function oeffnen() {
@@ -486,6 +528,7 @@ German: ${tagListe('de')}.`,
       function aussen(e) { if (bearbeiten && !box.contains(e.target)) schliessen(); }
       titel.addEventListener('click', () => { pref.zu = !pref.zu; merken(); zeigen(); });
       zuKnopf.addEventListener('click', () => { pref.zu = true; merken(); zeigen(); });
+      plusKnopf.addEventListener('click', () => { pref.zu = false; merken(); ergaenzen(); });
       ecke.addEventListener('change', () => { pref.ecke = ecke.value; merken(); zeigen(); });
 
       /** Text aus der Datenbank lesen (nach dem Einschalten, nach einem Wechsel der Datei, nach dem Neuzeichnen: im Dienst kann
@@ -507,6 +550,7 @@ German: ${tagListe('de')}.`,
       nachladen(true);
       return {
         nachladen,
+        auffrischen: () => { if (!bearbeiten) zeigen(); },
         weg() { clearTimeout(timer); document.removeEventListener('pointerdown', aussen, true); offSection(); entfernen(); knopf.remove(); },
       };
     }

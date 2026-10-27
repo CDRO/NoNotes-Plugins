@@ -49,6 +49,11 @@ Was eine Farbe bedeutet, steht in der **Legende** über der Mindmap:
 
 - Der Knopf **Legende** in der Leiste der Mindmap blendet sie ein oder aus. Ist sie noch leer, öffnet sie sich gleich zum
   Bearbeiten, mit einer Vorlage: je benutzte Farbe eine Zeile wie `- farbe:rot: …` (schraffierte mit `+schraffiert`).
+- **Fehlende Farben ergänzen (seit 2.3.0):** Kommt später eine Farbe dazu, erscheint im Kopf der Legende der Knopf **+**. Er hängt
+  für jede benutzte Farbe, die der Text noch nicht nennt, eine Zeile wie `- farbe:grün: …` ans Ende und öffnet die Legende zum
+  Bearbeiten, die erste neue Bedeutung ausgewählt. Was schon dasteht (Reihenfolge, Texte, Farben, die gerade nicht benutzt
+  werden), bleibt unberührt. Genannt ist eine Farbe, wenn ihr Tag irgendwo im Text steht (`farbe:` oder `farbe-kinder:`, mit
+  oder ohne Schraffur getrennt gezählt). Im Lesemodus gibt es den Knopf nicht.
 - **Bearbeiten:** ein Klick in die Legende zeigt den Text (Markdown). `Ctrl+B`, `Ctrl+I` und `Ctrl+K` setzen fett, kursiv und
   einen Link, eine Toolleiste gibt es nicht. `Esc` oder ein Klick daneben speichert; beim Tippen wird nach kurzer Pause
   gespeichert.
