@@ -1,0 +1,14 @@
+{
+  "name": "Sprung zu Unternotizen",
+  "description": "Strg+Leertaste im Editor (Bearbeiten, Geteilt, Vorschau) öffnet eine nummerierte Liste der Unternotizen; Zahl und Enter springen hin.",
+  "help": "Springt per Tastenkürzel von einer Notiz zu einer ihrer **Unternotizen**.\n\nIm Editor (**Bearbeiten**, **Geteilt** und **Vorschau**) öffnet `Strg`+`Leertaste` ein Fenster mit einer nummerierten Liste. Nummer eingeben, `Enter` drücken: die Unternotiz öffnet sich. Ein Klick auf einen Eintrag geht auch, `Esc` bricht ab.\n\n#### Welche Unternotizen erscheinen?\n- Die Unternotizen, deren Titel im Text der Notiz vorkommt (auch als `[[Titel]]`), in der Reihenfolge ihres Auftretens. Ein Titel zählt nur als ganzes Wort.\n- Nennt der Text keine Unternotiz, erscheinen alle in der Reihenfolge der Mindmap.\n- Archivierte Unternotizen fehlen.\n\nBeispiel: Endet eine Notiz mit „Wohin soll es gehen? Vorne, Hinten, Oben, Unten“ und hat Unternotizen mit diesen Titeln, führt die Liste genau diese auf.\n\nKürzel und Darstellungen lassen sich oben in `subnote-jump.js` ändern (`TASTE`, `MODI`).",
+  "ui": {
+    "title": "Wohin soll es gehen?",
+    "hint": "Nummer eingeben, dann Enter. Esc bricht ab.",
+    "label": "Nummer",
+    "invalid": "Bitte eine Nummer aus der Liste eingeben.",
+    "none": "Diese Notiz hat keine Unternotizen.",
+    "untitled": "Ohne Titel",
+    "go": "Öffnen"
+  }
+}

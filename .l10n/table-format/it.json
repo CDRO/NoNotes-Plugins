@@ -1,0 +1,40 @@
+{
+  "name": "Formatta tabelle",
+  "description": "Colore, grassetto, larghezza delle colonne, altezza delle righe e larghezza intera per le tabelle nell’anteprima, con un clic destro su una cella (da NoNotes 2.10.0).",
+  "help": "Formatta le **tabelle** nell’anteprima: clic destro su una cella → **Formatta ▸**.\n\n- **Vale per** la cella, la sua riga o la sua colonna (nella riga di intestazione: la riga di intestazione). Per questo scegli un **colore** ({FARBEN} o nessuno) e il **grassetto**. Se vale più di una scelta, la cella prevale sulla riga e la riga sulla colonna.\n- **Larghezza colonna**: Auto, {BREITEN}. **Altezza riga**: Auto, {HOEHEN}. **Larghezza intera** estende la tabella su tutta l’anteprima.\n- Ogni scelta ha effetto subito; il sottomenu resta aperto.\n- Il formato viene salvato nella riga `<!-- tabelle: … -->` sopra la tabella; righe e colonne mantengono il loro formato quando se ne aggiungono o se ne tolgono altre. Altri programmi Markdown mostrano la tabella senza questo formato.\n- In modalità scura i colori sono scuri, in stampa sempre chiari.",
+  "ui": {
+    "menu": "Formatta",
+    "scope": "Vale per",
+    "cell": "Cella",
+    "row": "Riga",
+    "header": "Riga di intestazione",
+    "col": "Colonna",
+    "farbe": "Colore",
+    "keine": "Nessuno",
+    "fett": "Grassetto",
+    "breite": "Larghezza colonna",
+    "hoehe": "Altezza riga",
+    "auto": "Auto",
+    "voll": "Larghezza intera"
+  },
+  "farben": {
+    "gelb": "Giallo",
+    "orange": "Arancione",
+    "rot": "Rosso",
+    "pink": "Rosa",
+    "violett": "Viola",
+    "blau": "Blu",
+    "tuerkis": "Turchese",
+    "gruen": "Verde",
+    "grau": "Grigio"
+  },
+  "breiten": {
+    "schmal": "Stretta",
+    "mittel": "Media",
+    "breit": "Larga"
+  },
+  "hoehen": {
+    "hoch": "Alta",
+    "sehr-hoch": "Molto alta"
+  }
+}

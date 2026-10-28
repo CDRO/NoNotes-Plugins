@@ -1,0 +1,14 @@
+{
+  "name": "Salto alle sottonote",
+  "description": "Ctrl+Spazio nell’editor (Modifica, Diviso, Anteprima) apre un elenco numerato delle sottonote; un numero ed Enter ti ci portano.",
+  "help": "Passa con una scorciatoia da tastiera da una nota a una delle sue **sottonote**.\n\nNell’editor (**Modifica**, **Diviso** e **Anteprima**) `Ctrl`+`Spazio` apre una finestra con un elenco numerato. Digita il numero e premi `Enter`: la sottonota si apre. Funziona anche un clic su una voce; `Esc` annulla.\n\n#### Quali sottonote compaiono?\n- Le sottonote il cui titolo compare nel testo della nota (anche come `[[Titolo]]`), nell’ordine in cui compaiono. Un titolo conta solo come parola intera.\n- Se il testo non nomina nessuna sottonota, compaiono tutte nell’ordine della mappa mentale.\n- Le sottonote archiviate non compaiono.\n\nEsempio: se una nota termina con «Dove vuoi andare? Davanti, Dietro, Sopra, Sotto» e ha sottonote con questi titoli, l’elenco mostra esattamente quelle.\n\nLa scorciatoia e le visualizzazioni si possono cambiare in cima a `subnote-jump.js` (`TASTE`, `MODI`).",
+  "ui": {
+    "title": "Dove vuoi andare?",
+    "hint": "Digita un numero, poi Enter. Esc annulla.",
+    "label": "Numero",
+    "invalid": "Inserisci un numero dell’elenco.",
+    "none": "Questa nota non ha sottonote.",
+    "untitled": "Senza titolo",
+    "go": "Apri"
+  }
+}

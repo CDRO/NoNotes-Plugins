@@ -1,0 +1,40 @@
+{
+  "name": "Formato de tablas",
+  "description": "Color, negrita, ancho de columna, alto de fila y ancho completo para las tablas de la vista previa, con clic derecho en una celda (a partir de NoNotes 2.10.0).",
+  "help": "Da formato a las **tablas** en la vista previa: clic derecho en una celda → **Formato ▸**.\n\n- **Aplica a** la celda, la fila o la columna (en la fila de encabezado: la fila de encabezado). Ahí eliges **Color** ({FARBEN} o ninguno) y **Negrita**. Si aplican varios, gana la celda sobre la fila y la fila sobre la columna.\n- **Ancho de columna**: Automático, {BREITEN}. **Alto de fila**: Automático, {HOEHEN}. **Ancho completo** extiende la tabla a todo el ancho de la vista previa.\n- Cada elección se aplica de inmediato y el submenú sigue abierto.\n- Se guarda en la línea `<!-- tabelle: … -->` encima de la tabla; las filas y columnas conservan su formato cuando se agregan o se quitan otras. Otros programas de Markdown muestran la tabla sin este formato.\n- En el modo oscuro los colores son oscuros; al imprimir, siempre claros.",
+  "ui": {
+    "menu": "Formato",
+    "scope": "Aplica a",
+    "cell": "Celda",
+    "row": "Fila",
+    "header": "Fila de encabezado",
+    "col": "Columna",
+    "farbe": "Color",
+    "keine": "Ninguno",
+    "fett": "Negrita",
+    "breite": "Ancho de columna",
+    "hoehe": "Alto de fila",
+    "auto": "Automático",
+    "voll": "Ancho completo"
+  },
+  "farben": {
+    "gelb": "Amarillo",
+    "orange": "Naranja",
+    "rot": "Rojo",
+    "pink": "Rosa",
+    "violett": "Violeta",
+    "blau": "Azul",
+    "tuerkis": "Turquesa",
+    "gruen": "Verde",
+    "grau": "Gris"
+  },
+  "breiten": {
+    "schmal": "Angosto",
+    "mittel": "Medio",
+    "breit": "Ancho"
+  },
+  "hoehen": {
+    "hoch": "Alto",
+    "sehr-hoch": "Muy alto"
+  }
+}

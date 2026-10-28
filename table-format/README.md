@@ -46,6 +46,18 @@ In der Zeile über der Tabelle, die NoNotes für das Format der Tabelle führt, 
 Andere Markdown-Programme blenden die Zeile aus und zeigen die Tabelle ohne dieses Format. Ist die Erweiterung
 ausgeschaltet, bleibt das Format im Text und wirkt wieder, sobald sie eingeschaltet ist.
 
+## Sprachen (seit 1.1.0)
+
+Name, Beschreibung, Hilfe und Beschriftungen gibt es in den neun Sprachen von NoNotes: Deutsch (Schweiz und Deutschland),
+Englisch, Französisch, Italienisch, Spanisch (Spanien und Mexiko), Portugiesisch (Portugal und Brasilien). Die Erweiterung
+nimmt die Sprache der Oberfläche (`ctx.language()`), sonst die Sprache ohne Region, sonst Englisch. Name und Beschreibung im
+Dialog *Erweiterungen…* folgen der Sprache ab NoNotes 3.1.1; ältere Versionen zeigen dort die deutschen.
+
+Das Format in der Notiz (`<!-- tabelle: … -->`) bleibt in jeder Sprache gleich; übersetzt sind nur die Namen im Menü.
+
+Die Texte stehen oben in der Datei in einer Tabelle (Deutsch und Englisch von Hand, die übrigen aus `.l10n/table-format/<sprache>.json`,
+eingesetzt mit `node .l10n/apply.cjs`).
+
 ## Installieren
 
 Im Paket «NoNotes with Plugins» liegt die Erweiterung schon im Ordner `plugins/`. Sie wird unter

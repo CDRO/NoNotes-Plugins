@@ -1,0 +1,40 @@
+{
+  "name": "Formatar tabelas",
+  "description": "Cor, negrito, largura da coluna, altura da linha e largura total para tabelas na pré-visualização, com o botão direito numa célula (a partir do NoNotes 2.10.0).",
+  "help": "Formata **tabelas** na pré-visualização: clique com o botão direito numa célula → **Formatar ▸**.\n\n- **Aplica-se a** célula, linha ou coluna (na linha de cabeçalho: a linha de cabeçalho). Para isso, **Cor** ({FARBEN} ou nenhuma) e **Negrito**. Se se aplicarem várias, a célula prevalece sobre a linha e a linha sobre a coluna.\n- **Largura da coluna**: Auto, {BREITEN}. **Altura da linha**: Auto, {HOEHEN}. **Largura total** estende a tabela por toda a pré-visualização.\n- Cada escolha tem efeito imediato e o submenu fica aberto.\n- O formato é guardado na linha `<!-- tabelle: … -->` por cima da tabela; as linhas e colunas mantêm o formato quando se acrescentam ou removem outras. Outros programas de Markdown mostram a tabela sem este formato.\n- No modo escuro, as cores são escuras; na impressão, são sempre claras.",
+  "ui": {
+    "menu": "Formatar",
+    "scope": "Aplica-se a",
+    "cell": "Célula",
+    "row": "Linha",
+    "header": "Linha de cabeçalho",
+    "col": "Coluna",
+    "farbe": "Cor",
+    "keine": "Nenhuma",
+    "fett": "Negrito",
+    "breite": "Largura da coluna",
+    "hoehe": "Altura da linha",
+    "auto": "Auto",
+    "voll": "Largura total"
+  },
+  "farben": {
+    "gelb": "Amarelo",
+    "orange": "Laranja",
+    "rot": "Vermelho",
+    "pink": "Rosa",
+    "violett": "Violeta",
+    "blau": "Azul",
+    "tuerkis": "Turquesa",
+    "gruen": "Verde",
+    "grau": "Cinzento"
+  },
+  "breiten": {
+    "schmal": "Estreita",
+    "mittel": "Média",
+    "breit": "Larga"
+  },
+  "hoehen": {
+    "hoch": "Alta",
+    "sehr-hoch": "Muito alta"
+  }
+}

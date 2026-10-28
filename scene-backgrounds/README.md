@@ -11,6 +11,16 @@ Erweiterung für [NoNotes](https://github.com/cdro/nonotes): setzt hinter der Mi
 - Ohne Auswahl und bei der Wurzel gilt das Standard-Bild. Tag-Änderungen im Editor wirken sofort.
 - Beim Wechsel wird weich überblendet. Ein Schleier in der Farbe des Designs (hell/dunkel) hält Knoten und Text lesbar.
 
+## Sprachen (seit 1.2.0)
+
+Name, Beschreibung, Hilfe und Beschriftungen gibt es in den neun Sprachen von NoNotes: Deutsch (Schweiz und Deutschland),
+Englisch, Französisch, Italienisch, Spanisch (Spanien und Mexiko), Portugiesisch (Portugal und Brasilien). Die Erweiterung
+nimmt die Sprache der Oberfläche (`ctx.language()`), sonst die Sprache ohne Region, sonst Englisch. Name und Beschreibung im
+Dialog *Erweiterungen…* folgen der Sprache ab NoNotes 3.1.1; ältere Versionen zeigen dort die deutschen.
+
+Die Texte stehen oben in der Datei in einer Tabelle (Deutsch und Englisch von Hand, die übrigen aus `.l10n/scene-backgrounds/<sprache>.json`,
+eingesetzt mit `node .l10n/apply.cjs`).
+
 ## Installieren
 
 1. Den ganzen Ordner `scene-backgrounds/` (mit `scene-backgrounds.js` und `hintergruende/`) in den Ordner `plugins/` der App kopieren.

@@ -1,0 +1,40 @@
+{
+  "name": "Colori tramite tag",
+  "description": "Colora i nodi della mappa mentale tramite tag come «color:red» (16 colori); «color-children:blue» colora le sottonote. Scelta del colore con il clic destro (da NoNotes 2.8.0), legenda sopra la mappa mentale (dalla 2.11.0).",
+  "help": "Colora i **nodi della mappa mentale** tramite un tag: riempimento più chiaro, bordo più scuro, il titolo nel colore del bordo (in modalità scura il contrario).\n\n- Aggiungi un tag alla nota, ad esempio `color:red` (in tedesco `farbe:rot`). Maiuscole e minuscole non contano.\n- **Colorare le sottonote:** `color-children:blue` (`farbe-kinder:blau`) colora tutte le sottonote, ma non la nota stessa. Insieme a `color:red` la nota è rossa e tutto ciò che sta sotto è blu; per lo stesso colore, usa entrambi i tag con lo stesso colore. Una sottonota con un colore proprio lo mantiene; un suo `color-children:` vale per la sua parte dell’albero.\n- Più tag di colore dello stesso tipo su una nota: vale il primo (nell’ordine dell’editor).\n- **Tratteggiato:** aggiungi `+hatched` al tag di colore, ad esempio `color:red+hatched` o `color-children:blue+hatched` (in tedesco `farbe:rot+schraffiert`). Il riempimento riceve strisce diagonali nel colore e in una sua tonalità più chiara; il titolo resta leggibile, le strisce crescono con lo zoom.\n- Sullo schermo e nell’immagine copiata, non nell’esportazione né nella stampa. La radice resta com’è.\n\n#### Quando copi come immagine\n*Copia come immagine* (clic destro, `Ctrl`+`C` o il pulsante nella barra della mappa mentale) riporta i colori nell’immagine, quelli tratteggiati con le strisce. Per disattivarlo: clic destro su un nodo → **Colore ▸** → **Colori nella copia come immagine**; vale in questo browser e funziona anche in modalità di sola lettura. Richiede NoNotes 3.1.0 o successivo (dalla 2.4.0).\n\n#### Con il clic destro\nClic destro su un nodo → **Colore ▸**: in alto il colore della **nota**, in basso quello delle **sottonote**, ognuno con i 16 colori (sostituisce quello attuale, il tratteggio resta), **Nessun colore** oppure spunta **Tratteggiato** (ha effetto subito, solo con un colore). Se il nodo fa parte della selezione multipla (`Ctrl`+clic), vale per tutti i nodi selezionati; poi la selezione viene annullata. I tag vengono scritti in inglese (in tedesco, se l’interfaccia è in tedesco). Richiede NoNotes 2.8.0 o successivo.\n\n#### Legenda\nIl pulsante **Legenda** nella barra della mappa mentale mostra una nota che spiega cosa significano i colori (una per database, uguale per tutti nell’area di lavoro). Un clic nella legenda la modifica: Markdown, `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`K`; `Esc` o un clic fuori salva. I tag di colore nel testo come `color:red` o `color:blue+hatched` compaiono come campione di colore con il nome. Se è vuota, inizia con i colori in uso al momento. Se in seguito si aggiungono colori, il pulsante **+** nella sua intestazione aggiunge quelli mancanti come nuove righe alla fine; ciò che c’è già resta invariato (dalla 2.3.0). Il selettore nella sua intestazione sceglie l’angolo (in alto a destra, in alto a sinistra, in basso a sinistra, in basso a destra), **–** la comprime; il browser memorizza entrambe le scelte. Nell’esportazione Markdown e nella stampa compare sotto l’immagine della mappa mentale. Richiede NoNotes 2.11.0 o successivo.\n\n#### I 16 colori\n{TAGS_EN}, inoltre `color:grey`.\n\nIn tedesco: {TAGS_DE}.",
+  "ui": {
+    "farbe": "Colore",
+    "keine": "Nessun colore",
+    "notiz": "Nota",
+    "kinder": "Sottonote",
+    "kinderTitel": "Colore di tutte le sottonote; una sottonota con un colore proprio lo mantiene",
+    "schraffiert": "Tratteggiato",
+    "schraffiertTitel": "Strisce diagonali nel colore e in una sua tonalità più chiara (richiede un colore)",
+    "bild": "Colori nella copia come immagine",
+    "bildTitel": "Copia come immagine (clic destro, Ctrl+C o il pulsante nella barra della mappa mentale) riporta i colori nell’immagine; vale in questo browser"
+  },
+  "legende": {
+    "titel": "Legenda",
+    "knopf": "Legenda",
+    "knopfTitel": "Mostra o nascondi la legenda: cosa significano i colori",
+    "zu": "Comprimi",
+    "auf": "Espandi la legenda",
+    "ecke": "Posizione della legenda",
+    "ergaenzen": "Aggiungi i colori mancanti: i colori in uso che la legenda non riporta ancora vengono aggiunti come nuove righe alla fine",
+    "ecken": {
+      "or": "In alto a destra",
+      "ol": "In alto a sinistra",
+      "ul": "In basso a sinistra",
+      "ur": "In basso a destra"
+    },
+    "leer": "Clicca per descrivere cosa significano i colori.",
+    "hinweis": "Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc o un clic fuori salva",
+    "schraffiert": "tratteggiato",
+    "kinder": "sottonote",
+    "bedeutung": "…"
+  },
+  "wort": {
+    "fett": "grassetto",
+    "kursiv": "corsivo"
+  }
+}

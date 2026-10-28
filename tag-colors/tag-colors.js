@@ -13,7 +13,7 @@
    - Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» mit je den 16 Farben, «Keine Farbe» und «Schraffiert» für die
      Notiz und für ihre Unternotizen.
      Gilt für alle ausgewählten Knoten, wenn der angeklickte dazugehört; danach ist die Auswahl aufgehoben (ab 2.8.1).
-     Geschrieben wird in der Sprache der Oberfläche («farbe:rot» bzw. «color:red»).
+     Geschrieben wird in deutscher Oberfläche deutsch («farbe:rot»), in allen anderen Sprachen englisch («color:red»).
    Benötigt das Ereignis «mindmap:rendered» (NoNotes ab 1.8.0). */
 
 /* ---- Farben ------------------------------------------------------------------------------------------------------
@@ -67,13 +67,17 @@ const LEGENDE_KEY = 'plugin:tag-farben:legende'; // Text der Legende in der Date
 
 const tagListe = sprache => FARBEN.map(f => `\`${sprache === 'en' ? 'color:' + f.en : 'farbe:' + f.id}\``).join(', ');
 
-NoNotesPlugins.register({
-  id: 'tag-farben',
-  name: 'Farben über Tags',
-  version: '2.4.0',
-  api: 1,
-  help: {
-    de: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
+/* ---- Texte je Sprache --------------------------------------------------------------------------------------
+   Schlüssel klein: 'de', 'de-de', 'en', 'fr', 'it', 'es', 'es-mx', 'pt', 'pt-br'. Gewählt wird die genaue Sprache der Oberfläche,
+   dann die Sprache vor dem Bindestrich, dann Englisch. Im Hilfetext setzt die Erweiterung {TAGS_DE} und {TAGS_EN} ein (die Tags
+   der 16 Farben). farben: Anzeigenamen der Farben (ohne Angabe: deutsch aus FARBEN, sonst englisch). Die Tags selbst schreibt
+   die Erweiterung in deutscher Oberfläche deutsch (farbe:rot), in jeder anderen englisch (color:red); gelesen werden beide.
+   Die weiteren Sprachen stammen aus .l10n/tag-colors/ (node .l10n/apply.cjs). */
+const TF_TEXTE = {
+  de: {
+    name: 'Farben über Tags',
+    description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe-kinder:blau» färbt die Unternotizen. Farbwahl per Rechtsklick (ab NoNotes 2.8.0), Legende über der Mindmap (ab 2.11.0).',
+    help: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
 
 - Tag an der Notiz setzen, zum Beispiel \`farbe:rot\` (englisch \`color:red\`). Gross-/Kleinschreibung ist egal.
 - **Unternotizen färben:** \`farbe-kinder:blau\` (\`color-children:blue\`) färbt alle Unternotizen, die Notiz selbst nicht. Zusammen mit \`farbe:rot\` ist die Notiz rot und alles darunter blau; für dieselbe Farbe beide Tags mit derselben Farbe. Eine Unternotiz mit eigener Farbe behält sie, ein eigenes \`farbe-kinder:\` gilt für ihren Teil des Baums.
@@ -85,16 +89,27 @@ NoNotesPlugins.register({
 *Als Bild kopieren* (Rechtsklick, \`Ctrl\`+\`C\` oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild, schraffierte mit Streifen. Abschalten: Rechtsklick auf einen Knoten → **Farbe ▸** → **Farben beim Kopieren als Bild**; das gilt in diesem Browser und geht auch im Lesemodus. Braucht NoNotes 3.1.0 oder neuer (seit 2.4.0).
 
 #### Per Rechtsklick
-Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in der Sprache der Oberfläche geschrieben. Braucht NoNotes 2.8.0 oder neuer.
+Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in deutscher Oberfläche deutsch geschrieben, in allen anderen Sprachen englisch. Braucht NoNotes 2.8.0 oder neuer.
 
 #### Legende
 Der Knopf **Legende** in der Leiste der Mindmap blendet eine Notiz ein, die erklärt, was die Farben bedeuten (eine je Datenbank, für alle im Arbeitsbereich gleich). Ein Klick in die Legende bearbeitet sie: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` oder ein Klick daneben speichert. Farb-Tags im Text wie \`farbe:rot\` oder \`farbe:blau+schraffiert\` erscheinen als Farbfeld mit Namen. Ist sie leer, beginnt sie mit den Farben, die gerade benutzt werden. Kommen später Farben dazu, ergänzt der Knopf **+** im Kopf der Legende die fehlenden als neue Zeilen am Ende; was schon dasteht, bleibt unberührt (seit 2.3.0). Die Ecke (oben rechts, oben links, unten links, unten rechts) wählt die Auswahl im Kopf, **–** klappt sie ein; beides merkt sich der Browser. Im Markdown-Export und im Druck steht sie unter dem Mindmap-Bild. Braucht NoNotes 2.11.0 oder neuer.
 
 #### Die 16 Farben
-${tagListe('de')}
+{TAGS_DE}
 
-Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
-    en: `Colours **mind map nodes** by tag: lighter fill, darker outline, the title in the outline colour (reversed in dark mode).
+Englisch: {TAGS_EN}, dazu \`color:grey\`.`,
+    ui: { farbe: 'Farbe', keine: 'Keine Farbe', notiz: 'Notiz', kinder: 'Unternotizen', kinderTitel: 'Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie', schraffiert: 'Schraffiert', schraffiertTitel: 'Diagonale Streifen in der Farbe und einer helleren Fassung (braucht eine Farbe)',
+      bild: 'Farben beim Kopieren als Bild', bildTitel: 'Als Bild kopieren (Rechtsklick, Ctrl+C oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild; gilt in diesem Browser' },
+    legende: { titel: 'Legende', knopf: 'Legende', knopfTitel: 'Legende ein- oder ausblenden: was die Farben bedeuten', zu: 'Einklappen', auf: 'Legende aufklappen', ecke: 'Lage der Legende',
+      ergaenzen: 'Fehlende Farben ergänzen: benutzte Farben, die in der Legende noch fehlen, kommen als neue Zeilen ans Ende',
+      ecken: { or: 'Oben rechts', ol: 'Oben links', ul: 'Unten links', ur: 'Unten rechts' }, leer: 'Klicken, um zu beschreiben, was die Farben bedeuten.',
+      hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc oder Klick daneben speichert', schraffiert: 'schraffiert', kinder: 'Unternotizen', bedeutung: '…' },
+    wort: { fett: 'fett', kursiv: 'kursiv' },
+  },
+  en: {
+    name: 'Colours by tag',
+    description: 'Colours mind map nodes by tags such as “color:red” (16 colours); “color-children:blue” colours the subnotes. Colour by right-click (NoNotes 2.8.0 or later), legend above the mind map (2.11.0 or later).',
+    help: `Colours **mind map nodes** by tag: lighter fill, darker outline, the title in the outline colour (reversed in dark mode).
 
 - Put a tag on the note, for example \`color:red\` (German \`farbe:rot\`). Case does not matter.
 - **Colour subnotes:** \`color-children:blue\` (\`farbe-kinder:blau\`) colours all subnotes, not the note itself. Together with \`color:red\` the note is red and everything below it blue; for the same colour, use both tags with the same colour. A subnote with a colour of its own keeps it; its own \`color-children:\` applies to its part of the tree.
@@ -106,17 +121,235 @@ Englisch: ${tagListe('en')}, dazu \`color:grey\`.`,
 *Copy as image* (right-click, \`Ctrl\`+\`C\` or the button in the mind map toolbar) includes the colours in the image, hatched ones with stripes. To turn this off: right-click a node → **Colour ▸** → **Colours when copying as image**; it applies in this browser and also works in read-only mode. Needs NoNotes 3.1.0 or later (since 2.4.0).
 
 #### By right-click
-Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one, hatching stays), **No colour** or tick **Hatched** (takes effect at once, only with a colour). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in the language of the interface. Needs NoNotes 2.8.0 or later.
+Right-click a node → **Colour ▸**: the colour of the **note** at the top, that of its **subnotes** below, each with the 16 colours (replaces the current one, hatching stays), **No colour** or tick **Hatched** (takes effect at once, only with a colour). If the node is part of the multiple selection (\`Ctrl\`+click), it applies to all selected nodes; the selection is cleared afterwards. Tags are written in German in a German interface and in English in all other languages. Needs NoNotes 2.8.0 or later.
 
 #### Legend
 The **Legend** button in the mind map toolbar shows a note that explains what the colours mean (one per database, the same for everyone in the workspace). Click into the legend to edit it: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` or a click outside saves. Colour tags in the text such as \`color:red\` or \`color:blue+hatched\` appear as a swatch with the name. When empty, it starts with the colours currently in use. When colours are added later, the **+** button in its header adds the missing ones as new lines at the end; what is already there stays untouched (since 2.3.0). The selector in its header picks the corner (top right, top left, bottom left, bottom right), **–** collapses it; the browser remembers both. In the Markdown export and in print it appears below the mind map image. Needs NoNotes 2.11.0 or later.
 
 #### The 16 colours
-${tagListe('en')}, also \`color:grey\`.
+{TAGS_EN}, also \`color:grey\`.
 
-German: ${tagListe('de')}.`,
+German: {TAGS_DE}.`,
+    ui: { farbe: 'Colour', keine: 'No colour', notiz: 'Note', kinder: 'Subnotes', kinderTitel: 'Colour of all subnotes; a subnote with a colour of its own keeps it', schraffiert: 'Hatched', schraffiertTitel: 'Diagonal stripes in the colour and a lighter shade (needs a colour)',
+      bild: 'Colours when copying as image', bildTitel: 'Copy as image (right-click, Ctrl+C or the button in the mind map toolbar) includes the colours; remembered in this browser' },
+    legende: { titel: 'Legend', knopf: 'Legend', knopfTitel: 'Show or hide the legend: what the colours mean', zu: 'Collapse', auf: 'Expand legend', ecke: 'Position of the legend',
+      ergaenzen: 'Add missing colours: colours in use that the legend does not mention yet come as new lines at the end',
+      ecken: { or: 'Top right', ol: 'Top left', ul: 'Bottom left', ur: 'Bottom right' }, leer: 'Click to describe what the colours mean.',
+      hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc or a click outside saves', schraffiert: 'hatched', kinder: 'subnotes', bedeutung: '…' },
+    wort: { fett: 'bold', kursiv: 'italic' },
   },
-  description: 'Färbt Knoten der Mindmap über Tags wie «farbe:rot» (16 Farben); «farbe-kinder:blau» färbt die Unternotizen. Farbwahl per Rechtsklick (ab NoNotes 2.8.0), Legende über der Mindmap (ab 2.11.0).',
+  /* <uebersetzungen> */
+  'de-de': {
+    name: "Farben über Tags",
+    description: "Färbt Knoten der Mindmap über Tags wie „farbe:rot“ (16 Farben); „farbe-kinder:blau“ färbt die Unternotizen. Farbwahl per Rechtsklick (ab NoNotes 2.8.0), Legende über der Mindmap (ab 2.11.0).",
+    help: `Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).
+
+- Tag an der Notiz setzen, zum Beispiel \`farbe:rot\` (englisch \`color:red\`). Groß-/Kleinschreibung ist egal.
+- **Unternotizen färben:** \`farbe-kinder:blau\` (\`color-children:blue\`) färbt alle Unternotizen, die Notiz selbst nicht. Zusammen mit \`farbe:rot\` ist die Notiz rot und alles darunter blau; für dieselbe Farbe beide Tags mit derselben Farbe. Eine Unternotiz mit eigener Farbe behält sie, ein eigenes \`farbe-kinder:\` gilt für ihren Teil des Baums.
+- Mehrere Farb-Tags derselben Art an einer Notiz: das erste gilt (Reihenfolge wie im Editor).
+- **Schraffiert:** \`+schraffiert\` am Farb-Tag, etwa \`farbe:rot+schraffiert\` oder \`farbe-kinder:blau+schraffiert\` (englisch \`color:red+hatched\`). Die Fläche bekommt diagonale Streifen in der Farbe und einer helleren Fassung davon; der Titel bleibt lesbar, die Streifen wachsen mit dem Zoom.
+- Auf dem Bildschirm und im kopierten Bild, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.
+
+#### Beim Kopieren als Bild
+*Als Bild kopieren* (Rechtsklick, \`Ctrl\`+\`C\` oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild, schraffierte mit Streifen. Abschalten: Rechtsklick auf einen Knoten → **Farbe ▸** → **Farben beim Kopieren als Bild**; das gilt in diesem Browser und geht auch im Lesemodus. Braucht NoNotes 3.1.0 oder neuer (seit 2.4.0).
+
+#### Per Rechtsklick
+Rechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (\`Ctrl\`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in deutscher Oberfläche deutsch geschrieben, in allen anderen Sprachen englisch. Braucht NoNotes 2.8.0 oder neuer.
+
+#### Legende
+Der Knopf **Legende** in der Leiste der Mindmap blendet eine Notiz ein, die erklärt, was die Farben bedeuten (eine je Datenbank, für alle im Arbeitsbereich gleich). Ein Klick in die Legende bearbeitet sie: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` oder ein Klick daneben speichert. Farb-Tags im Text wie \`farbe:rot\` oder \`farbe:blau+schraffiert\` erscheinen als Farbfeld mit Namen. Ist sie leer, beginnt sie mit den Farben, die gerade benutzt werden. Kommen später Farben dazu, ergänzt der Knopf **+** im Kopf der Legende die fehlenden als neue Zeilen am Ende; was schon dasteht, bleibt unberührt (seit 2.3.0). Die Ecke (oben rechts, oben links, unten links, unten rechts) wählt die Auswahl im Kopf, **–** klappt sie ein; beides merkt sich der Browser. Im Markdown-Export und im Druck steht sie unter dem Mindmap-Bild. Braucht NoNotes 2.11.0 oder neuer.
+
+#### Die 16 Farben
+{TAGS_DE}
+
+Englisch: {TAGS_EN}, dazu \`color:grey\`.`,
+    ui: {"farbe":"Farbe","keine":"Keine Farbe","notiz":"Notiz","kinder":"Unternotizen","kinderTitel":"Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie","schraffiert":"Schraffiert","schraffiertTitel":"Diagonale Streifen in der Farbe und einer helleren Fassung (braucht eine Farbe)","bild":"Farben beim Kopieren als Bild","bildTitel":"Als Bild kopieren (Rechtsklick, Ctrl+C oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild; gilt in diesem Browser"},
+    legende: {"titel":"Legende","knopf":"Legende","knopfTitel":"Legende ein- oder ausblenden: was die Farben bedeuten","zu":"Einklappen","auf":"Legende aufklappen","ecke":"Lage der Legende","ergaenzen":"Fehlende Farben ergänzen: benutzte Farben, die in der Legende noch fehlen, kommen als neue Zeilen ans Ende","ecken":{"or":"Oben rechts","ol":"Oben links","ul":"Unten links","ur":"Unten rechts"},"leer":"Klicken, um zu beschreiben, was die Farben bedeuten.","hinweis":"Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc oder Klick daneben speichert","schraffiert":"schraffiert","kinder":"Unternotizen","bedeutung":"…"},
+    wort: {"fett":"fett","kursiv":"kursiv"},
+  },
+  'fr': {
+    name: "Couleurs par étiquettes",
+    description: "Colore les nœuds de la carte mentale à l’aide d’étiquettes comme « color:red » (16 couleurs) ; « color-children:blue » colore les sous-notes. Choix de la couleur par clic droit (à partir de NoNotes 2.8.0), légende au-dessus de la carte mentale (à partir de la 2.11.0).",
+    help: `Colore les **nœuds de la carte mentale** à l’aide d’une étiquette : fond plus clair, contour plus foncé, titre dans la couleur du contour (inversé en mode sombre).
+
+- Ajoutez une étiquette à la note, par exemple \`color:red\` (en allemand \`farbe:rot\`). Les majuscules et les minuscules n’ont pas d’importance.
+- **Colorer les sous-notes :** \`color-children:blue\` (\`farbe-kinder:blau\`) colore toutes les sous-notes, mais pas la note elle-même. Avec \`color:red\`, la note est rouge et tout ce qui se trouve en dessous est bleu ; pour une seule et même couleur, mettez les deux étiquettes avec la même couleur. Une sous-note qui a sa propre couleur la conserve ; son propre \`color-children:\` s’applique à sa partie de l’arborescence.
+- Plusieurs étiquettes de couleur du même type sur une note : la première l’emporte (dans l’ordre de l’éditeur).
+- **Hachuré :** ajoutez \`+hatched\` à l’étiquette de couleur, par exemple \`color:red+hatched\` ou \`color-children:blue+hatched\` (en allemand \`farbe:rot+schraffiert\`). Le fond reçoit des rayures diagonales dans la couleur et dans une nuance plus claire de celle-ci ; le titre reste lisible, les rayures grandissent avec le zoom.
+- À l’écran et dans l’image copiée, mais pas à l’exportation ni à l’impression. La racine reste telle quelle.
+
+#### Lors de la copie en tant qu’image
+*Copier en tant qu’image* (clic droit, \`Ctrl\`+\`C\` ou le bouton de la barre de la carte mentale) reprend les couleurs dans l’image, les hachurées avec leurs rayures. Pour désactiver cette fonction : clic droit sur un nœud → **Couleur ▸** → **Couleurs lors de la copie en tant qu’image** ; ce réglage vaut pour ce navigateur et fonctionne aussi en mode lecture seule. Nécessite NoNotes 3.1.0 ou une version ultérieure (depuis la 2.4.0).
+
+#### Par clic droit
+Clic droit sur un nœud → **Couleur ▸** : en haut la couleur de la **note**, en dessous celle des **sous-notes**, chaque fois avec les 16 couleurs (remplace la couleur actuelle, les hachures restent), **Aucune couleur** ou cocher et décocher **Hachuré** (effet immédiat, seulement avec une couleur). Si le nœud fait partie de la sélection multiple (\`Ctrl\`+clic), le choix s’applique à tous les nœuds sélectionnés ; la sélection est ensuite effacée. Les étiquettes sont écrites en anglais (en allemand dans l’interface allemande). Nécessite NoNotes 2.8.0 ou une version ultérieure.
+
+#### Légende
+Le bouton **Légende** de la barre de la carte mentale affiche une note qui explique ce que signifient les couleurs (une par base de données, la même pour tout le monde dans l’espace de travail). Un clic dans la légende permet de la modifier : Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\` ; \`Esc\` ou un clic à côté enregistre. Les étiquettes de couleur dans le texte, comme \`color:red\` ou \`color:blue+hatched\`, apparaissent sous forme de pastille de couleur avec son nom. Si la légende est vide, elle commence avec les couleurs utilisées actuellement. Si des couleurs s’ajoutent plus tard, le bouton **+** dans son en-tête ajoute les manquantes en nouvelles lignes à la fin ; ce qui s’y trouve déjà reste intact (depuis la 2.3.0). La liste de choix de l’en-tête définit le coin (en haut à droite, en haut à gauche, en bas à gauche, en bas à droite), **–** réduit la légende ; le navigateur mémorise les deux. Dans l’exportation Markdown et à l’impression, elle figure sous l’image de la carte mentale. Nécessite NoNotes 2.11.0 ou une version ultérieure.
+
+#### Les 16 couleurs
+{TAGS_EN}, ainsi que \`color:grey\`.
+
+En allemand : {TAGS_DE}.`,
+    ui: {"farbe":"Couleur","keine":"Aucune couleur","notiz":"Note","kinder":"Sous-notes","kinderTitel":"Couleur de toutes les sous-notes ; une sous-note qui a sa propre couleur la conserve","schraffiert":"Hachuré","schraffiertTitel":"Rayures diagonales dans la couleur et dans une nuance plus claire (nécessite une couleur)","bild":"Couleurs lors de la copie en tant qu’image","bildTitel":"Copier en tant qu’image (clic droit, Ctrl+C ou le bouton de la barre de la carte mentale) reprend les couleurs dans l’image ; vaut pour ce navigateur"},
+    legende: {"titel":"Légende","knopf":"Légende","knopfTitel":"Afficher ou masquer la légende : ce que signifient les couleurs","zu":"Réduire","auf":"Développer la légende","ecke":"Position de la légende","ergaenzen":"Ajouter les couleurs manquantes : les couleurs utilisées qui ne figurent pas encore dans la légende sont ajoutées en nouvelles lignes à la fin","ecken":{"or":"En haut à droite","ol":"En haut à gauche","ul":"En bas à gauche","ur":"En bas à droite"},"leer":"Cliquez pour décrire ce que signifient les couleurs.","hinweis":"Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc ou un clic à côté enregistre","schraffiert":"hachuré","kinder":"sous-notes","bedeutung":"…"},
+    wort: {"fett":"gras","kursiv":"italique"},
+  },
+  'it': {
+    name: "Colori tramite tag",
+    description: "Colora i nodi della mappa mentale tramite tag come «color:red» (16 colori); «color-children:blue» colora le sottonote. Scelta del colore con il clic destro (da NoNotes 2.8.0), legenda sopra la mappa mentale (dalla 2.11.0).",
+    help: `Colora i **nodi della mappa mentale** tramite un tag: riempimento più chiaro, bordo più scuro, il titolo nel colore del bordo (in modalità scura il contrario).
+
+- Aggiungi un tag alla nota, ad esempio \`color:red\` (in tedesco \`farbe:rot\`). Maiuscole e minuscole non contano.
+- **Colorare le sottonote:** \`color-children:blue\` (\`farbe-kinder:blau\`) colora tutte le sottonote, ma non la nota stessa. Insieme a \`color:red\` la nota è rossa e tutto ciò che sta sotto è blu; per lo stesso colore, usa entrambi i tag con lo stesso colore. Una sottonota con un colore proprio lo mantiene; un suo \`color-children:\` vale per la sua parte dell’albero.
+- Più tag di colore dello stesso tipo su una nota: vale il primo (nell’ordine dell’editor).
+- **Tratteggiato:** aggiungi \`+hatched\` al tag di colore, ad esempio \`color:red+hatched\` o \`color-children:blue+hatched\` (in tedesco \`farbe:rot+schraffiert\`). Il riempimento riceve strisce diagonali nel colore e in una sua tonalità più chiara; il titolo resta leggibile, le strisce crescono con lo zoom.
+- Sullo schermo e nell’immagine copiata, non nell’esportazione né nella stampa. La radice resta com’è.
+
+#### Quando copi come immagine
+*Copia come immagine* (clic destro, \`Ctrl\`+\`C\` o il pulsante nella barra della mappa mentale) riporta i colori nell’immagine, quelli tratteggiati con le strisce. Per disattivarlo: clic destro su un nodo → **Colore ▸** → **Colori nella copia come immagine**; vale in questo browser e funziona anche in modalità di sola lettura. Richiede NoNotes 3.1.0 o successivo (dalla 2.4.0).
+
+#### Con il clic destro
+Clic destro su un nodo → **Colore ▸**: in alto il colore della **nota**, in basso quello delle **sottonote**, ognuno con i 16 colori (sostituisce quello attuale, il tratteggio resta), **Nessun colore** oppure spunta **Tratteggiato** (ha effetto subito, solo con un colore). Se il nodo fa parte della selezione multipla (\`Ctrl\`+clic), vale per tutti i nodi selezionati; poi la selezione viene annullata. I tag vengono scritti in inglese (in tedesco, se l’interfaccia è in tedesco). Richiede NoNotes 2.8.0 o successivo.
+
+#### Legenda
+Il pulsante **Legenda** nella barra della mappa mentale mostra una nota che spiega cosa significano i colori (una per database, uguale per tutti nell’area di lavoro). Un clic nella legenda la modifica: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` o un clic fuori salva. I tag di colore nel testo come \`color:red\` o \`color:blue+hatched\` compaiono come campione di colore con il nome. Se è vuota, inizia con i colori in uso al momento. Se in seguito si aggiungono colori, il pulsante **+** nella sua intestazione aggiunge quelli mancanti come nuove righe alla fine; ciò che c’è già resta invariato (dalla 2.3.0). Il selettore nella sua intestazione sceglie l’angolo (in alto a destra, in alto a sinistra, in basso a sinistra, in basso a destra), **–** la comprime; il browser memorizza entrambe le scelte. Nell’esportazione Markdown e nella stampa compare sotto l’immagine della mappa mentale. Richiede NoNotes 2.11.0 o successivo.
+
+#### I 16 colori
+{TAGS_EN}, inoltre \`color:grey\`.
+
+In tedesco: {TAGS_DE}.`,
+    ui: {"farbe":"Colore","keine":"Nessun colore","notiz":"Nota","kinder":"Sottonote","kinderTitel":"Colore di tutte le sottonote; una sottonota con un colore proprio lo mantiene","schraffiert":"Tratteggiato","schraffiertTitel":"Strisce diagonali nel colore e in una sua tonalità più chiara (richiede un colore)","bild":"Colori nella copia come immagine","bildTitel":"Copia come immagine (clic destro, Ctrl+C o il pulsante nella barra della mappa mentale) riporta i colori nell’immagine; vale in questo browser"},
+    legende: {"titel":"Legenda","knopf":"Legenda","knopfTitel":"Mostra o nascondi la legenda: cosa significano i colori","zu":"Comprimi","auf":"Espandi la legenda","ecke":"Posizione della legenda","ergaenzen":"Aggiungi i colori mancanti: i colori in uso che la legenda non riporta ancora vengono aggiunti come nuove righe alla fine","ecken":{"or":"In alto a destra","ol":"In alto a sinistra","ul":"In basso a sinistra","ur":"In basso a destra"},"leer":"Clicca per descrivere cosa significano i colori.","hinweis":"Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc o un clic fuori salva","schraffiert":"tratteggiato","kinder":"sottonote","bedeutung":"…"},
+    wort: {"fett":"grassetto","kursiv":"corsivo"},
+  },
+  'es': {
+    name: "Colores por etiqueta",
+    description: "Colorea los nodos del mapa mental mediante etiquetas como «color:red» (16 colores); «color-children:blue» colorea las subnotas. Elección del color con clic derecho (NoNotes 2.8.0 o posterior) y leyenda sobre el mapa mental (2.11.0 o posterior).",
+    help: `Colorea los **nodos del mapa mental** mediante una etiqueta: relleno más claro, borde más oscuro y el título del color del borde (al revés en el modo oscuro).
+
+- Pon una etiqueta en la nota, por ejemplo \`color:red\` (en alemán, \`farbe:rot\`). Da igual usar mayúsculas o minúsculas.
+- **Colorear las subnotas:** \`color-children:blue\` (\`farbe-kinder:blau\`) colorea todas las subnotas, pero no la propia nota. Junto con \`color:red\`, la nota queda roja y todo lo que hay debajo, azul; para un mismo color, pon las dos etiquetas con ese color. Una subnota con color propio lo conserva; su propio \`color-children:\` se aplica a su parte del árbol.
+- Varias etiquetas de color del mismo tipo en una nota: vale la primera (en el orden del editor).
+- **Rayado:** añade \`+hatched\` a la etiqueta de color, por ejemplo \`color:red+hatched\` o \`color-children:blue+hatched\` (en alemán, \`farbe:rot+schraffiert\`). El relleno lleva rayas diagonales del color y de un tono más claro; el título sigue siendo legible y las rayas crecen con el zoom.
+- En pantalla y en la imagen copiada, no en la exportación ni en la impresión. La raíz no cambia.
+
+#### Al copiar como imagen
+*Copiar como imagen* (clic derecho, \`Ctrl\`+\`C\` o el botón de la barra del mapa mental) incluye los colores en la imagen, y los rayados, con rayas. Para desactivarlo: clic derecho en un nodo → **Color ▸** → **Colores al copiar como imagen**; se aplica en este navegador y también funciona en el modo de solo lectura. Requiere NoNotes 3.1.0 o posterior (desde la versión 2.4.0).
+
+#### Con clic derecho
+Clic derecho en un nodo → **Color ▸**: arriba, el color de la **nota**; abajo, el de las **subnotas**, cada uno con los 16 colores (sustituye al actual; el rayado se mantiene), **Sin color** o marcar y desmarcar **Rayado** (se aplica al instante, solo con color). Si el nodo forma parte de la selección múltiple (\`Ctrl\`+clic), se aplica a todos los nodos seleccionados; después se anula la selección. Las etiquetas se escriben en inglés (en alemán si la interfaz está en alemán). Requiere NoNotes 2.8.0 o posterior.
+
+#### Leyenda
+El botón **Leyenda** de la barra del mapa mental muestra una nota que explica qué significan los colores (una por base de datos, igual para todos en el espacio de trabajo). Haz clic en la leyenda para editarla: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` o un clic fuera guarda. Las etiquetas de color del texto, como \`color:red\` o \`color:blue+hatched\`, aparecen como una muestra de color con su nombre. Si está vacía, empieza con los colores que se usan en ese momento. Si más tarde se añaden colores, el botón **+** de su cabecera añade los que faltan como líneas nuevas al final; lo que ya hay no se toca (desde la versión 2.3.0). El selector de la cabecera elige la esquina (arriba a la derecha, arriba a la izquierda, abajo a la izquierda, abajo a la derecha) y **–** la contrae; el navegador recuerda ambas cosas. En la exportación a Markdown y en la impresión aparece debajo de la imagen del mapa mental. Requiere NoNotes 2.11.0 o posterior.
+
+#### Los 16 colores
+{TAGS_EN}, y además \`color:grey\`.
+
+En alemán: {TAGS_DE}.`,
+    ui: {"farbe":"Color","keine":"Sin color","notiz":"Nota","kinder":"Subnotas","kinderTitel":"Color de todas las subnotas; una subnota con color propio lo conserva","schraffiert":"Rayado","schraffiertTitel":"Rayas diagonales del color y de un tono más claro (requiere un color)","bild":"Colores al copiar como imagen","bildTitel":"Copiar como imagen (clic derecho, Ctrl+C o el botón de la barra del mapa mental) incluye los colores en la imagen; se aplica en este navegador"},
+    legende: {"titel":"Leyenda","knopf":"Leyenda","knopfTitel":"Mostrar u ocultar la leyenda: qué significan los colores","zu":"Contraer","auf":"Desplegar la leyenda","ecke":"Posición de la leyenda","ergaenzen":"Añadir los colores que faltan: los colores en uso que aún no están en la leyenda se añaden como líneas nuevas al final","ecken":{"or":"Arriba a la derecha","ol":"Arriba a la izquierda","ul":"Abajo a la izquierda","ur":"Abajo a la derecha"},"leer":"Haz clic para describir qué significan los colores.","hinweis":"Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc o un clic fuera guarda","schraffiert":"rayado","kinder":"subnotas","bedeutung":"…"},
+    wort: {"fett":"negrita","kursiv":"cursiva"},
+  },
+  'es-mx': {
+    name: "Colores por etiqueta",
+    description: "Colorea los nodos del mapa mental con etiquetas como “color:red” (16 colores); “color-children:blue” colorea las subnotas. Color con clic derecho (a partir de NoNotes 2.8.0), leyenda sobre el mapa mental (a partir de 2.11.0).",
+    help: `Colorea los **nodos del mapa mental** con una etiqueta: relleno más claro, borde más oscuro y el título en el color del borde (al revés en el modo oscuro).
+
+- Pon una etiqueta en la nota, por ejemplo \`color:red\` (en alemán, \`farbe:rot\`). No importan las mayúsculas ni las minúsculas.
+- **Colorear subnotas:** \`color-children:blue\` (\`farbe-kinder:blau\`) colorea todas las subnotas, pero no la nota misma. Junto con \`color:red\`, la nota queda roja y todo lo que está debajo, azul; para el mismo color, usa ambas etiquetas con el mismo color. Una subnota con color propio lo conserva; su propia \`color-children:\` se aplica a su parte del árbol.
+- Varias etiquetas de color del mismo tipo en una nota: gana la primera (en el orden del editor).
+- **Rayado:** agrega \`+hatched\` a la etiqueta de color, por ejemplo \`color:red+hatched\` o \`color-children:blue+hatched\` (en alemán, \`farbe:rot+schraffiert\`). El relleno lleva rayas diagonales en el color y en un tono más claro de este; el título sigue siendo legible y las rayas crecen con el zoom.
+- En pantalla y en la imagen copiada, no en la exportación ni en la impresión. La raíz se queda como está.
+
+#### Al copiar como imagen
+*Copiar como imagen* (clic derecho, \`Ctrl\`+\`C\` o el botón de la barra del mapa mental) incluye los colores en la imagen, y los rayados, con rayas. Para desactivarlo: clic derecho en un nodo → **Color ▸** → **Colores al copiar como imagen**; se aplica en este navegador y también funciona en el modo de solo lectura. Requiere NoNotes 3.1.0 o posterior (desde 2.4.0).
+
+#### Con clic derecho
+Clic derecho en un nodo → **Color ▸**: arriba, el color de la **nota**; abajo, el de las **subnotas**, cada uno con los 16 colores (reemplaza el actual; el rayado se conserva), **Sin color** o marcar y desmarcar **Rayado** (se aplica de inmediato, solo con color). Si el nodo forma parte de la selección múltiple (\`Ctrl\`+clic), se aplica a todos los seleccionados; después se quita la selección. Las etiquetas se escriben en inglés. Requiere NoNotes 2.8.0 o posterior.
+
+#### Leyenda
+El botón **Leyenda** de la barra del mapa mental muestra una nota que explica qué significan los colores (una por base de datos, igual para todos en el espacio de trabajo). Haz clic en la leyenda para editarla: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` o un clic fuera guarda. Las etiquetas de color en el texto, como \`color:red\` o \`color:blue+hatched\`, aparecen como una muestra de color con su nombre. Si está vacía, empieza con los colores que se usan en ese momento. Si después se agregan colores, el botón **+** del encabezado de la leyenda agrega los que faltan como líneas nuevas al final; lo que ya está ahí no se toca (desde 2.3.0). El selector del encabezado elige la esquina (arriba a la derecha, arriba a la izquierda, abajo a la izquierda, abajo a la derecha) y **–** la contrae; el navegador recuerda ambas cosas. En la exportación a Markdown y en la impresión aparece debajo de la imagen del mapa mental. Requiere NoNotes 2.11.0 o posterior.
+
+#### Los 16 colores
+{TAGS_EN}, además de \`color:grey\`.
+
+En alemán: {TAGS_DE}.`,
+    ui: {"farbe":"Color","keine":"Sin color","notiz":"Nota","kinder":"Subnotas","kinderTitel":"Color de todas las subnotas; una subnota con color propio lo conserva","schraffiert":"Rayado","schraffiertTitel":"Rayas diagonales en el color y en un tono más claro (requiere un color)","bild":"Colores al copiar como imagen","bildTitel":"Copiar como imagen (clic derecho, Ctrl+C o el botón de la barra del mapa mental) incluye los colores en la imagen; se aplica en este navegador"},
+    legende: {"titel":"Leyenda","knopf":"Leyenda","knopfTitel":"Mostrar u ocultar la leyenda: qué significan los colores","zu":"Contraer","auf":"Expandir leyenda","ecke":"Posición de la leyenda","ergaenzen":"Agregar colores faltantes: los colores en uso que aún no están en la leyenda se agregan como líneas nuevas al final","ecken":{"or":"Arriba a la derecha","ol":"Arriba a la izquierda","ul":"Abajo a la izquierda","ur":"Abajo a la derecha"},"leer":"Haz clic para describir qué significan los colores.","hinweis":"Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc o un clic fuera guarda","schraffiert":"rayado","kinder":"subnotas","bedeutung":"…"},
+    wort: {"fett":"negrita","kursiv":"cursiva"},
+  },
+  'pt': {
+    name: "Cores por etiqueta",
+    description: "Colore os nós do mapa mental através de etiquetas como «color:red» (16 cores); «color-children:blue» colore as subnotas. Escolha da cor com o botão direito (a partir do NoNotes 2.8.0), legenda por cima do mapa mental (a partir da 2.11.0).",
+    help: `Colore os **nós do mapa mental** através de uma etiqueta: preenchimento mais claro, contorno mais escuro e o título na cor do contorno (no modo escuro, ao contrário).
+
+- Coloque uma etiqueta na nota, por exemplo \`color:red\` (em alemão, \`farbe:rot\`). Maiúsculas e minúsculas são indiferentes.
+- **Colorir as subnotas:** \`color-children:blue\` (\`farbe-kinder:blau\`) colore todas as subnotas, mas não a própria nota. Juntamente com \`color:red\`, a nota fica vermelha e tudo o que está abaixo dela fica azul; para a mesma cor, use as duas etiquetas com a mesma cor. Uma subnota com cor própria mantém-na; um \`color-children:\` próprio aplica-se à sua parte da árvore.
+- Várias etiquetas de cor do mesmo tipo numa nota: vale a primeira (pela ordem do editor).
+- **Às riscas:** acrescente \`+hatched\` à etiqueta de cor, por exemplo \`color:red+hatched\` ou \`color-children:blue+hatched\` (em alemão, \`farbe:rot+schraffiert\`). O preenchimento recebe riscas diagonais na cor e num tom mais claro dela; o título continua legível e as riscas crescem com o zoom.
+- No ecrã e na imagem copiada, não na exportação nem na impressão. A raiz fica como está.
+
+#### Ao copiar como imagem
+*Copiar como imagem* (botão direito, \`Ctrl\`+\`C\` ou o botão na barra do mapa mental) inclui as cores na imagem, e as que estão às riscas com riscas. Para desativar: clique com o botão direito num nó → **Cor ▸** → **Cores ao copiar como imagem**; aplica-se neste navegador e funciona também no modo só de leitura. Requer o NoNotes 3.1.0 ou mais recente (desde a 2.4.0).
+
+#### Com o botão direito
+Clique com o botão direito num nó → **Cor ▸**: em cima, a cor da **nota**; em baixo, a das **subnotas**, cada uma com as 16 cores (substitui a atual, as riscas mantêm-se), **Sem cor** ou assinalar e desmarcar **Às riscas** (efeito imediato, só com cor). Se o nó fizer parte da seleção múltipla (\`Ctrl\`+clique), aplica-se a todos os nós selecionados; depois, a seleção é anulada. As etiquetas são escritas em inglês. Requer o NoNotes 2.8.0 ou mais recente.
+
+#### Legenda
+O botão **Legenda** na barra do mapa mental mostra uma nota que explica o significado das cores (uma por base de dados, igual para todos na área de trabalho). Um clique na legenda permite editá-la: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` ou um clique fora guarda. As etiquetas de cor no texto, como \`color:red\` ou \`color:blue+hatched\`, aparecem como amostra de cor com o nome. Se estiver vazia, começa com as cores que estão a ser usadas. Se mais tarde se acrescentarem cores, o botão **+** no cabeçalho da legenda acrescenta as que faltam como novas linhas no fim; o que já lá está fica intacto (desde a 2.3.0). A lista no cabeçalho escolhe o canto (em cima à direita, em cima à esquerda, em baixo à esquerda, em baixo à direita) e **–** recolhe a legenda; o navegador memoriza ambos. Na exportação para Markdown e na impressão, aparece por baixo da imagem do mapa mental. Requer o NoNotes 2.11.0 ou mais recente.
+
+#### As 16 cores
+{TAGS_EN} e ainda \`color:grey\`.
+
+Em alemão: {TAGS_DE}.`,
+    ui: {"farbe":"Cor","keine":"Sem cor","notiz":"Nota","kinder":"Subnotas","kinderTitel":"Cor de todas as subnotas; uma subnota com cor própria mantém-na","schraffiert":"Às riscas","schraffiertTitel":"Riscas diagonais na cor e num tom mais claro (requer uma cor)","bild":"Cores ao copiar como imagem","bildTitel":"Copiar como imagem (botão direito, Ctrl+C ou o botão na barra do mapa mental) inclui as cores na imagem; aplica-se neste navegador"},
+    legende: {"titel":"Legenda","knopf":"Legenda","knopfTitel":"Mostrar ou ocultar a legenda: o significado das cores","zu":"Recolher","auf":"Expandir a legenda","ecke":"Posição da legenda","ergaenzen":"Acrescentar as cores em falta: as cores usadas que ainda não constam da legenda são acrescentadas como novas linhas no fim","ecken":{"or":"Em cima à direita","ol":"Em cima à esquerda","ul":"Em baixo à esquerda","ur":"Em baixo à direita"},"leer":"Clique para descrever o significado das cores.","hinweis":"Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc ou um clique fora guarda","schraffiert":"às riscas","kinder":"subnotas","bedeutung":"…"},
+    wort: {"fett":"negrito","kursiv":"itálico"},
+  },
+  'pt-br': {
+    name: "Cores por tag",
+    description: "Colore os nós do mapa mental por meio de tags como “color:red” (16 cores); “color-children:blue” colore as subnotas. Escolha da cor com clique direito (a partir do NoNotes 2.8.0), legenda acima do mapa mental (a partir da 2.11.0).",
+    help: `Colore os **nós do mapa mental** por meio de uma tag: preenchimento mais claro, contorno mais escuro e o título na cor do contorno (no modo escuro, o contrário).
+
+- Coloque uma tag na nota, por exemplo \`color:red\` (em alemão, \`farbe:rot\`). Maiúsculas e minúsculas não fazem diferença.
+- **Colorir subnotas:** \`color-children:blue\` (\`farbe-kinder:blau\`) colore todas as subnotas, mas não a própria nota. Junto com \`color:red\`, a nota fica vermelha e tudo abaixo dela, azul; para a mesma cor, use as duas tags com a mesma cor. Uma subnota com cor própria a mantém; um \`color-children:\` próprio vale para a parte dela na árvore.
+- Várias tags de cor do mesmo tipo em uma nota: vale a primeira (na ordem do editor).
+- **Hachurado:** acrescente \`+hatched\` à tag de cor, por exemplo \`color:red+hatched\` ou \`color-children:blue+hatched\` (em alemão, \`farbe:rot+schraffiert\`). O preenchimento ganha listras diagonais na cor e em um tom mais claro dela; o título continua legível, e as listras crescem com o zoom.
+- Na tela e na imagem copiada, não na exportação nem na impressão. A raiz fica como está.
+
+#### Ao copiar como imagem
+*Copiar como imagem* (clique direito, \`Ctrl\`+\`C\` ou o botão na barra do mapa mental) leva as cores para a imagem, e as hachuradas, com listras. Para desativar: clique direito em um nó → **Cor ▸** → **Cores ao copiar como imagem**; isso vale neste navegador e funciona também no modo somente leitura. Requer o NoNotes 3.1.0 ou mais recente (desde a versão 2.4.0).
+
+#### Com clique direito
+Clique direito em um nó → **Cor ▸**: em cima, a cor da **nota**; embaixo, a das **subnotas**, cada uma com as 16 cores (substitui a atual; o hachurado permanece), **Sem cor** ou marcar e desmarcar **Hachurado** (vale na hora, só com cor). Se o nó fizer parte da seleção múltipla (\`Ctrl\`+clique), vale para todos os selecionados; depois, a seleção é desfeita. As tags são escritas em inglês. Requer o NoNotes 2.8.0 ou mais recente.
+
+#### Legenda
+O botão **Legenda** na barra do mapa mental mostra uma nota que explica o que as cores significam (uma por banco de dados, igual para todos no espaço de trabalho). Um clique na legenda abre a edição: Markdown, \`Ctrl\`+\`B\`, \`Ctrl\`+\`I\`, \`Ctrl\`+\`K\`; \`Esc\` ou um clique fora dela salva. Tags de cor no texto, como \`color:red\` ou \`color:blue+hatched\`, aparecem como amostra de cor com o nome. Se estiver vazia, ela começa com as cores em uso no momento. Se depois surgirem outras cores, o botão **+** no cabeçalho da legenda acrescenta as que faltam como novas linhas no final; o que já está lá não é alterado (desde a versão 2.3.0). O seletor no cabeçalho escolhe o canto (superior direito, superior esquerdo, inferior esquerdo, inferior direito), e **–** recolhe a legenda; o navegador memoriza as duas coisas. Na exportação em Markdown e na impressão, ela aparece abaixo da imagem do mapa mental. Requer o NoNotes 2.11.0 ou mais recente.
+
+#### As 16 cores
+{TAGS_EN}, além de \`color:grey\`.
+
+Em alemão: {TAGS_DE}.`,
+    ui: {"farbe":"Cor","keine":"Sem cor","notiz":"Nota","kinder":"Subnotas","kinderTitel":"Cor de todas as subnotas; uma subnota com cor própria a mantém","schraffiert":"Hachurado","schraffiertTitel":"Listras diagonais na cor e em um tom mais claro dela (requer uma cor)","bild":"Cores ao copiar como imagem","bildTitel":"Copiar como imagem (clique direito, Ctrl+C ou o botão na barra do mapa mental) leva as cores para a imagem; vale neste navegador"},
+    legende: {"titel":"Legenda","knopf":"Legenda","knopfTitel":"Mostrar ou ocultar a legenda: o que as cores significam","zu":"Recolher","auf":"Expandir legenda","ecke":"Posição da legenda","ergaenzen":"Acrescentar cores que faltam: as cores em uso que ainda não estão na legenda entram como novas linhas no final","ecken":{"or":"Canto superior direito","ol":"Canto superior esquerdo","ul":"Canto inferior esquerdo","ur":"Canto inferior direito"},"leer":"Clique para descrever o que as cores significam.","hinweis":"Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc ou um clique fora salva","schraffiert":"hachurado","kinder":"subnotas","bedeutung":"…"},
+    wort: {"fett":"negrito","kursiv":"itálico"},
+  },
+  /* </uebersetzungen> */
+};
+const tfJe = k => Object.fromEntries(Object.entries(TF_TEXTE).map(([l, v]) => [l, v[k]]));
+const tfSprache = lang => { const l = String(lang || 'de').toLowerCase(); return TF_TEXTE[l] || TF_TEXTE[l.split('-')[0]] || TF_TEXTE.en; };
+const tfHilfe = v => v.help.replace('{TAGS_DE}', tagListe('de')).replace('{TAGS_EN}', tagListe('en'));
+
+NoNotesPlugins.register({
+  id: 'tag-farben',
+  name: TF_TEXTE.de.name,
+  version: '2.5.0',
+  api: 1,
+  description: TF_TEXTE.de.description,
+  names: tfJe('name'),
+  descriptions: tfJe('description'),
+  help: Object.fromEntries(Object.entries(TF_TEXTE).map(([l, v]) => [l, tfHilfe(v)])),
 
   activate(ctx) {
     const P = window.NoNotesPlugins;
@@ -285,13 +518,10 @@ German: ${tagListe('de')}.`,
     }
 
     // ---- Rechtsklick auf einen Knoten (NoNotes ab 2.8.0): «Farbe ▸» --------------------------------------------------
-    const englisch = !/^de\b/.test(ctx.language() || 'de');
-    const T = englisch
-      ? { farbe: 'Colour', keine: 'No colour', notiz: 'Note', kinder: 'Subnotes', kinderTitel: 'Colour of all subnotes; a subnote with a colour of its own keeps it', schraffiert: 'Hatched', schraffiertTitel: 'Diagonal stripes in the colour and a lighter shade (needs a colour)',
-        bild: 'Colours when copying as image', bildTitel: 'Copy as image (right-click, Ctrl+C or the button in the mind map toolbar) includes the colours; remembered in this browser' }
-      : { farbe: 'Farbe', keine: 'Keine Farbe', notiz: 'Notiz', kinder: 'Unternotizen', kinderTitel: 'Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie', schraffiert: 'Schraffiert', schraffiertTitel: 'Diagonale Streifen in der Farbe und einer helleren Fassung (braucht eine Farbe)',
-        bild: 'Farben beim Kopieren als Bild', bildTitel: 'Als Bild kopieren (Rechtsklick, Ctrl+C oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild; gilt in diesem Browser' };
-    const anzeige = f => (englisch ? f.en.charAt(0).toUpperCase() + f.en.slice(1) : f.name);
+    const englisch = !/^de\b/.test(ctx.language() || 'de'); // Tags englisch (color:…), ausser in deutscher Oberfläche
+    const TX = tfSprache(ctx.language());
+    const T = TX.ui;
+    const anzeige = f => (TX.farben && TX.farben[f.id]) || (englisch ? f.en.charAt(0).toUpperCase() + f.en.slice(1) : f.name);
     const farbTag = (art, f) => (englisch ? `${art === 'kinder' ? 'color-children' : 'color'}:${f.en}`
       : `${art === 'kinder' ? 'farbe-kinder' : 'farbe'}:${f.name.toLowerCase()}`);
     const ohne = (art, tags) => tags.filter(t => { const d = deuten(t); return !(d && d.art === art); });
@@ -310,15 +540,7 @@ German: ${tagListe('de')}.`,
      *  (Ctrl+B, Ctrl+I, Ctrl+K), Esc oder ein Klick daneben speichert; während des Tippens wird nach kurzer Pause gespeichert.
      *  Im Export und Druck steht sie unter dem Mindmap-Bild, die Farben mit Namen. */
     function legendeAnlegen() {
-      const L = englisch
-        ? { titel: 'Legend', knopf: 'Legend', knopfTitel: 'Show or hide the legend: what the colours mean', zu: 'Collapse', auf: 'Expand legend', ecke: 'Position of the legend',
-            ergaenzen: 'Add missing colours: colours in use that the legend does not mention yet come as new lines at the end',
-            ecken: { or: 'Top right', ol: 'Top left', ul: 'Bottom left', ur: 'Bottom right' }, leer: 'Click to describe what the colours mean.',
-            hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc or a click outside saves', schraffiert: 'hatched', kinder: 'subnotes', bedeutung: '…' }
-        : { titel: 'Legende', knopf: 'Legende', knopfTitel: 'Legende ein- oder ausblenden: was die Farben bedeuten', zu: 'Einklappen', auf: 'Legende aufklappen', ecke: 'Lage der Legende',
-            ergaenzen: 'Fehlende Farben ergänzen: benutzte Farben, die in der Legende noch fehlen, kommen als neue Zeilen ans Ende',
-            ecken: { or: 'Oben rechts', ol: 'Oben links', ul: 'Unten links', ur: 'Unten rechts' }, leer: 'Klicken, um zu beschreiben, was die Farben bedeuten.',
-            hinweis: 'Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc oder Klick daneben speichert', schraffiert: 'schraffiert', kinder: 'Unternotizen', bedeutung: '…' };
+      const L = TX.legende;
       const KEY = LEGENDE_KEY;
       const PREF = 'nonotes.tagFarben.legende';
       const E = window.NoNotesEditing, M = window.NoNotesMarkdown;
@@ -524,8 +746,8 @@ German: ${tagListe('de')}.`,
         if (!mod || !E) return;
         const k = e.key.toLowerCase();
         const s0 = feld.selectionStart, e0 = feld.selectionEnd;
-        const r = k === 'b' ? E.wrap(feld.value, s0, e0, '**', '**', englisch ? 'bold' : 'fett')
-          : k === 'i' ? E.wrap(feld.value, s0, e0, '*', '*', englisch ? 'italic' : 'kursiv')
+        const r = k === 'b' ? E.wrap(feld.value, s0, e0, '**', '**', TX.wort.fett)
+          : k === 'i' ? E.wrap(feld.value, s0, e0, '*', '*', TX.wort.kursiv)
           : k === 'k' ? E.link(feld.value, s0, e0) : null;
         if (!r) return;
         e.preventDefault();

@@ -1,0 +1,14 @@
+{
+  "name": "Saut vers les sous-notes",
+  "description": "Ctrl+Espace dans l’éditeur (Édition, Côte à côte, Aperçu) ouvre une liste numérotée des sous-notes ; un numéro suivi d’Enter y mène.",
+  "help": "Passe d’une note à l’une de ses **sous-notes** par un raccourci clavier.\n\nDans l’éditeur (**Édition**, **Côte à côte** et **Aperçu**), `Ctrl`+`Espace` ouvre une fenêtre avec une liste numérotée. Tapez un numéro et appuyez sur `Enter` : la sous-note s’ouvre. Un clic sur une entrée fonctionne aussi, `Esc` annule.\n\n#### Quelles sous-notes apparaissent ?\n- Les sous-notes dont le titre figure dans le texte de la note (aussi sous la forme `[[Titre]]`), dans leur ordre d’apparition. Un titre ne compte que s’il forme un mot entier.\n- Si le texte ne mentionne aucune sous-note, elles apparaissent toutes, dans l’ordre de la carte mentale.\n- Les sous-notes archivées sont omises.\n\nExemple : si une note se termine par « Où aller ? Devant, Derrière, Haut, Bas » et a des sous-notes portant ces titres, la liste affiche exactement celles-ci.\n\nLe raccourci et les modes d’affichage se modifient en haut de `subnote-jump.js` (`TASTE`, `MODI`).",
+  "ui": {
+    "title": "Où aller ?",
+    "hint": "Tapez un numéro, puis Enter. Esc annule.",
+    "label": "Numéro",
+    "invalid": "Veuillez saisir un numéro de la liste.",
+    "none": "Cette note n’a pas de sous-notes.",
+    "untitled": "Sans titre",
+    "go": "Ouvrir"
+  }
+}

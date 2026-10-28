@@ -1,0 +1,40 @@
+{
+  "name": "Tabellen formatieren",
+  "description": "Farbe, Fett, Spaltenbreite, Zeilenhöhe und ganze Breite für Tabellen in der Vorschau, per Rechtsklick auf ein Feld (ab NoNotes 2.10.0).",
+  "help": "Formatiert **Tabellen** in der Vorschau: Rechtsklick auf ein Feld → **Formatieren ▸**.\n\n- **Gilt für** Feld, Zeile oder Spalte (in der Titelzeile: die Titelzeile). Dafür **Farbe** ({FARBEN} oder keine) und **Fett**. Gilt mehreres, gewinnt das Feld vor der Zeile vor der Spalte.\n- **Spaltenbreite**: Auto, {BREITEN}. **Zeilenhöhe**: Auto, {HOEHEN}. **Ganze Breite** zieht die Tabelle über die ganze Vorschau.\n- Jede Wahl wirkt sofort, das Untermenü bleibt offen.\n- Gespeichert wird in der Zeile `<!-- tabelle: … -->` über der Tabelle; Zeilen und Spalten behalten ihr Format, wenn andere dazukommen oder wegfallen. Andere Markdown-Programme zeigen die Tabelle ohne dieses Format.\n- Im dunklen Modus sind die Farben dunkel, gedruckt immer hell.",
+  "ui": {
+    "menu": "Formatieren",
+    "scope": "Gilt für",
+    "cell": "Feld",
+    "row": "Zeile",
+    "header": "Titelzeile",
+    "col": "Spalte",
+    "farbe": "Farbe",
+    "keine": "Keine",
+    "fett": "Fett",
+    "breite": "Spaltenbreite",
+    "hoehe": "Zeilenhöhe",
+    "auto": "Auto",
+    "voll": "Ganze Breite"
+  },
+  "farben": {
+    "gelb": "Gelb",
+    "orange": "Orange",
+    "rot": "Rot",
+    "pink": "Pink",
+    "violett": "Violett",
+    "blau": "Blau",
+    "tuerkis": "Türkis",
+    "gruen": "Grün",
+    "grau": "Grau"
+  },
+  "breiten": {
+    "schmal": "Schmal",
+    "mittel": "Mittel",
+    "breit": "Breit"
+  },
+  "hoehen": {
+    "hoch": "Hoch",
+    "sehr-hoch": "Sehr hoch"
+  }
+}

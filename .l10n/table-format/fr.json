@@ -1,0 +1,40 @@
+{
+  "name": "Mise en forme des tableaux",
+  "description": "Couleur, gras, largeur de colonne, hauteur de ligne et pleine largeur pour les tableaux de l’aperçu, par clic droit sur une cellule (à partir de NoNotes 2.10.0).",
+  "help": "Met en forme les **tableaux** dans l’aperçu : clic droit sur une cellule → **Mettre en forme ▸**.\n\n- **S’applique à** la cellule, la ligne ou la colonne (dans la ligne d’en-tête : la ligne d’en-tête). Pour ce choix : **Couleur** ({FARBEN} ou aucune) et **Gras**. Si plusieurs réglages s’appliquent, la cellule l’emporte sur la ligne, qui l’emporte sur la colonne.\n- **Largeur de colonne** : Auto, {BREITEN}. **Hauteur de ligne** : Auto, {HOEHEN}. **Pleine largeur** étend le tableau sur toute la largeur de l’aperçu.\n- Chaque choix s’applique immédiatement ; le sous-menu reste ouvert.\n- Le format est enregistré dans la ligne `<!-- tabelle: … -->` au-dessus du tableau ; les lignes et les colonnes conservent leur format lorsque d’autres sont ajoutées ou supprimées. Les autres programmes Markdown affichent le tableau sans ce format.\n- En mode sombre, les couleurs sont foncées ; à l’impression, elles sont toujours claires.",
+  "ui": {
+    "menu": "Mettre en forme",
+    "scope": "S’applique à",
+    "cell": "Cellule",
+    "row": "Ligne",
+    "header": "Ligne d’en-tête",
+    "col": "Colonne",
+    "farbe": "Couleur",
+    "keine": "Aucune",
+    "fett": "Gras",
+    "breite": "Largeur de colonne",
+    "hoehe": "Hauteur de ligne",
+    "auto": "Auto",
+    "voll": "Pleine largeur"
+  },
+  "farben": {
+    "gelb": "Jaune",
+    "orange": "Orange",
+    "rot": "Rouge",
+    "pink": "Rose",
+    "violett": "Violet",
+    "blau": "Bleu",
+    "tuerkis": "Turquoise",
+    "gruen": "Vert",
+    "grau": "Gris"
+  },
+  "breiten": {
+    "schmal": "Étroite",
+    "mittel": "Moyenne",
+    "breit": "Large"
+  },
+  "hoehen": {
+    "hoch": "Haute",
+    "sehr-hoch": "Très haute"
+  }
+}

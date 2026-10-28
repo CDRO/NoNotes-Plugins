@@ -1,0 +1,5 @@
+{
+  "name": "Temas por etiqueta",
+  "description": "Define um tema por nota com base nas etiquetas e estiliza as linhas do mapa mental por pares de etiquetas (configuração no topo do ficheiro).",
+  "help": "Define um **tema** por nota com base nas etiquetas e estiliza as **linhas do mapa mental**.\n\n#### Tema por nota\nAo abrir uma nota com uma etiqueta da lista `REGELN` (no topo de `tag-themes.js`), toda a interface muda para o tema dessa regra. Ao fechá-la, volta a valer o tema do menu *Base de dados*. Com várias etiquetas correspondentes, prevalece a regra mais acima na lista. As alterações de etiquetas no editor têm efeito imediato; a cor de destaque não é alterada.\n\n#### Linhas do mapa mental\nA lista `LINKS` estiliza a ligação da nota superior à subnota conforme o par de etiquetas (`from` → `to`, `'*'` = qualquer nota): gradiente de cor (`color`, também em separado para claro e escuro), forma (`curve`, `elbow`, `straight`), raio dos cantos, espessura, tipo de traço e opacidade. Só no ecrã, não na exportação nem na impressão.\n\nAs alterações às listas têm efeito depois de recarregar a página."
+}

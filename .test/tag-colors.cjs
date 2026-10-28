@@ -19,6 +19,15 @@ const READY = 'body[data-ready="true"]';
 const SAVED = () => document.querySelector('#status').dataset.state === 'saved';
 const FILE = 'tag-colors/tag-colors.js';
 
+/** Die Texte einer Sprache aus der Tabelle TF_TEXTE der Datei (seit 2.5.0). */
+function textsOfFile(code) {
+  const src = fs.readFileSync(path.join(REPO, FILE), 'utf8');
+  const box = { NoNotesPlugins: { register() {} }, console };
+  box.window = box;
+  require('node:vm').runInNewContext(src + `\n;globalThis.__t = TF_TEXTE[${JSON.stringify(code)}];`, box);
+  return JSON.parse(JSON.stringify(box.__t));
+}
+
 /** Die Farbtabelle aus der Datei, ohne Browser. */
 function colorsOfFile() {
   const src = fs.readFileSync(path.join(REPO, FILE), 'utf8');
@@ -470,6 +479,48 @@ async function main() {
     assert.deepEqual((await en.evaluate(() => [...document.querySelectorAll('#tagChips .chip')].map(c => c.firstChild.textContent))).sort(), ['color-children:indigo', 'color:teal+hatched']);
     await ctxEn.close();
     part('Englische Oberfläche: «Colour ▸» mit «Note» und «Subnotes», «No colour», «Colours when copying as image», Tags color:teal+hatched und color-children:indigo');
+
+    // Französische Oberfläche (fr-CH): Beschriftung aus der Tabelle, Tags englisch, Name im Dialog «Erweiterungen…» (NoNotes ab 3.1.1)
+    const FR = textsOfFile('fr');
+    assert.ok(FR && FR.ui.farbe && FR.ui.farbe !== 'Colour' && FR.name !== 'Colours by tag', 'französische Texte in der Datei');
+    const ctxFr = await browser.newContext({ viewport: { width: 1400, height: 900 }, locale: 'fr-CH' });
+    await ctxFr.addInitScript(f => { try { if (!localStorage.getItem('nonotes.plugins')) { localStorage.setItem('nonotes.plugins', JSON.stringify([f])); localStorage.setItem('nonotes.lang', 'fr-CH'); } } catch (e) { /* egal */ } }, FILE);
+    const fr = await ctxFr.newPage();
+    await fr.goto('file://' + path.join(out, 'index.html'));
+    await fr.waitForSelector(READY, { timeout: 30000 });
+    await fr.click('#mindmap', { position: { x: 30, y: 700 } });
+    await fr.keyboard.press('Tab');
+    await fr.waitForSelector('#renameInput:not([hidden])');
+    await fr.keyboard.type('Plan');
+    await fr.keyboard.press('Enter');
+    const planFr = fr.locator('g.mm-node:has(> text:text-is("Plan"))');
+    await planFr.waitFor();
+    await planFr.click({ button: 'right' });
+    await fr.hover('#contextMenu button[data-plugin="tag-farben"]');
+    await fr.waitForSelector('.tf-panel');
+    assert.equal(await fr.locator('#contextMenu button[data-plugin="tag-farben"] span').first().innerText(), FR.ui.farbe);
+    assert.deepEqual(await fr.locator('.tf-panel .tf-titel').allInnerTexts(), [FR.ui.notiz, FR.ui.kinder]);
+    assert.equal(await fr.locator('.tf-panel .tf-notiz .tf-none').innerText(), FR.ui.keine);
+    await fr.click('.tf-panel .tf-notiz .tf-sw-rot');
+    await fr.waitForSelector('g.mm-node.tf-rot');
+    await planFr.dblclick();
+    await fr.waitForFunction(() => document.querySelectorAll('#tagChips .chip').length === 1);
+    assert.deepEqual(await fr.evaluate(() => [...document.querySelectorAll('#tagChips .chip')].map(c => c.firstChild.textContent)), ['color:red'], 'Tags ausserhalb von Deutsch englisch');
+    await fr.click('#backBtn');
+    await fr.waitForSelector('body:not(.editor-open)');
+    await fr.click('#menuBtn');
+    await fr.click('#pluginsBtn');
+    await fr.waitForSelector('#pluginsDialog[open]');
+    assert.ok((await fr.locator('#pluginList').innerText()).includes(FR.name), 'Name im Dialog in der Sprache der Oberfläche');
+    await fr.keyboard.press('Escape');
+    await fr.click('#menuBtn');
+    await fr.click('#menuHelpBtn');
+    await fr.waitForSelector('#helpDialog[open]');
+    await fr.click('#helpTabs button[data-tab="plugins"]');
+    const helpFr = await fr.locator('#helpDialog .help-panel[data-panel="plugins"]').innerText();
+    for (const x of [FR.name, 'color:red', 'color-children:blue', 'farbe:rot']) assert.ok(helpFr.includes(x), 'französische Hilfe nennt ' + x);
+    await ctxFr.close();
+    part('Französische Oberfläche: Beschriftung, Tags englisch (color:red), Name im Dialog «Erweiterungen…» und Hilfe auf Französisch');
 
     // Legende (NoNotes ab 2.11.0): Knopf in der Leiste, Vorlage mit den benutzten Farben, bearbeiten, Farbfelder, Ecke, einklappen,
     // nach dem Neuladen noch da, im Druck unter dem Bild

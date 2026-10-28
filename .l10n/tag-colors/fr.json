@@ -1,0 +1,40 @@
+{
+  "name": "Couleurs par étiquettes",
+  "description": "Colore les nœuds de la carte mentale à l’aide d’étiquettes comme « color:red » (16 couleurs) ; « color-children:blue » colore les sous-notes. Choix de la couleur par clic droit (à partir de NoNotes 2.8.0), légende au-dessus de la carte mentale (à partir de la 2.11.0).",
+  "help": "Colore les **nœuds de la carte mentale** à l’aide d’une étiquette : fond plus clair, contour plus foncé, titre dans la couleur du contour (inversé en mode sombre).\n\n- Ajoutez une étiquette à la note, par exemple `color:red` (en allemand `farbe:rot`). Les majuscules et les minuscules n’ont pas d’importance.\n- **Colorer les sous-notes :** `color-children:blue` (`farbe-kinder:blau`) colore toutes les sous-notes, mais pas la note elle-même. Avec `color:red`, la note est rouge et tout ce qui se trouve en dessous est bleu ; pour une seule et même couleur, mettez les deux étiquettes avec la même couleur. Une sous-note qui a sa propre couleur la conserve ; son propre `color-children:` s’applique à sa partie de l’arborescence.\n- Plusieurs étiquettes de couleur du même type sur une note : la première l’emporte (dans l’ordre de l’éditeur).\n- **Hachuré :** ajoutez `+hatched` à l’étiquette de couleur, par exemple `color:red+hatched` ou `color-children:blue+hatched` (en allemand `farbe:rot+schraffiert`). Le fond reçoit des rayures diagonales dans la couleur et dans une nuance plus claire de celle-ci ; le titre reste lisible, les rayures grandissent avec le zoom.\n- À l’écran et dans l’image copiée, mais pas à l’exportation ni à l’impression. La racine reste telle quelle.\n\n#### Lors de la copie en tant qu’image\n*Copier en tant qu’image* (clic droit, `Ctrl`+`C` ou le bouton de la barre de la carte mentale) reprend les couleurs dans l’image, les hachurées avec leurs rayures. Pour désactiver cette fonction : clic droit sur un nœud → **Couleur ▸** → **Couleurs lors de la copie en tant qu’image** ; ce réglage vaut pour ce navigateur et fonctionne aussi en mode lecture seule. Nécessite NoNotes 3.1.0 ou une version ultérieure (depuis la 2.4.0).\n\n#### Par clic droit\nClic droit sur un nœud → **Couleur ▸** : en haut la couleur de la **note**, en dessous celle des **sous-notes**, chaque fois avec les 16 couleurs (remplace la couleur actuelle, les hachures restent), **Aucune couleur** ou cocher et décocher **Hachuré** (effet immédiat, seulement avec une couleur). Si le nœud fait partie de la sélection multiple (`Ctrl`+clic), le choix s’applique à tous les nœuds sélectionnés ; la sélection est ensuite effacée. Les étiquettes sont écrites en anglais (en allemand dans l’interface allemande). Nécessite NoNotes 2.8.0 ou une version ultérieure.\n\n#### Légende\nLe bouton **Légende** de la barre de la carte mentale affiche une note qui explique ce que signifient les couleurs (une par base de données, la même pour tout le monde dans l’espace de travail). Un clic dans la légende permet de la modifier : Markdown, `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`K` ; `Esc` ou un clic à côté enregistre. Les étiquettes de couleur dans le texte, comme `color:red` ou `color:blue+hatched`, apparaissent sous forme de pastille de couleur avec son nom. Si la légende est vide, elle commence avec les couleurs utilisées actuellement. Si des couleurs s’ajoutent plus tard, le bouton **+** dans son en-tête ajoute les manquantes en nouvelles lignes à la fin ; ce qui s’y trouve déjà reste intact (depuis la 2.3.0). La liste de choix de l’en-tête définit le coin (en haut à droite, en haut à gauche, en bas à gauche, en bas à droite), **–** réduit la légende ; le navigateur mémorise les deux. Dans l’exportation Markdown et à l’impression, elle figure sous l’image de la carte mentale. Nécessite NoNotes 2.11.0 ou une version ultérieure.\n\n#### Les 16 couleurs\n{TAGS_EN}, ainsi que `color:grey`.\n\nEn allemand : {TAGS_DE}.",
+  "ui": {
+    "farbe": "Couleur",
+    "keine": "Aucune couleur",
+    "notiz": "Note",
+    "kinder": "Sous-notes",
+    "kinderTitel": "Couleur de toutes les sous-notes ; une sous-note qui a sa propre couleur la conserve",
+    "schraffiert": "Hachuré",
+    "schraffiertTitel": "Rayures diagonales dans la couleur et dans une nuance plus claire (nécessite une couleur)",
+    "bild": "Couleurs lors de la copie en tant qu’image",
+    "bildTitel": "Copier en tant qu’image (clic droit, Ctrl+C ou le bouton de la barre de la carte mentale) reprend les couleurs dans l’image ; vaut pour ce navigateur"
+  },
+  "legende": {
+    "titel": "Légende",
+    "knopf": "Légende",
+    "knopfTitel": "Afficher ou masquer la légende : ce que signifient les couleurs",
+    "zu": "Réduire",
+    "auf": "Développer la légende",
+    "ecke": "Position de la légende",
+    "ergaenzen": "Ajouter les couleurs manquantes : les couleurs utilisées qui ne figurent pas encore dans la légende sont ajoutées en nouvelles lignes à la fin",
+    "ecken": {
+      "or": "En haut à droite",
+      "ol": "En haut à gauche",
+      "ul": "En bas à gauche",
+      "ur": "En bas à droite"
+    },
+    "leer": "Cliquez pour décrire ce que signifient les couleurs.",
+    "hinweis": "Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc ou un clic à côté enregistre",
+    "schraffiert": "hachuré",
+    "kinder": "sous-notes",
+    "bedeutung": "…"
+  },
+  "wort": {
+    "fett": "gras",
+    "kursiv": "italique"
+  }
+}

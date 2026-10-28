@@ -35,8 +35,8 @@ Systems ist es umgekehrt: dunkle Fläche, helle Umrandung und heller Titel.
   - Gehört der Knoten zur Mehrfachauswahl (`Ctrl`+Klick), gilt alles für alle ausgewählten Knoten. Markiert ist eine
     Farbe nur, wenn alle sie haben. Schliesst sich das Menü nach einer Änderung, ist die Auswahl aufgehoben (ab NoNotes
     2.8.1); wer mit `Esc` abbricht, behält sie.
-  - Die Tags werden in der Sprache der Oberfläche geschrieben (`farbe:rot` und `farbe-kinder:rot`, englisch `color:red`
-    und `color-children:red`).
+  - Die Tags werden in deutscher Oberfläche deutsch geschrieben (`farbe:rot` und `farbe-kinder:rot`), in allen anderen
+    Sprachen englisch (`color:red` und `color-children:red`).
   - Im Lesemodus und an archivierten Notizen gibt es den Eintrag nicht.
   - Ältere NoNotes-Versionen färben weiter über Tags, nur ohne den Eintrag.
 - Die Auswahl in der Mindmap zeigt weiterhin ihren Rand; die Fläche behält die Farbe. Suche, Ziehen und Mehrfachauswahl
@@ -97,6 +97,20 @@ Für die Unternotizen steht `farbe-kinder:` statt `farbe:` (englisch `color-chil
 
 Jede Farbe hat eine helle und eine dunkle Fassung. Der Titel hat auf seiner Fläche in beiden einen Kontrast von
 mindestens 5:1.
+
+## Sprachen (seit 2.5.0)
+
+Name, Beschreibung, Hilfe und Beschriftungen gibt es in den neun Sprachen von NoNotes: Deutsch (Schweiz und Deutschland),
+Englisch, Französisch, Italienisch, Spanisch (Spanien und Mexiko), Portugiesisch (Portugal und Brasilien). Die Erweiterung
+nimmt die Sprache der Oberfläche (`ctx.language()`), sonst die Sprache ohne Region, sonst Englisch. Name und Beschreibung im
+Dialog *Erweiterungen…* folgen der Sprache ab NoNotes 3.1.1; ältere Versionen zeigen dort die deutschen.
+
+Die Tags gehen in beiden Sprachen (`farbe:rot` und `color:red`). Das Untermenü **Farbe ▸** schreibt sie in deutscher Oberfläche
+(Deutsch Schweiz und Deutschland) deutsch, in allen anderen Sprachen englisch (`color:red`, `color-children:red`, `+hatched`); die
+Farbnamen im Menü und in der Legende folgen dem Tag.
+
+Die Texte stehen oben in der Datei in einer Tabelle (Deutsch und Englisch von Hand, die übrigen aus `.l10n/tag-colors/<sprache>.json`,
+eingesetzt mit `node .l10n/apply.cjs`).
 
 ## Installieren
 

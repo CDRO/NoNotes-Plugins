@@ -1,0 +1,14 @@
+{
+  "name": "Saltar para subnotas",
+  "description": "Ctrl+Espaço no editor (Editar, Dividida, Pré-visualização) abre uma lista numerada das subnotas; um número e Enter levam até lá.",
+  "help": "Salta de uma nota para uma das suas **subnotas** com um atalho de teclado.\n\nNo editor (**Editar**, **Dividida** e **Pré-visualização**), `Ctrl`+`Espaço` abre uma janela com uma lista numerada. Escreva o número e prima `Enter`: a subnota abre-se. Também pode clicar numa entrada; `Esc` cancela.\n\n#### Que subnotas aparecem?\n- As subnotas cujo título surge no texto da nota (também como `[[Título]]`), pela ordem em que aparecem. Um título só conta como palavra inteira.\n- Se o texto não mencionar nenhuma subnota, aparecem todas, pela ordem do mapa mental.\n- As subnotas arquivadas não aparecem.\n\nExemplo: se uma nota terminar com «Para onde vamos? Frente, Trás, Cima, Baixo» e tiver subnotas com esses títulos, a lista mostra exatamente essas.\n\nO atalho e os modos de apresentação podem ser alterados no topo de `subnote-jump.js` (`TASTE`, `MODI`).",
+  "ui": {
+    "title": "Para onde vamos?",
+    "hint": "Escreva o número e prima Enter. Esc cancela.",
+    "label": "Número",
+    "invalid": "Introduza um número da lista.",
+    "none": "Esta nota não tem subnotas.",
+    "untitled": "Sem título",
+    "go": "Abrir"
+  }
+}

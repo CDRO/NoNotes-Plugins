@@ -1,0 +1,40 @@
+{
+  "name": "Cores por etiqueta",
+  "description": "Colore os nós do mapa mental através de etiquetas como «color:red» (16 cores); «color-children:blue» colore as subnotas. Escolha da cor com o botão direito (a partir do NoNotes 2.8.0), legenda por cima do mapa mental (a partir da 2.11.0).",
+  "help": "Colore os **nós do mapa mental** através de uma etiqueta: preenchimento mais claro, contorno mais escuro e o título na cor do contorno (no modo escuro, ao contrário).\n\n- Coloque uma etiqueta na nota, por exemplo `color:red` (em alemão, `farbe:rot`). Maiúsculas e minúsculas são indiferentes.\n- **Colorir as subnotas:** `color-children:blue` (`farbe-kinder:blau`) colore todas as subnotas, mas não a própria nota. Juntamente com `color:red`, a nota fica vermelha e tudo o que está abaixo dela fica azul; para a mesma cor, use as duas etiquetas com a mesma cor. Uma subnota com cor própria mantém-na; um `color-children:` próprio aplica-se à sua parte da árvore.\n- Várias etiquetas de cor do mesmo tipo numa nota: vale a primeira (pela ordem do editor).\n- **Às riscas:** acrescente `+hatched` à etiqueta de cor, por exemplo `color:red+hatched` ou `color-children:blue+hatched` (em alemão, `farbe:rot+schraffiert`). O preenchimento recebe riscas diagonais na cor e num tom mais claro dela; o título continua legível e as riscas crescem com o zoom.\n- No ecrã e na imagem copiada, não na exportação nem na impressão. A raiz fica como está.\n\n#### Ao copiar como imagem\n*Copiar como imagem* (botão direito, `Ctrl`+`C` ou o botão na barra do mapa mental) inclui as cores na imagem, e as que estão às riscas com riscas. Para desativar: clique com o botão direito num nó → **Cor ▸** → **Cores ao copiar como imagem**; aplica-se neste navegador e funciona também no modo só de leitura. Requer o NoNotes 3.1.0 ou mais recente (desde a 2.4.0).\n\n#### Com o botão direito\nClique com o botão direito num nó → **Cor ▸**: em cima, a cor da **nota**; em baixo, a das **subnotas**, cada uma com as 16 cores (substitui a atual, as riscas mantêm-se), **Sem cor** ou assinalar e desmarcar **Às riscas** (efeito imediato, só com cor). Se o nó fizer parte da seleção múltipla (`Ctrl`+clique), aplica-se a todos os nós selecionados; depois, a seleção é anulada. As etiquetas são escritas em inglês. Requer o NoNotes 2.8.0 ou mais recente.\n\n#### Legenda\nO botão **Legenda** na barra do mapa mental mostra uma nota que explica o significado das cores (uma por base de dados, igual para todos na área de trabalho). Um clique na legenda permite editá-la: Markdown, `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`K`; `Esc` ou um clique fora guarda. As etiquetas de cor no texto, como `color:red` ou `color:blue+hatched`, aparecem como amostra de cor com o nome. Se estiver vazia, começa com as cores que estão a ser usadas. Se mais tarde se acrescentarem cores, o botão **+** no cabeçalho da legenda acrescenta as que faltam como novas linhas no fim; o que já lá está fica intacto (desde a 2.3.0). A lista no cabeçalho escolhe o canto (em cima à direita, em cima à esquerda, em baixo à esquerda, em baixo à direita) e **–** recolhe a legenda; o navegador memoriza ambos. Na exportação para Markdown e na impressão, aparece por baixo da imagem do mapa mental. Requer o NoNotes 2.11.0 ou mais recente.\n\n#### As 16 cores\n{TAGS_EN} e ainda `color:grey`.\n\nEm alemão: {TAGS_DE}.",
+  "ui": {
+    "farbe": "Cor",
+    "keine": "Sem cor",
+    "notiz": "Nota",
+    "kinder": "Subnotas",
+    "kinderTitel": "Cor de todas as subnotas; uma subnota com cor própria mantém-na",
+    "schraffiert": "Às riscas",
+    "schraffiertTitel": "Riscas diagonais na cor e num tom mais claro (requer uma cor)",
+    "bild": "Cores ao copiar como imagem",
+    "bildTitel": "Copiar como imagem (botão direito, Ctrl+C ou o botão na barra do mapa mental) inclui as cores na imagem; aplica-se neste navegador"
+  },
+  "legende": {
+    "titel": "Legenda",
+    "knopf": "Legenda",
+    "knopfTitel": "Mostrar ou ocultar a legenda: o significado das cores",
+    "zu": "Recolher",
+    "auf": "Expandir a legenda",
+    "ecke": "Posição da legenda",
+    "ergaenzen": "Acrescentar as cores em falta: as cores usadas que ainda não constam da legenda são acrescentadas como novas linhas no fim",
+    "ecken": {
+      "or": "Em cima à direita",
+      "ol": "Em cima à esquerda",
+      "ul": "Em baixo à esquerda",
+      "ur": "Em baixo à direita"
+    },
+    "leer": "Clique para descrever o significado das cores.",
+    "hinweis": "Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc ou um clique fora guarda",
+    "schraffiert": "às riscas",
+    "kinder": "subnotas",
+    "bedeutung": "…"
+  },
+  "wort": {
+    "fett": "negrito",
+    "kursiv": "itálico"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Tag-Designs",
+  "description": "Setzt pro Notiz ein Design anhand ihrer Tags und stylt Mindmap-Linien nach Tag-Paaren (Zuordnung oben in der Datei).",
+  "help": "Setzt pro Notiz ein **Design** anhand ihrer Tags und stylt die **Linien der Mindmap**.\n\n#### Design pro Notiz\nÖffnest du eine Notiz mit einem Tag aus der Liste `REGELN` (oben in `tag-themes.js`), wechselt die ganze Oberfläche auf das Design dieser Regel. Beim Schließen gilt wieder das Design aus dem Menü *Datenbank*. Bei mehreren passenden Tags gewinnt die Regel weiter oben in der Liste. Tag-Änderungen im Editor wirken sofort; die Hauptfarbe bleibt unberührt.\n\n#### Linien der Mindmap\nDie Liste `LINKS` stylt die Verbindung von der Elternnotiz zur Unternotiz nach dem Tag-Paar (`from` → `to`, `'*'` = jede Notiz): Farbverlauf (`color`, auch getrennt für hell und dunkel), Form (`curve`, `elbow`, `straight`), Eckenradius, Stärke, Strichart und Deckkraft. Nur auf dem Bildschirm, nicht in Export und Druck.\n\nÄnderungen an den Listen wirken nach dem Neuladen der Seite."
+}

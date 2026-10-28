@@ -1,0 +1,40 @@
+{
+  "name": "Colores por etiqueta",
+  "description": "Colorea los nodos del mapa mental con etiquetas como “color:red” (16 colores); “color-children:blue” colorea las subnotas. Color con clic derecho (a partir de NoNotes 2.8.0), leyenda sobre el mapa mental (a partir de 2.11.0).",
+  "help": "Colorea los **nodos del mapa mental** con una etiqueta: relleno más claro, borde más oscuro y el título en el color del borde (al revés en el modo oscuro).\n\n- Pon una etiqueta en la nota, por ejemplo `color:red` (en alemán, `farbe:rot`). No importan las mayúsculas ni las minúsculas.\n- **Colorear subnotas:** `color-children:blue` (`farbe-kinder:blau`) colorea todas las subnotas, pero no la nota misma. Junto con `color:red`, la nota queda roja y todo lo que está debajo, azul; para el mismo color, usa ambas etiquetas con el mismo color. Una subnota con color propio lo conserva; su propia `color-children:` se aplica a su parte del árbol.\n- Varias etiquetas de color del mismo tipo en una nota: gana la primera (en el orden del editor).\n- **Rayado:** agrega `+hatched` a la etiqueta de color, por ejemplo `color:red+hatched` o `color-children:blue+hatched` (en alemán, `farbe:rot+schraffiert`). El relleno lleva rayas diagonales en el color y en un tono más claro de este; el título sigue siendo legible y las rayas crecen con el zoom.\n- En pantalla y en la imagen copiada, no en la exportación ni en la impresión. La raíz se queda como está.\n\n#### Al copiar como imagen\n*Copiar como imagen* (clic derecho, `Ctrl`+`C` o el botón de la barra del mapa mental) incluye los colores en la imagen, y los rayados, con rayas. Para desactivarlo: clic derecho en un nodo → **Color ▸** → **Colores al copiar como imagen**; se aplica en este navegador y también funciona en el modo de solo lectura. Requiere NoNotes 3.1.0 o posterior (desde 2.4.0).\n\n#### Con clic derecho\nClic derecho en un nodo → **Color ▸**: arriba, el color de la **nota**; abajo, el de las **subnotas**, cada uno con los 16 colores (reemplaza el actual; el rayado se conserva), **Sin color** o marcar y desmarcar **Rayado** (se aplica de inmediato, solo con color). Si el nodo forma parte de la selección múltiple (`Ctrl`+clic), se aplica a todos los seleccionados; después se quita la selección. Las etiquetas se escriben en inglés. Requiere NoNotes 2.8.0 o posterior.\n\n#### Leyenda\nEl botón **Leyenda** de la barra del mapa mental muestra una nota que explica qué significan los colores (una por base de datos, igual para todos en el espacio de trabajo). Haz clic en la leyenda para editarla: Markdown, `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`K`; `Esc` o un clic fuera guarda. Las etiquetas de color en el texto, como `color:red` o `color:blue+hatched`, aparecen como una muestra de color con su nombre. Si está vacía, empieza con los colores que se usan en ese momento. Si después se agregan colores, el botón **+** del encabezado de la leyenda agrega los que faltan como líneas nuevas al final; lo que ya está ahí no se toca (desde 2.3.0). El selector del encabezado elige la esquina (arriba a la derecha, arriba a la izquierda, abajo a la izquierda, abajo a la derecha) y **–** la contrae; el navegador recuerda ambas cosas. En la exportación a Markdown y en la impresión aparece debajo de la imagen del mapa mental. Requiere NoNotes 2.11.0 o posterior.\n\n#### Los 16 colores\n{TAGS_EN}, además de `color:grey`.\n\nEn alemán: {TAGS_DE}.",
+  "ui": {
+    "farbe": "Color",
+    "keine": "Sin color",
+    "notiz": "Nota",
+    "kinder": "Subnotas",
+    "kinderTitel": "Color de todas las subnotas; una subnota con color propio lo conserva",
+    "schraffiert": "Rayado",
+    "schraffiertTitel": "Rayas diagonales en el color y en un tono más claro (requiere un color)",
+    "bild": "Colores al copiar como imagen",
+    "bildTitel": "Copiar como imagen (clic derecho, Ctrl+C o el botón de la barra del mapa mental) incluye los colores en la imagen; se aplica en este navegador"
+  },
+  "legende": {
+    "titel": "Leyenda",
+    "knopf": "Leyenda",
+    "knopfTitel": "Mostrar u ocultar la leyenda: qué significan los colores",
+    "zu": "Contraer",
+    "auf": "Expandir leyenda",
+    "ecke": "Posición de la leyenda",
+    "ergaenzen": "Agregar colores faltantes: los colores en uso que aún no están en la leyenda se agregan como líneas nuevas al final",
+    "ecken": {
+      "or": "Arriba a la derecha",
+      "ol": "Arriba a la izquierda",
+      "ul": "Abajo a la izquierda",
+      "ur": "Abajo a la derecha"
+    },
+    "leer": "Haz clic para describir qué significan los colores.",
+    "hinweis": "Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc o un clic fuera guarda",
+    "schraffiert": "rayado",
+    "kinder": "subnotas",
+    "bedeutung": "…"
+  },
+  "wort": {
+    "fett": "negrita",
+    "kursiv": "cursiva"
+  }
+}

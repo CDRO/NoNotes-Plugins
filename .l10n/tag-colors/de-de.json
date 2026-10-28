@@ -1,0 +1,40 @@
+{
+  "name": "Farben über Tags",
+  "description": "Färbt Knoten der Mindmap über Tags wie „farbe:rot“ (16 Farben); „farbe-kinder:blau“ färbt die Unternotizen. Farbwahl per Rechtsklick (ab NoNotes 2.8.0), Legende über der Mindmap (ab 2.11.0).",
+  "help": "Färbt **Knoten der Mindmap** über ein Tag: Fläche heller, Umrandung dunkler, der Titel in der Farbe der Umrandung (im dunklen Modus umgekehrt).\n\n- Tag an der Notiz setzen, zum Beispiel `farbe:rot` (englisch `color:red`). Groß-/Kleinschreibung ist egal.\n- **Unternotizen färben:** `farbe-kinder:blau` (`color-children:blue`) färbt alle Unternotizen, die Notiz selbst nicht. Zusammen mit `farbe:rot` ist die Notiz rot und alles darunter blau; für dieselbe Farbe beide Tags mit derselben Farbe. Eine Unternotiz mit eigener Farbe behält sie, ein eigenes `farbe-kinder:` gilt für ihren Teil des Baums.\n- Mehrere Farb-Tags derselben Art an einer Notiz: das erste gilt (Reihenfolge wie im Editor).\n- **Schraffiert:** `+schraffiert` am Farb-Tag, etwa `farbe:rot+schraffiert` oder `farbe-kinder:blau+schraffiert` (englisch `color:red+hatched`). Die Fläche bekommt diagonale Streifen in der Farbe und einer helleren Fassung davon; der Titel bleibt lesbar, die Streifen wachsen mit dem Zoom.\n- Auf dem Bildschirm und im kopierten Bild, nicht in Export und Druck. Die Wurzel bleibt, wie sie ist.\n\n#### Beim Kopieren als Bild\n*Als Bild kopieren* (Rechtsklick, `Ctrl`+`C` oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild, schraffierte mit Streifen. Abschalten: Rechtsklick auf einen Knoten → **Farbe ▸** → **Farben beim Kopieren als Bild**; das gilt in diesem Browser und geht auch im Lesemodus. Braucht NoNotes 3.1.0 oder neuer (seit 2.4.0).\n\n#### Per Rechtsklick\nRechtsklick auf einen Knoten → **Farbe ▸**: oben die Farbe der **Notiz**, unten die der **Unternotizen**, je eine der 16 Farben (ersetzt die bisherige, die Schraffur bleibt), **Keine Farbe** oder **Schraffiert** an- und abhaken (wirkt sofort, nur mit Farbe). Gehört der Knoten zur Mehrfachauswahl (`Ctrl`+Klick), gilt es für alle ausgewählten; danach ist die Auswahl aufgehoben. Die Tags werden in deutscher Oberfläche deutsch geschrieben, in allen anderen Sprachen englisch. Braucht NoNotes 2.8.0 oder neuer.\n\n#### Legende\nDer Knopf **Legende** in der Leiste der Mindmap blendet eine Notiz ein, die erklärt, was die Farben bedeuten (eine je Datenbank, für alle im Arbeitsbereich gleich). Ein Klick in die Legende bearbeitet sie: Markdown, `Ctrl`+`B`, `Ctrl`+`I`, `Ctrl`+`K`; `Esc` oder ein Klick daneben speichert. Farb-Tags im Text wie `farbe:rot` oder `farbe:blau+schraffiert` erscheinen als Farbfeld mit Namen. Ist sie leer, beginnt sie mit den Farben, die gerade benutzt werden. Kommen später Farben dazu, ergänzt der Knopf **+** im Kopf der Legende die fehlenden als neue Zeilen am Ende; was schon dasteht, bleibt unberührt (seit 2.3.0). Die Ecke (oben rechts, oben links, unten links, unten rechts) wählt die Auswahl im Kopf, **–** klappt sie ein; beides merkt sich der Browser. Im Markdown-Export und im Druck steht sie unter dem Mindmap-Bild. Braucht NoNotes 2.11.0 oder neuer.\n\n#### Die 16 Farben\n{TAGS_DE}\n\nEnglisch: {TAGS_EN}, dazu `color:grey`.",
+  "ui": {
+    "farbe": "Farbe",
+    "keine": "Keine Farbe",
+    "notiz": "Notiz",
+    "kinder": "Unternotizen",
+    "kinderTitel": "Farbe aller Unternotizen; eine Unternotiz mit eigener Farbe behält sie",
+    "schraffiert": "Schraffiert",
+    "schraffiertTitel": "Diagonale Streifen in der Farbe und einer helleren Fassung (braucht eine Farbe)",
+    "bild": "Farben beim Kopieren als Bild",
+    "bildTitel": "Als Bild kopieren (Rechtsklick, Ctrl+C oder der Knopf in der Leiste der Mindmap) übernimmt die Farben ins Bild; gilt in diesem Browser"
+  },
+  "legende": {
+    "titel": "Legende",
+    "knopf": "Legende",
+    "knopfTitel": "Legende ein- oder ausblenden: was die Farben bedeuten",
+    "zu": "Einklappen",
+    "auf": "Legende aufklappen",
+    "ecke": "Lage der Legende",
+    "ergaenzen": "Fehlende Farben ergänzen: benutzte Farben, die in der Legende noch fehlen, kommen als neue Zeilen ans Ende",
+    "ecken": {
+      "or": "Oben rechts",
+      "ol": "Oben links",
+      "ul": "Unten links",
+      "ur": "Unten rechts"
+    },
+    "leer": "Klicken, um zu beschreiben, was die Farben bedeuten.",
+    "hinweis": "Markdown · Ctrl+B, Ctrl+I, Ctrl+K · Esc oder Klick daneben speichert",
+    "schraffiert": "schraffiert",
+    "kinder": "Unternotizen",
+    "bedeutung": "…"
+  },
+  "wort": {
+    "fett": "fett",
+    "kursiv": "kursiv"
+  }
+}

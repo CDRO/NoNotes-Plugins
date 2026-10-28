@@ -1,0 +1,5 @@
+{
+  "name": "Temas por tag",
+  "description": "Define um tema por nota com base nas tags dela e estiliza as linhas do mapa mental por pares de tags (configuração no início do arquivo).",
+  "help": "Define um **tema** por nota com base nas tags dela e estiliza as **linhas do mapa mental**.\n\n#### Tema por nota\nAo abrir uma nota com uma tag da lista `REGELN` (no início de `tag-themes.js`), toda a interface muda para o tema dessa regra. Ao fechar a nota, volta a valer o tema escolhido no menu *Banco de dados*. Se várias tags corresponderem, vence a regra que está mais acima na lista. Alterações de tags no editor valem na hora; a cor de destaque não é alterada.\n\n#### Linhas do mapa mental\nA lista `LINKS` estiliza a ligação da nota pai até a subnota de acordo com o par de tags (`from` → `to`, `'*'` = qualquer nota): degradê de cor (`color`, também separado para claro e escuro), forma (`curve`, `elbow`, `straight`), raio dos cantos, espessura, tipo de traço e opacidade. Só na tela, não na exportação nem na impressão.\n\nAlterações nas listas valem depois de recarregar a página."
+}
