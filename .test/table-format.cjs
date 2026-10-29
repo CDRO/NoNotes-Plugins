@@ -1,6 +1,7 @@
 /* Test der Erweiterung «Tabellen formatieren» (table-format/) in der echten App: baut NoNotes mit diesem Repository
    (tools/build.cjs --plugins) und prüft im Browser Farbe, Fett, Breite, Höhe und ganze Breite über das Untermenü, die
-   Reihenfolge Feld vor Zeile vor Spalte, Mitwandern beim Einfügen, hell und dunkel, Druck, Ausschalten, Englisch, Hilfe.
+   Reihenfolge Feld vor Zeile vor Spalte, Mitwandern beim Einfügen, hell und dunkel, Druck, Ausschalten, Tabellen mit Rahmen
+   (ab NoNotes 3.3.0), Englisch, Hilfe.
 
    Aufruf: NONOTES_CORE=../NoNotes node .test/table-format.cjs   (der Kern ab 2.10.0 braucht npm install, Playwright mit Chromium) */
 'use strict';
@@ -231,6 +232,49 @@ async function main() {
     await toggle(true);
     await page.waitForFunction(() => !!document.querySelector('#preview .tbf-rot'));
     part('Aus- und wieder einschalten: Vorschau ohne und wieder mit Angaben, Format bleibt im Text, Eintrag weg und wieder da');
+
+    // Tabelle mit Rahmen (NoNotes ab 3.3.0): umwandeln, Feld über zwei Spalten formatieren, Spalte einfügen
+    if (await page.evaluate(() => !!(window.NoNotesTables && window.NoNotesTables.mergeRight))) {
+      await page.locator(cellSel(0, 0)).click({ button: 'right' });
+      await page.click('#contextMenu button:has-text("In Tabelle mit Rahmen umwandeln")');
+      await page.waitForFunction(() => document.querySelector('#body').value.includes('+==='));
+      await settle();
+      assert.deepEqual(await metaOf(), before, 'umgewandelt: das Format bleibt');
+      assert.match(await body(), /<!-- tabelle: .* -->\n\+-/, 'die Format-Zeile steht direkt über dem Rahmen');
+      await page.waitForFunction(() => !!document.querySelector('#preview tbody tr[data-row="2"] > [data-col="2"].tbf-rot'));
+      await page.locator(cellSel(2, 1)).click({ button: 'right' });
+      await page.click('#contextMenu button:has-text("Mit dem Feld rechts verbinden")');
+      await page.waitForSelector('#preview tbody tr[data-row="2"] > td[data-col="1"][colspan="2"]');
+      await settle();
+      assert.equal(await bg(2, 1), rgb(byId.gelb.light), 'verbundenes Feld: Farbe der Zeile');
+      await openPanel(2, 1);
+      await pick('.tbf-swatch.tbf-violett');
+      await page.keyboard.press('Escape');
+      await page.waitForFunction(() => document.querySelector('#preview tbody tr[data-row="2"] > [data-col="1"]').classList.contains('tbf-violett'));
+      await openPanel(0, 1);
+      await page.click('.context-sub .tbf-seg button:has-text("Breit")');
+      await page.keyboard.press('Escape');
+      await settle();
+      const tf = json(before['table-format']);
+      tf.cells['2,1'] = { farbe: 'violett' };
+      tf.cols[1] = { breite: 'breit' };
+      assert.deepEqual((await metaOf())['table-format'], tf, 'Feld und Spalte eines verbundenen Felds: Schlüssel der ersten Spalte');
+      assert.equal(await bg(2, 1), rgb(byId.violett.light), 'die Farbe gilt für das ganze verbundene Feld');
+      const width = sel => page.locator(sel).evaluate(e => e.getBoundingClientRect().width);
+      const [w1, w2, wm] = [await width(cellSel(0, 1)), await width(cellSel(0, 2)), await width(cellSel(2, 1))];
+      const em = await page.locator(cellSel(0, 1)).evaluate(e => parseFloat(getComputedStyle(e).fontSize));
+      assert.ok(w1 >= 20 * em - 1, `Spalte 1 breit (20em): ${w1}`);
+      assert.ok(Math.abs(wm - (w1 + w2)) < 2, `das verbundene Feld deckt beide Spalten (${wm} gegen ${w1} + ${w2}), die Breite der ersten engt es nicht ein`);
+      await page.locator(cellSel(0, 0)).click({ button: 'right' });
+      await page.click('#contextMenu button:has-text("Spalte links einfügen")');
+      await page.waitForSelector('#preview tbody tr[data-row="2"] > td[data-col="2"][colspan="2"]');
+      await settle();
+      const right = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.replace(/\d+$/, c => String(+c + 1)), v]));
+      assert.deepEqual((await metaOf())['table-format'], Object.assign({}, tf, { cols: right(tf.cols), cells: right(tf.cells) }), 'Spalte eingefügt: das Format wandert mit');
+      assert.equal(await bg(2, 2), rgb(byId.violett.light), 'das verbundene Feld behält seine Farbe');
+      assert.deepEqual(errors, [], 'keine Fehler und Warnungen im Browser');
+      part('Tabelle mit Rahmen (NoNotes ab 3.3.0): umwandeln behält das Format, verbundenes Feld mit eigener Farbe, Breite der ersten Spalte engt es nicht ein, Spalte einfügen');
+    }
 
     // Hilfe
     await page.click('#backBtn');
